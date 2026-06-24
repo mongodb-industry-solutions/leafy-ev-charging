@@ -1,3 +1,5 @@
 export const config = {
-  graphqlUrl: process.env.NEXT_PUBLIC_GRAPHQL_URL ?? "http://localhost:4000/graphql"
+  // Same-origin path served by the frontend; Next.js proxies it to the backend
+  // (see next.config.ts rewrites). Identical locally and on Kanopy.
+  graphqlUrl: "/graphql"
 } as const;

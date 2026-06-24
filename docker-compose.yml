@@ -16,6 +16,39 @@ services:
       interval: 10s
       start_period: 5s
 
+  # Frontend owns the network namespace; backend and simulator join it via
+  # network_mode below so all three share the same localhost — exactly like the
+  # single Kanopy pod. This means the /graphql -> localhost:4000 proxy behaves
+  # identically locally and in production. All published ports live here.
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: ev-demo-frontend
+    env_file:
+      - .env
+    ports:
+      - "3000:8080"   # frontend (Kanopy ingress port)
+      - "4000:4000"   # backend GraphQL (shared namespace)
+      - "8000:8000"   # simulator (shared namespace)
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ev-demo-backend
+    env_file:
+      - .env
+    environment:
+      BACKEND_URL: ${BACKEND_URL:-http://localhost:4000}
+      BACKEND_CORS_ORIGIN: ${BACKEND_CORS_ORIGIN:-http://localhost:3000}
+      MONGODB_URI: ${MONGODB_URI}
+    network_mode: "service:frontend"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+        required: false
+
   simulator:
     build:
       context: ./simulator
@@ -29,44 +62,11 @@ services:
       SESSION_TELEMETRY_INTERVAL_SECONDS: ${SESSION_TELEMETRY_INTERVAL_SECONDS:-2}
       CHANGE_STREAM_RETRY_SECONDS: ${CHANGE_STREAM_RETRY_SECONDS:-2}
       SIMULATOR_URL: ${SIMULATOR_URL:-http://localhost:8000}
-    ports:
-      - "8000:8000"
+    network_mode: "service:frontend"
     depends_on:
       mongodb:
         condition: service_healthy
         required: false
-
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: ev-demo-backend
-    env_file:
-      - .env
-    environment:
-      BACKEND_URL: ${BACKEND_URL:-http://localhost:4000}
-      BACKEND_CORS_ORIGIN: ${BACKEND_CORS_ORIGIN:-http://localhost:3000}
-      MONGODB_URI: ${MONGODB_URI}
-    ports:
-      - "4000:4000"
-    depends_on:
-      mongodb:
-        condition: service_healthy
-        required: false
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: ev-demo-frontend
-    env_file:
-      - .env
-    environment:
-      NEXT_PUBLIC_GRAPHQL_URL: ${NEXT_PUBLIC_GRAPHQL_URL:-http://localhost:4000/graphql}
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend
 
 volumes:
   mongodb-data:

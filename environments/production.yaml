@@ -1,0 +1,69 @@
+# Helm values for the production release of leafy-ev-charging (mongodb/web-app chart).
+# Single pod: frontend = main container (ingress on 8080), backend + simulator = sidecars.
+# MongoDB runs on Atlas (no in-cluster mongo). The Atlas connection string is a
+# Kanopy ksec secret named "leafy-ev-charging" with key MONGODB_URI.
+
+# Non-secret config for the main container (frontend).
+env:
+  NODE_ENV: production
+  APP_ENV: production
+
+# Main container (frontend) resources.
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 50m
+    memory: 192Mi
+
+sidecarContainers:
+  # Backend: Apollo GraphQL API. Internal only (proxied by the frontend at /graphql).
+  - name: backend
+    image: 795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/leafy-ev-charging-backend-prod:latest
+    env:
+      - name: NODE_ENV
+        value: "production"
+      - name: MONGODB_DATABASE
+        value: "charging_demo"
+      - name: BACKEND_URL
+        value: "http://localhost:4000"
+      - name: BACKEND_CORS_ORIGIN
+        value: "https://leafy-ev-charging.industrysolutions.prod.corp.mongodb.com"
+      - name: MONGODB_URI
+        valueFrom:
+          secretKeyRef:
+            name: leafy-ev-charging
+            key: MONGODB_URI
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1024Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+
+  # Simulator: FastAPI background worker driving demo telemetry into Atlas.
+  - name: simulator
+    image: 795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/leafy-ev-charging-simulator-prod:latest
+    env:
+      - name: MONGODB_DATABASE
+        value: "charging_demo"
+      - name: SIMULATOR_URL
+        value: "http://localhost:8000"
+      - name: SESSION_TELEMETRY_INTERVAL_SECONDS
+        value: "2"
+      - name: CHANGE_STREAM_RETRY_SECONDS
+        value: "2"
+      - name: MONGODB_URI
+        valueFrom:
+          secretKeyRef:
+            name: leafy-ev-charging
+            key: MONGODB_URI
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 50m
+        memory: 128Mi

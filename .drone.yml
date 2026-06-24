@@ -1,0 +1,185 @@
+---
+kind: pipeline
+type: kubernetes
+name: staging-combined
+
+trigger:
+  branch:
+    - staging
+  event:
+    - push
+
+steps:
+  # 1. Build and publish Frontend (main container).
+  #    The frontend serves /graphql and proxies it to the backend sidecar on
+  #    localhost:4000 within the pod (see next.config.ts rewrites).
+  - name: publish-frontend
+    image: plugins/kaniko-ecr
+    settings:
+      create_repository: true
+      registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
+      repo: industrysolutions/leafy-ev-charging-frontend
+      dockerfile: frontend/Dockerfile
+      context: .
+      tags:
+        - git-${DRONE_COMMIT_SHA:0:7}
+        - latest
+      access_key:
+        from_secret: ecr_access_key
+      secret_key:
+        from_secret: ecr_secret_key
+
+  # 2. Build and publish Backend (GraphQL API sidecar).
+  - name: publish-backend
+    image: plugins/kaniko-ecr
+    settings:
+      create_repository: true
+      registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
+      repo: industrysolutions/leafy-ev-charging-backend
+      dockerfile: backend/Dockerfile
+      context: backend
+      tags:
+        - git-${DRONE_COMMIT_SHA:0:7}
+        - latest
+      access_key:
+        from_secret: ecr_access_key
+      secret_key:
+        from_secret: ecr_secret_key
+
+  # 3. Build and publish Simulator (background worker sidecar).
+  - name: publish-simulator
+    image: plugins/kaniko-ecr
+    settings:
+      create_repository: true
+      registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
+      repo: industrysolutions/leafy-ev-charging-simulator
+      dockerfile: simulator/Dockerfile
+      context: simulator
+      tags:
+        - git-${DRONE_COMMIT_SHA:0:7}
+        - latest
+      access_key:
+        from_secret: ecr_access_key
+      secret_key:
+        from_secret: ecr_secret_key
+
+  # 4. Deploy single pod: frontend (main) + backend & simulator (sidecars).
+  - name: deploy-leafy-ev-charging-staging
+    image: public.ecr.aws/kanopy/drone-helm:v3
+    settings:
+      chart: mongodb/web-app
+      chart_version: 4.25.0
+      add_repos: ["mongodb=https://10gen.github.io/helm-charts"]
+      namespace: industrysolutions
+      release: leafy-ev-charging
+      values_files: ["environments/staging.yaml"]
+      values:
+        - "image.repository=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/leafy-ev-charging-frontend"
+        - "image.tag=git-${DRONE_COMMIT_SHA:0:7}"
+        - "sidecarContainers[0].name=backend"
+        - "sidecarContainers[0].image=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/leafy-ev-charging-backend:git-${DRONE_COMMIT_SHA:0:7}"
+        - "sidecarContainers[1].name=simulator"
+        - "sidecarContainers[1].image=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/leafy-ev-charging-simulator:git-${DRONE_COMMIT_SHA:0:7}"
+        - "ingress.enabled=true"
+        - "ingress.hosts[0]=leafy-ev-charging.industrysolutions.staging.corp.mongodb.com"
+        - "mesh.enabled=true"
+      api_server: https://api.staging.corp.mongodb.com
+      kubernetes_token:
+        from_secret: staging_kubernetes_token
+    when:
+      branch:
+        - staging
+      event:
+        - push
+
+---
+kind: pipeline
+type: kubernetes
+name: production-combined
+
+trigger:
+  branch:
+    - main
+  event:
+    - push
+
+steps:
+  # 1. Build and publish Frontend (main container) - Prod.
+  - name: publish-frontend-prod
+    image: plugins/kaniko-ecr
+    settings:
+      create_repository: true
+      registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
+      repo: industrysolutions/leafy-ev-charging-frontend-prod
+      dockerfile: frontend/Dockerfile
+      context: .
+      tags:
+        - git-${DRONE_COMMIT_SHA:0:7}
+        - latest
+      access_key:
+        from_secret: ecr_access_key
+      secret_key:
+        from_secret: ecr_secret_key
+
+  # 2. Build and publish Backend (GraphQL API sidecar) - Prod.
+  - name: publish-backend-prod
+    image: plugins/kaniko-ecr
+    settings:
+      create_repository: true
+      registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
+      repo: industrysolutions/leafy-ev-charging-backend-prod
+      dockerfile: backend/Dockerfile
+      context: backend
+      tags:
+        - git-${DRONE_COMMIT_SHA:0:7}
+        - latest
+      access_key:
+        from_secret: ecr_access_key
+      secret_key:
+        from_secret: ecr_secret_key
+
+  # 3. Build and publish Simulator (background worker sidecar) - Prod.
+  - name: publish-simulator-prod
+    image: plugins/kaniko-ecr
+    settings:
+      create_repository: true
+      registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
+      repo: industrysolutions/leafy-ev-charging-simulator-prod
+      dockerfile: simulator/Dockerfile
+      context: simulator
+      tags:
+        - git-${DRONE_COMMIT_SHA:0:7}
+        - latest
+      access_key:
+        from_secret: ecr_access_key
+      secret_key:
+        from_secret: ecr_secret_key
+
+  # 4. Deploy single pod: frontend (main) + backend & simulator (sidecars) - Prod.
+  - name: deploy-leafy-ev-charging-prod
+    image: public.ecr.aws/kanopy/drone-helm:v3
+    settings:
+      chart: mongodb/web-app
+      chart_version: 4.25.0
+      add_repos: ["mongodb=https://10gen.github.io/helm-charts"]
+      namespace: industrysolutions
+      release: leafy-ev-charging-prod
+      values_files: ["environments/production.yaml"]
+      values:
+        - "image.repository=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/leafy-ev-charging-frontend-prod"
+        - "image.tag=git-${DRONE_COMMIT_SHA:0:7}"
+        - "sidecarContainers[0].name=backend"
+        - "sidecarContainers[0].image=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/leafy-ev-charging-backend-prod:git-${DRONE_COMMIT_SHA:0:7}"
+        - "sidecarContainers[1].name=simulator"
+        - "sidecarContainers[1].image=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/leafy-ev-charging-simulator-prod:git-${DRONE_COMMIT_SHA:0:7}"
+        - "ingress.enabled=true"
+        - "ingress.hosts[0]=leafy-ev-charging.industrysolutions.prod.corp.mongodb.com"
+        - "mesh.enabled=true"
+      api_server: https://api.prod.corp.mongodb.com
+      kubernetes_token:
+        from_secret: prod_kubernetes_token
+    when:
+      branch:
+        - main
+      event:
+        - push

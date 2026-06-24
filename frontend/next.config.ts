@@ -14,6 +14,17 @@ const nextConfig: NextConfig = {
   // Skip type-checking files unrelated to the data-model page (e.g. pages
   // that import codegen output not available in the GH Pages build).
   typescript: { ignoreBuildErrors: isGhPages || isGhPagesPreview },
+  // Same-origin proxy so the browser can reach the backend GraphQL through the
+  // single ingress. The backend always listens on localhost:4000 in the same
+  // network namespace — the Kanopy pod in production, and the shared
+  // network_mode namespace in local docker-compose. Rewrites are not supported
+  // for the static GH Pages export.
+  async rewrites() {
+    if (isGhPages || isGhPagesPreview) {
+      return [];
+    }
+    return [{ source: "/graphql", destination: "http://localhost:4000/graphql" }];
+  },
 };
 
 export default nextConfig;

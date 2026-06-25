@@ -19,10 +19,6 @@ cp .env.example .env
 cp .env frontend/.env
 ```
 
-Key vars used by the frontend (URLs include the port when needed):
-
-- `NEXT_PUBLIC_GRAPHQL_URL` (default `http://localhost:4000/graphql`)
-
 ## Install
 
 From the repo root (recommended):
@@ -55,4 +51,3 @@ npm run dev
 ```
 
 Then open `http://localhost:3000`.
-

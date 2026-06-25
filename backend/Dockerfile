@@ -16,10 +16,11 @@ ARG TARGETARCH
 ARG MONGO_TOOLS_VERSION=100.12.2
 RUN apt-get update \
  && apt-get install -y --no-install-recommends ca-certificates curl \
- && case "$TARGETARCH" in \
+ && ARCH="${TARGETARCH:-$(dpkg --print-architecture)}" \
+ && case "$ARCH" in \
       amd64) TOOLS_FILE="mongodb-database-tools-debian12-x86_64-${MONGO_TOOLS_VERSION}.tgz" ;; \
       arm64) TOOLS_FILE="mongodb-database-tools-ubuntu2204-arm64-${MONGO_TOOLS_VERSION}.tgz" ;; \
-      *) echo "unsupported arch: $TARGETARCH" && exit 1 ;; \
+      *) echo "unsupported arch: $ARCH" && exit 1 ;; \
     esac \
  && curl -fsSL -o /tmp/tools.tgz "https://fastdl.mongodb.org/tools/db/${TOOLS_FILE}" \
  && tar -xzf /tmp/tools.tgz -C /tmp \
@@ -38,7 +39,7 @@ ENV NODE_ENV=production
 # are all that's pulled in to keep the final image lean.
 COPY --from=tools /usr/local/bin/mongorestore /usr/local/bin/mongorestore
 RUN apt-get update \
- && apt-get install -y --no-install-recommends libgssapi-krb5-2 \
+ && apt-get install -y --no-install-recommends ca-certificates libgssapi-krb5-2 \
  && rm -rf /var/lib/apt/lists/*
 
 COPY package.json package-lock.json* ./

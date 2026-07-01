@@ -13,18 +13,31 @@ interface UseSessionActionsOptions {
   isBooked: boolean;
 }
 
+type StationAvailabilityCache = {
+  evict: (options: { fieldName: string }) => boolean;
+  gc: () => unknown;
+};
+
+function invalidateStationAvailability(cache: StationAvailabilityCache) {
+  cache.evict({ fieldName: "chargingStationsInBounds" });
+  cache.gc();
+}
+
 export function useSessionActions({ sessionId, isBooked }: UseSessionActionsOptions) {
   const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const [startChargingMutation] = useMutation(StartChargingSessionDocument, {
-    refetchQueries: "active"
+    refetchQueries: "active",
+    update: invalidateStationAvailability
   });
   const [cancelChargingMutation] = useMutation(CancelChargingSessionDocument, {
-    refetchQueries: "active"
+    refetchQueries: "active",
+    update: invalidateStationAvailability
   });
   const [completeChargingMutation] = useMutation(CompleteChargingSessionDocument, {
-    refetchQueries: "active"
+    refetchQueries: "active",
+    update: invalidateStationAvailability
   });
 
   const startCharging = useCallback(async () => {

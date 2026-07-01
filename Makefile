@@ -2,8 +2,11 @@ COMPOSE := COMPOSE_PROFILES=local docker compose
 COMPOSE_ATLAS := docker compose
 ATLAS_SERVICES := frontend backend simulator
 LOCAL_DOCKER_MONGODB_URI := mongodb://mongodb:27017/?replicaSet=rs0&directConnection=true
+SIMULATOR_IMAGE := ev-demo-simulator
+SIMULATOR_CONTAINER := ev-demo-simulator
+COMPOSE_PROJECT_NETWORK := leafy-ev-charging_default
 
-.PHONY: build start stop clean cleandb startdb build-atlas start-atlas stop-atlas clean-atlas preview-ghpages
+.PHONY: build start stop clean cleandb startdb build-atlas start-atlas stop-atlas clean-atlas start-simulator stop-simulator preview-ghpages
 
 build:
 	MONGODB_URI=$(LOCAL_DOCKER_MONGODB_URI) $(COMPOSE) up --build -d
@@ -35,6 +38,31 @@ stop-atlas:
 
 clean-atlas:
 	$(COMPOSE_ATLAS) rm -f -s $(ATLAS_SERVICES)
+
+# Run only the simulator in Docker while frontend/backend run via `npm run dev`.
+# Uses MONGODB_URI from .env (Atlas). For local MongoDB, run `make startdb` first and
+# pass MONGODB_URI=$(LOCAL_DOCKER_MONGODB_URI) on the command line.
+start-simulator:
+	docker build -t $(SIMULATOR_IMAGE) ./simulator
+	-docker rm -f $(SIMULATOR_CONTAINER) 2>/dev/null
+	@set -a; [ -f .env ] && . ./.env; set +a; \
+	[ -n "$(MONGODB_URI)" ] && MONGODB_URI="$(MONGODB_URI)"; \
+	network_args=""; \
+	if docker network inspect $(COMPOSE_PROJECT_NETWORK) >/dev/null 2>&1; then \
+	  network_args="--network $(COMPOSE_PROJECT_NETWORK)"; \
+	fi; \
+	docker run -d --name $(SIMULATOR_CONTAINER) --rm \
+	  $$network_args \
+	  -p 8000:8000 \
+	  -e MONGODB_URI \
+	  -e MONGODB_DATABASE \
+	  -e SESSION_TELEMETRY_INTERVAL_SECONDS \
+	  -e CHANGE_STREAM_RETRY_SECONDS \
+	  -e SIMULATOR_URL \
+	  $(SIMULATOR_IMAGE)
+
+stop-simulator:
+	-docker stop $(SIMULATOR_CONTAINER)
 
 GHPAGES_PAGES := frontend/app/layout.tsx \
 	frontend/app/\(home\)/page.tsx \

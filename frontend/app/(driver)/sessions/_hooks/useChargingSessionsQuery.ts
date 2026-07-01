@@ -39,6 +39,7 @@ export function useChargingSessionsQuery(userId: string | null) {
         cursor: null
       },
       skip: !userId,
+      fetchPolicy: "cache-and-network",
       notifyOnNetworkStatusChange: true
     }
   );

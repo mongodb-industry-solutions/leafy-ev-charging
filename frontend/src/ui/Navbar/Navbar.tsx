@@ -7,12 +7,14 @@ import { useEffect, useRef, useState } from "react";
 
 import { useUserContext } from "@/contexts/UserContext";
 import { UserRole } from "@/graphql/generated/graphql";
+import { TALK_TRACK } from "@/lib/utils/const";
 import {
   ADMIN_NAV_LINKS,
   DRIVER_NAV_LINKS,
   getDefaultRouteForRole,
   isAdminRole
 } from "@/lib/utils/roleNavigation";
+import { InfoWizard } from "@/ui/InfoWizard";
 
 function getAvatarBubbleClass(roles: UserRole[] | undefined): string {
   if (!roles?.length) return "bg-slate-300";
@@ -24,6 +26,7 @@ export function Navbar() {
   const router = useRouter();
   const { selectedUser, setRole } = useUserContext();
   const [isOpen, setIsOpen] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const currentUser = selectedUser;
@@ -94,6 +97,7 @@ export function Navbar() {
       </nav>
 
       <div className="flex flex-shrink-0 items-center gap-6">
+        <InfoWizard open={infoOpen} setOpen={setInfoOpen} sections={TALK_TRACK} />
         <div ref={dropdownRef}>
           <div className="relative">
             <div
@@ -106,13 +110,13 @@ export function Navbar() {
                   setIsOpen((prev) => !prev);
                 }
               }}
-              className="cursor-pointer"
+              className="group flex cursor-pointer items-center gap-3 rounded-full py-1 pl-1 pr-3 transition-colors hover:bg-slate-50"
               aria-expanded={isOpen}
               aria-haspopup="listbox"
-              aria-label="User menu"
+              aria-label="Change view"
             >
               <div
-                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white transition-shadow hover:ring-2 hover:ring-offset-1 ${isAdmin ? "hover:ring-amber-300" : "hover:ring-slate-300"} ${getAvatarBubbleClass(currentUser?.roles)}`}
+                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white transition-shadow group-hover:ring-2 group-hover:ring-offset-1 ${isAdmin ? "group-hover:ring-amber-300" : "group-hover:ring-slate-300"} ${getAvatarBubbleClass(currentUser?.roles)}`}
                 aria-hidden
               >
                 <span
@@ -120,6 +124,20 @@ export function Navbar() {
                   style={{ fontSize: 24 }}
                 >
                   person
+                </span>
+              </div>
+              <div className="flex flex-col leading-tight">
+                <span className="text-sm font-semibold text-slate-900">
+                  {isAdmin ? "Admin View" : "Driver View"}
+                </span>
+                <span className="flex items-center gap-0.5 text-[11px] font-medium text-slate-400">
+                  Change view
+                  <span
+                    className={`material-symbols-outlined transition-transform ${isOpen ? "rotate-180" : ""}`}
+                    style={{ fontSize: 14 }}
+                  >
+                    expand_more
+                  </span>
                 </span>
               </div>
             </div>

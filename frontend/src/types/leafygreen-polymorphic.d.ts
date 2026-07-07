@@ -18,7 +18,10 @@ import type { ReactElement } from "react";
  *
  * The module specifiers are relative paths into the (hoisted) package so they
  * resolve to the exact declaration files (the package `exports` map does not
- * expose these subpaths, so bare specifiers cannot be used here).
+ * expose these subpaths, so bare specifiers cannot be used here). Dependencies
+ * are always hoisted to the repo-root `node_modules` — both in local workspace
+ * dev and in the Docker image build (which installs the workspace from the root
+ * lockfile) — so `../../../node_modules` resolves in both environments.
  */
 declare module "../../../node_modules/@leafygreen-ui/polymorphic/dist/types/Polymorphic/Polymorphic.types" {
   interface PolymorphicComponentType<

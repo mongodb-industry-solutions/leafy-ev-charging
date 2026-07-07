@@ -122,7 +122,8 @@ export function useChargingStationsQuery(
       zoom,
       filters: filters ?? undefined,
     },
-    skip: !snappedBounds
+    skip: !snappedBounds,
+    fetchPolicy: "cache-and-network"
   });
 
   const mapItems =

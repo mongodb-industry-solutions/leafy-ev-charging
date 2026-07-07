@@ -10,7 +10,8 @@ export async function connectMongo(): Promise<Db> {
   if (db) {
     return db;
   }
-  console.log("Connecting to MongoDB with URI:", uri);
+  const { host } = new URL(uri);
+  console.log(`Connecting to MongoDB (${dbName} @ ${host})`);
   client = new MongoClient(uri);
   await client.connect();
   db = client.db(dbName);

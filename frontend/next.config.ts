@@ -1,3 +1,5 @@
+import path from "node:path";
+
 import type { NextConfig } from "next";
 
 // These env vars are only set in CI (GITHUB_PAGES) or via `make preview-ghpages`
@@ -8,6 +10,10 @@ const isGhPagesPreview = process.env.GITHUB_PAGES_PREVIEW === "true";
 
 const nextConfig: NextConfig = {
   output: isGhPages || isGhPagesPreview ? "export" : "standalone",
+  // Pin dependency tracing to the monorepo root (one level above this frontend
+  // workspace) so the standalone build has a deterministic layout regardless of
+  // where it is invoked, and so Next doesn't have to guess the workspace root.
+  outputFileTracingRoot: path.join(import.meta.dirname, ".."),
   basePath: isGhPages ? "/s2dm-example-charging-session-app" : "",
   trailingSlash: isGhPages || isGhPagesPreview,
   reactStrictMode: false,

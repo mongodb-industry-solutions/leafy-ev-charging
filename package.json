@@ -8,7 +8,7 @@
     "frontend"
   ],
   "scripts": {
-    "dev": "turbo run dev --parallel",
+    "dev": "set -a; [ -f ./.env ] && . ./.env; set +a; turbo run dev --parallel",
     "build": "turbo run build",
     "codegen": "npm run codegen -w backend && npm run codegen -w frontend",
     "lint": "turbo run lint",

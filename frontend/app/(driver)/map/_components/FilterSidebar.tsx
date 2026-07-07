@@ -3,6 +3,7 @@
 import * as Slider from "@radix-ui/react-slider";
 import * as Switch from "@radix-ui/react-switch";
 import { ConnectorType } from "@/graphql/generated/graphql";
+import { MongoSpotlight } from "@/ui/MongoSpotlight";
 import { useChargingStationFacets } from "../_hooks/useChargingStationFacets";
 
 export interface FilterState {
@@ -129,6 +130,7 @@ export function FilterSidebar({
       <div className="flex items-center gap-2 pt-3">
         <FilterIcon className="h-5 w-5 shrink-0 text-slate-600" />
         <h2 className="text-sm font-semibold text-slate-900">Filters</h2>
+        <MongoSpotlight id="map-facets" className="ml-auto" />
       </div>
 
       <div className="px-2">

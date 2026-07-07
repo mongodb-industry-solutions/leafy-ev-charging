@@ -1,10 +1,12 @@
 "use client";
 
 import { UserRole, type User } from "@/graphql/generated/graphql";
+import type { AppView } from "@/lib/utils/roleNavigation";
 
 const GUEST_ID_KEY = "leafycharge_guest_id";
 const GUEST_NAME_KEY = "leafycharge_guest_name";
 const GUEST_ROLE_KEY = "leafycharge_guest_role";
+const GUEST_VIEW_KEY = "leafycharge_guest_view";
 const GUEST_VEHICLES_KEY = "leafycharge_guest_vehicles";
 const DEFAULT_GUEST_VEHICLES = ["BMW i3", "Volkswagen ID.4"] as const;
 const DEMO_GUEST_VEHICLE_IDS: Record<string, string> = {
@@ -203,11 +205,33 @@ export function setGuestRole(role: UserRole): void {
   localStorage.setItem(GUEST_ROLE_KEY, role);
 }
 
+export function getStoredView(): AppView | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const storedView = localStorage.getItem(GUEST_VIEW_KEY);
+  return storedView === "driver" ||
+    storedView === "admin" ||
+    storedView === "dataModeller"
+    ? storedView
+    : null;
+}
+
+export function setStoredView(view: AppView): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  localStorage.setItem(GUEST_VIEW_KEY, view);
+}
+
 export function resetGuestIdentity(): GuestIdentity {
   if (typeof window !== "undefined") {
     localStorage.removeItem(GUEST_ID_KEY);
     localStorage.removeItem(GUEST_NAME_KEY);
     localStorage.removeItem(GUEST_ROLE_KEY);
+    localStorage.removeItem(GUEST_VIEW_KEY);
     localStorage.removeItem(GUEST_VEHICLES_KEY);
   }
   return getOrInitGuestIdentity();

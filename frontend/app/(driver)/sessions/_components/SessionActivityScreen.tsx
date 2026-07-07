@@ -78,7 +78,7 @@ export function SessionActivityScreen() {
         <div className="rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm">
           <h1 className="mb-2 text-lg font-semibold text-slate-900">No sessions found</h1>
           <p className="text-sm text-slate-600">
-            {selectedUser.displayName} has no sessions in the last 30 days.
+            {selectedUser.displayName} has no recent sessions.
           </p>
         </div>
       </main>

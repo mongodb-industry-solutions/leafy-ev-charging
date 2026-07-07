@@ -13,8 +13,11 @@ import {
   useEffect,
   useRef,
   useState,
+  useSyncExternalStore,
 } from "react";
 import { createPortal } from "react-dom";
+
+const noopSubscribe = () => () => {};
 
 interface InfoWizardImage {
   src: string;
@@ -57,6 +60,13 @@ export function InfoWizard({
   const [selected, setSelected] = useState(0);
   const [expandedImage, setExpandedImage] = useState<InfoWizardImage | null>(
     null
+  );
+  // Only portal after mount so SSR and the client's first render agree (both
+  // render nothing), avoiding a hydration mismatch on the portalled <dialog>.
+  const mounted = useSyncExternalStore(
+    noopSubscribe,
+    () => true,
+    () => false
   );
   const expandedImageDialogRef = useRef<HTMLDialogElement>(null);
 
@@ -206,7 +216,7 @@ export function InfoWizard({
   );
 
   const expandedImageOverlay =
-    typeof document !== "undefined"
+    mounted && typeof document !== "undefined"
       ? createPortal(
           <dialog
             ref={expandedImageDialogRef}

@@ -9,6 +9,7 @@ import {
   RatingStars,
   SessionFeedbackModal
 } from "@/ui/SessionFeedback";
+import { MongoSpotlight } from "@/ui/MongoSpotlight";
 import { SessionStatusBadge } from "./SessionStatusBadge";
 import { useSessionActions } from "../_hooks/useSessionActions";
 import { useReportSessionIncident } from "../_hooks/useReportSessionIncident";
@@ -605,7 +606,15 @@ export function SessionDetail({
             </p>
           </div>
         </div>
-        <SessionStatusBadge status={session.status} />
+        <div className="flex items-center gap-1">
+          <MongoSpotlight
+            id="session-document"
+            liveJson={session}
+            liveLabel="This session"
+          />
+          {(isActive || isBooked) && <MongoSpotlight id="session-changestream" />}
+          <SessionStatusBadge status={session.status} />
+        </div>
       </div>
 
       {/* Minimap + Hero metrics side by side */}

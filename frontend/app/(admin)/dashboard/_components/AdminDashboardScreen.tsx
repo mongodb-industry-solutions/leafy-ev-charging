@@ -13,9 +13,12 @@ import {
   Legend
 } from "recharts";
 
+import { Skeleton } from "@leafygreen-ui/skeleton-loader";
+
 import type { AdminDashboardQuery } from "@/graphql/generated/graphql";
 import { UserRole } from "@/graphql/generated/graphql";
 import { useRoleRouteGuard } from "@/hooks/useRoleRouteGuard";
+import { MongoSpotlight } from "@/ui/MongoSpotlight";
 import { useAdminDashboardQuery } from "../_hooks/useAdminDashboardQuery";
 import {
   formatCompactNumber,
@@ -82,14 +85,39 @@ const KPI_ICONS: Record<string, { icon: string; bg: string; color: string }> = {
   "Open issues": { icon: "warning", bg: "bg-rose-100", color: "text-rose-600" }
 };
 
+/**
+ * A single shimmer bar sized to the value it stands in for. Kept inline-block
+ * so it inherits the surrounding text alignment (e.g. right-aligned table
+ * cells) and occupies the same footprint as the eventual content.
+ */
+function ValueSkeleton({
+  width,
+  height = 14,
+  darkMode = false,
+  className = ""
+}: {
+  width: number;
+  height?: number;
+  darkMode?: boolean;
+  className?: string;
+}) {
+  return (
+    <Skeleton
+      darkMode={darkMode}
+      className={className}
+      style={{ width, height, display: "inline-block", verticalAlign: "middle" }}
+    />
+  );
+}
+
 function KpiCard({
   title,
   value,
   helper
 }: {
   title: string;
-  value: string;
-  helper: string;
+  value?: React.ReactNode;
+  helper?: React.ReactNode;
 }) {
   const style = KPI_ICONS[title] ?? { icon: "info", bg: "bg-slate-100", color: "text-slate-600" };
 
@@ -100,8 +128,12 @@ function KpiCard({
       </div>
       <div className="min-w-0">
         <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">{title}</p>
-        <p className="mt-1 text-2xl font-semibold leading-tight text-slate-900">{value}</p>
-        <p className="mt-1.5 text-xs text-slate-500">{helper}</p>
+        <div className="mt-1 text-2xl font-semibold leading-tight text-slate-900">
+          {value ?? <ValueSkeleton width={132} height={24} />}
+        </div>
+        <div className="mt-1.5 text-xs text-slate-500">
+          {helper ?? <ValueSkeleton width={184} height={12} />}
+        </div>
       </div>
     </div>
   );
@@ -142,11 +174,13 @@ function SectionHeader({
   );
 }
 
-function StatBadge({ label, value }: { label: string; value: string }) {
+function StatBadge({ label, value }: { label: string; value?: React.ReactNode }) {
   return (
     <div className="rounded-xl bg-slate-50 px-3 py-2 text-right">
       <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">{label}</p>
-      <p className="mt-0.5 text-base font-semibold text-slate-900">{value}</p>
+      <div className="mt-0.5 text-base font-semibold text-slate-900">
+        {value ?? <ValueSkeleton width={64} height={16} />}
+      </div>
     </div>
   );
 }
@@ -172,58 +206,80 @@ function ChartTooltipContent({ active, payload, label, formatter }: {
   );
 }
 
-function DashboardShell({ dashboard }: { dashboard: DashboardData }) {
+function DashboardShell({ dashboard }: { dashboard: DashboardData | null }) {
   const summaryCards = [
     {
       title: "Network footprint",
-      value: `${formatCompactNumber(dashboard.summary.totalStations)} stations`,
-      helper: `${formatCompactNumber(dashboard.summary.totalChargingPoints)} charging points across the fleet`
+      value: dashboard
+        ? `${formatCompactNumber(dashboard.summary.totalStations)} stations`
+        : undefined,
+      helper: dashboard
+        ? `${formatCompactNumber(dashboard.summary.totalChargingPoints)} charging points across the fleet`
+        : undefined
     },
     {
       title: "Live availability",
-      value: formatCompactNumber(dashboard.summary.availableNowPoints),
-      helper: `${formatCompactNumber(dashboard.summary.chargingPointsInUse)} charging and ${formatCompactNumber(dashboard.summary.reservedPoints)} reserved right now`
+      value: dashboard
+        ? formatCompactNumber(dashboard.summary.availableNowPoints)
+        : undefined,
+      helper: dashboard
+        ? `${formatCompactNumber(dashboard.summary.chargingPointsInUse)} charging and ${formatCompactNumber(dashboard.summary.reservedPoints)} reserved right now`
+        : undefined
     },
     {
       title: "Commercial output",
-      value: formatCurrencyCents(dashboard.summary.revenueLast7DaysCents),
-      helper: `${formatEnergyKwh(dashboard.summary.energyLast7DaysKwh)} delivered over the last 7 days`
+      value: dashboard
+        ? formatCurrencyCents(dashboard.summary.revenueLast7DaysCents)
+        : undefined,
+      helper: dashboard
+        ? `${formatEnergyKwh(dashboard.summary.energyLast7DaysKwh)} delivered over the last 7 days`
+        : undefined
     },
     {
       title: "Open issues",
-      value: formatCount(dashboard.summary.openIncidents),
-      helper: `${formatCount(dashboard.summary.outOfServicePoints)} points currently out of service`
+      value: dashboard
+        ? formatCount(dashboard.summary.openIncidents)
+        : undefined,
+      helper: dashboard
+        ? `${formatCount(dashboard.summary.outOfServicePoints)} points currently out of service`
+        : undefined
     }
   ];
 
-  const availabilityChartData = dashboard.pointAvailabilityBreakdown.map((item) => ({
-    state: formatLabel(item.label),
-    Points: item.value
-  }));
+  const availabilityChartData = (dashboard?.pointAvailabilityBreakdown ?? []).map(
+    (item) => ({
+      state: formatLabel(item.label),
+      Points: item.value
+    })
+  );
 
-  const sessionStatusChartData = dashboard.sessionStatusBreakdown
+  const sessionStatusChartData = (dashboard?.sessionStatusBreakdown ?? [])
     .filter((item) => item.value > 0)
     .map((item) => ({
       status: formatLabel(item.label),
       Sessions: item.value
     }));
 
-  const operationalChartData = dashboard.pointOperationalBreakdown.map((item) => ({
-    name: formatLabel(item.label),
-    value: item.value
-  }));
+  const operationalChartData = (dashboard?.pointOperationalBreakdown ?? []).map(
+    (item) => ({
+      name: formatLabel(item.label),
+      value: item.value
+    })
+  );
 
-  const sessionTrendData = dashboard.recentSessionTrend.map((item) => ({
+  const sessionTrendData = (dashboard?.recentSessionTrend ?? []).map((item) => ({
     date: item.bucket,
     Sessions: item.sessions,
     Completed: item.completedSessions
   }));
 
-  const telemetryTrendData = dashboard.recentTelemetryTrend.map((item) => ({
-    hour: item.bucket,
-    "Average power": item.avgPowerKw,
-    "Peak power": item.maxPowerKw
-  }));
+  const telemetryTrendData = (dashboard?.recentTelemetryTrend ?? []).map(
+    (item) => ({
+      hour: item.bucket,
+      "Average power": item.avgPowerKw,
+      "Peak power": item.maxPowerKw
+    })
+  );
 
   return (
     <main className="h-full w-full bg-slate-50 px-6 py-6">
@@ -235,9 +291,18 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData }) {
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">
                 Admin Control Panel
               </p>
-              <h1 className="mt-2 text-2xl font-bold">
-                EV charging network operations
-              </h1>
+              <div className="mt-2 flex items-center gap-2">
+                <h1 className="text-2xl font-bold leading-none">
+                  EV charging network operations
+                </h1>
+                <MongoSpotlight
+                  id="dashboard-analytics"
+                  darkMode
+                  liveJson={dashboard?.recentTelemetryTrend}
+                  liveLabel="Live telemetry"
+                  liveEmptyHint="No telemetry in the last 12 hours yet. Start a charging session to watch live samples stream into the time-series collection."
+                />
+              </div>
               <p className="mt-2 max-w-3xl text-sm text-slate-400">
                 Monitor live availability, fleet utilization, telemetry activity, and
                 customer-impacting incidents from one operator-facing dashboard.
@@ -253,9 +318,13 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData }) {
                   <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
                     Operational points
                   </p>
-                  <p className="text-lg font-semibold">
-                    {formatCompactNumber(dashboard.summary.operationalPoints)}
-                  </p>
+                  <div className="text-lg font-semibold">
+                    {dashboard ? (
+                      formatCompactNumber(dashboard.summary.operationalPoints)
+                    ) : (
+                      <ValueSkeleton darkMode width={56} height={18} />
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="flex items-center gap-3 rounded-xl bg-white/8 px-4 py-3 backdrop-blur">
@@ -266,9 +335,13 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData }) {
                   <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
                     Completed sessions
                   </p>
-                  <p className="text-lg font-semibold">
-                    {formatCompactNumber(dashboard.summary.completedSessionsLast7Days)}
-                  </p>
+                  <div className="text-lg font-semibold">
+                    {dashboard ? (
+                      formatCompactNumber(dashboard.summary.completedSessionsLast7Days)
+                    ) : (
+                      <ValueSkeleton darkMode width={56} height={18} />
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="flex items-center gap-3 rounded-xl bg-white/8 px-4 py-3 backdrop-blur">
@@ -279,10 +352,16 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData }) {
                   <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
                     Avg tariff
                   </p>
-                  <p className="text-lg font-semibold">
-                    {formatTariffCentsPerKwh(dashboard.summary.avgPriceCentsPerKwh)}
-                    <span className="ml-1 text-xs font-medium text-slate-400">/ kWh</span>
-                  </p>
+                  <div className="text-lg font-semibold">
+                    {dashboard ? (
+                      <>
+                        {formatTariffCentsPerKwh(dashboard.summary.avgPriceCentsPerKwh)}
+                        <span className="ml-1 text-xs font-medium text-slate-400">/ kWh</span>
+                      </>
+                    ) : (
+                      <ValueSkeleton darkMode width={64} height={18} />
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -308,9 +387,19 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData }) {
               icon="show_chart"
               title="Session throughput"
               subtitle="Bookings and completed charging sessions over the last 7 days."
-              badge={<StatBadge label="Active now" value={formatCount(dashboard.summary.activeSessions)} />}
+              badge={
+                <StatBadge
+                  label="Active now"
+                  value={
+                    dashboard
+                      ? formatCount(dashboard.summary.activeSessions)
+                      : undefined
+                  }
+                />
+              }
             />
             <div className="mt-5 h-72">
+              {dashboard ? (
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={sessionTrendData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
                   <defs>
@@ -336,6 +425,9 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData }) {
                   <Area type="monotone" dataKey="Completed" stroke="#10b981" strokeWidth={2} fill="url(#gradCompleted)" dot={false} activeDot={{ r: 4, strokeWidth: 2, fill: "#fff" }} />
                 </AreaChart>
               </ResponsiveContainer>
+              ) : (
+                <Skeleton style={{ height: "100%" }} />
+              )}
             </div>
           </SectionCard>
 
@@ -346,6 +438,7 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData }) {
               subtitle="Current fleet-wide charging point availability states."
             />
             <div className="mt-5 h-72">
+              {dashboard ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={availabilityChartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
@@ -355,6 +448,9 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData }) {
                   <Bar dataKey="Points" fill="#10b981" radius={[6, 6, 0, 0]} maxBarSize={48} />
                 </BarChart>
               </ResponsiveContainer>
+              ) : (
+                <Skeleton style={{ height: "100%" }} />
+              )}
             </div>
           </SectionCard>
         </section>
@@ -369,16 +465,21 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData }) {
               badge={
                 <StatBadge
                   label="Energy delta"
-                  value={formatEnergyKwh(
-                    dashboard.recentTelemetryTrend.reduce(
-                      (sum, item) => sum + item.energyDeltaKwh,
-                      0
-                    )
-                  )}
+                  value={
+                    dashboard
+                      ? formatEnergyKwh(
+                          dashboard.recentTelemetryTrend.reduce(
+                            (sum, item) => sum + item.energyDeltaKwh,
+                            0
+                          )
+                        )
+                      : undefined
+                  }
                 />
               }
             />
             <div className="mt-5 h-72">
+              {dashboard ? (
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={telemetryTrendData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
                   <defs>
@@ -404,6 +505,9 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData }) {
                   <Area type="monotone" dataKey="Peak power" stroke="#8b5cf6" strokeWidth={2} fill="url(#gradPeakPower)" dot={false} activeDot={{ r: 4, strokeWidth: 2, fill: "#fff" }} />
                 </AreaChart>
               </ResponsiveContainer>
+              ) : (
+                <Skeleton style={{ height: "100%" }} />
+              )}
             </div>
           </SectionCard>
 
@@ -414,6 +518,7 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData }) {
               subtitle="Historical session lifecycle distribution in the current dataset."
             />
             <div className="mt-5 h-72">
+              {dashboard ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={sessionStatusChartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
@@ -423,6 +528,9 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData }) {
                   <Bar dataKey="Sessions" fill="#0ea5e9" radius={[6, 6, 0, 0]} maxBarSize={48} />
                 </BarChart>
               </ResponsiveContainer>
+              ) : (
+                <Skeleton style={{ height: "100%" }} />
+              )}
             </div>
           </SectionCard>
         </section>
@@ -448,7 +556,8 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {dashboard.topOperators.map((operator) => (
+                  {dashboard
+                    ? dashboard.topOperators.map((operator) => (
                     <tr key={operator.operator} className="border-b border-slate-100 last:border-0">
                       <td className="max-w-[18rem] py-3 pr-4">
                         <p className="text-sm font-medium text-slate-900">{operator.operator}</p>
@@ -471,7 +580,29 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData }) {
                         </span>
                       </td>
                     </tr>
-                  ))}
+                      ))
+                    : Array.from({ length: 5 }).map((_, index) => (
+                        <tr key={index} className="border-b border-slate-100 last:border-0">
+                          <td className="max-w-[18rem] py-3 pr-4">
+                            <ValueSkeleton width={150} height={14} />
+                            <div className="mt-1.5">
+                              <ValueSkeleton width={110} height={10} />
+                            </div>
+                          </td>
+                          <td className="py-3 text-right">
+                            <ValueSkeleton width={36} />
+                          </td>
+                          <td className="py-3 text-right">
+                            <ValueSkeleton width={36} />
+                          </td>
+                          <td className="py-3 text-right">
+                            <ValueSkeleton width={36} />
+                          </td>
+                          <td className="py-3 text-right">
+                            <ValueSkeleton width={52} height={18} />
+                          </td>
+                        </tr>
+                      ))}
                 </tbody>
               </table>
             </div>
@@ -485,7 +616,8 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData }) {
             />
 
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              {operationalChartData.map((item) => (
+              {dashboard
+                ? operationalChartData.map((item) => (
                 <div
                   key={item.name}
                   className="rounded-xl bg-slate-50 px-4 py-3"
@@ -497,11 +629,20 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData }) {
                     {formatCompactNumber(item.value)}
                   </p>
                 </div>
-              ))}
+                  ))
+                : Array.from({ length: 4 }).map((_, index) => (
+                    <div key={index} className="rounded-xl bg-slate-50 px-4 py-3">
+                      <ValueSkeleton width={96} height={10} />
+                      <div className="mt-1.5">
+                        <ValueSkeleton width={48} height={20} />
+                      </div>
+                    </div>
+                  ))}
             </div>
 
             <div className="mt-5 space-y-2.5">
-              {dashboard.recentIncidents.map((incident) => (
+              {dashboard
+                ? dashboard.recentIncidents.map((incident) => (
                 <div
                   key={incident.id}
                   className={`rounded-xl border-l-[3px] bg-white p-4 shadow-[0_1px_4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.03)] ${getIncidentBorderClass(incident.status)}`}
@@ -534,7 +675,34 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData }) {
                     </div>
                   </div>
                 </div>
-              ))}
+                  ))
+                : Array.from({ length: 3 }).map((_, index) => (
+                    <div
+                      key={index}
+                      className="rounded-xl border-l-[3px] border-l-slate-200 bg-white p-4 shadow-[0_1px_4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.03)]"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-1.5">
+                            <ValueSkeleton width={64} height={16} />
+                            <ValueSkeleton width={84} height={16} />
+                          </div>
+                          <div className="mt-2">
+                            <ValueSkeleton width={200} height={14} />
+                          </div>
+                          <div className="mt-1">
+                            <ValueSkeleton width={260} height={10} />
+                          </div>
+                        </div>
+                        <div className="shrink-0 text-right">
+                          <ValueSkeleton width={48} height={10} />
+                          <div className="mt-1">
+                            <ValueSkeleton width={56} height={10} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
             </div>
           </SectionCard>
         </section>
@@ -548,7 +716,11 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData }) {
             badge={
               <StatBadge
                 label="Session statuses"
-                value={`${sessionStatusChartData.length} active categories`}
+                value={
+                  dashboard
+                    ? `${sessionStatusChartData.length} active categories`
+                    : undefined
+                }
               />
             }
           />
@@ -566,7 +738,8 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData }) {
                 </tr>
               </thead>
               <tbody>
-                {dashboard.recentSessions.map((session) => (
+                {dashboard
+                  ? dashboard.recentSessions.map((session) => (
                   <tr key={session.id} className="border-b border-slate-100 last:border-0">
                     <td className="py-3 pr-4">
                       <p className="text-sm font-medium text-slate-900">
@@ -594,7 +767,32 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData }) {
                       {formatTimestamp(session.updatedAt)}
                     </td>
                   </tr>
-                ))}
+                    ))
+                  : Array.from({ length: 6 }).map((_, index) => (
+                      <tr key={index} className="border-b border-slate-100 last:border-0">
+                        <td className="py-3 pr-4">
+                          <ValueSkeleton width={150} height={14} />
+                          <div className="mt-1.5">
+                            <ValueSkeleton width={90} height={10} />
+                          </div>
+                        </td>
+                        <td className="py-3">
+                          <ValueSkeleton width={72} height={18} />
+                        </td>
+                        <td className="py-3">
+                          <ValueSkeleton width={90} height={14} />
+                        </td>
+                        <td className="py-3 text-right">
+                          <ValueSkeleton width={56} />
+                        </td>
+                        <td className="py-3 text-right">
+                          <ValueSkeleton width={56} />
+                        </td>
+                        <td className="py-3 text-right">
+                          <ValueSkeleton width={72} />
+                        </td>
+                      </tr>
+                    ))}
               </tbody>
             </table>
           </div>
@@ -609,19 +807,11 @@ export function AdminDashboardScreen() {
   const { dashboard, loading, error, refetch } = useAdminDashboardQuery();
 
   if (!isReady || !isAllowed) {
-    return (
-      <main className="flex h-full items-center justify-center">
-        <p className="text-sm text-slate-600">Loading analytics dashboard...</p>
-      </main>
-    );
+    return <DashboardShell dashboard={null} />;
   }
 
   if (loading && !dashboard) {
-    return (
-      <main className="flex h-full items-center justify-center">
-        <p className="text-sm text-slate-600">Loading analytics dashboard...</p>
-      </main>
-    );
+    return <DashboardShell dashboard={null} />;
   }
 
   if (error && !dashboard) {

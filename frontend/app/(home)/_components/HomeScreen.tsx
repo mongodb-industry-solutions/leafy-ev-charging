@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { useUserContext } from "@/contexts/UserContext";
 import { UserRole } from "@/graphql/generated/graphql";
 import { getDefaultRouteForRoles } from "@/lib/utils/roleNavigation";
-
 type Feature = {
   icon: string;
   title: string;
@@ -57,7 +56,7 @@ const FEATURES: Feature[] = [
 
 export function HomeScreen() {
   const router = useRouter();
-  const { selectedUser, setRole } = useUserContext();
+  const { selectedUser, setRole, setActiveView } = useUserContext();
   const primaryHref = getDefaultRouteForRoles(selectedUser?.roles);
 
   const handleFeatureClick = (feature: Feature) => (
@@ -93,8 +92,8 @@ export function HomeScreen() {
             session from start to finish — all in one place.
           </p>
 
-          <div className="mb-7 flex flex-wrap justify-center gap-2">
-            <span className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-700 ring-1 ring-emerald-200">
+          <div className="mb-7 flex flex-wrap items-center justify-center gap-2">
+            <span className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-700 ring-1 ring-emerald-200">
               MongoDB-Powered
             </span>
             <span className="rounded-full bg-cyan-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-cyan-700 ring-1 ring-cyan-200">
@@ -121,6 +120,7 @@ export function HomeScreen() {
             </Link>
             <Link
               href="/data-model"
+              onClick={() => setActiveView("dataModeller")}
               className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-7 py-3 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:border-slate-400 hover:bg-slate-50"
             >
               <span className="material-symbols-outlined text-lg">schema</span>

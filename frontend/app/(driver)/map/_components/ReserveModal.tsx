@@ -3,6 +3,7 @@
 import { useState, useCallback, useMemo } from "react";
 import { useMutation } from "@apollo/client/react";
 import { Modal } from "@/ui/Modal";
+import { MongoSpotlight } from "@/ui/MongoSpotlight";
 import {
   ReserveChargingPointDocument,
   type ConnectorType
@@ -243,12 +244,15 @@ export function ReserveModal({
           {/* ── Header ── */}
           <div className="shrink-0 border-b border-slate-100 px-5 pb-4 pt-5">
             <div className="flex items-start justify-between">
-              <h2
-                id="reserve-modal-title"
-                className="text-lg font-bold text-slate-900"
-              >
-                Reserve a Charging Point
-              </h2>
+              <div className="flex items-center gap-1.5">
+                <h2
+                  id="reserve-modal-title"
+                  className="text-lg font-bold text-slate-900"
+                >
+                  Reserve a Charging Point
+                </h2>
+                <MongoSpotlight id="map-reserve" />
+              </div>
               <button
                 type="button"
                 onClick={handleClose}

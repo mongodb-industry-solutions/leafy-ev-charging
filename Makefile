@@ -4,7 +4,7 @@ ATLAS_SERVICES := frontend backend simulator
 LOCAL_DOCKER_MONGODB_URI := mongodb://mongodb:27017/?replicaSet=rs0&directConnection=true
 SIMULATOR_IMAGE := ev-demo-simulator
 SIMULATOR_CONTAINER := ev-demo-simulator
-COMPOSE_PROJECT_NETWORK := leafy-ev-charging_default
+COMPOSE_PROJECT_NETWORK := $(notdir $(CURDIR))_default
 
 .PHONY: build start stop clean cleandb startdb build-atlas start-atlas stop-atlas clean-atlas start-simulator stop-simulator preview-ghpages
 

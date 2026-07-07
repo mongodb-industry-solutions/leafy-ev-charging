@@ -45,8 +45,9 @@ clean-atlas:
 start-simulator:
 	docker build -t $(SIMULATOR_IMAGE) ./simulator
 	-docker rm -f $(SIMULATOR_CONTAINER) 2>/dev/null
-	@set -a; [ -f .env ] && . ./.env; set +a; \
-	[ -n "$(MONGODB_URI)" ] && MONGODB_URI="$(MONGODB_URI)"; \
+	@set -a; [ -f .env ] && . ./.env; \
+	[ -n "$(MONGODB_URI)" ] && export MONGODB_URI="$(MONGODB_URI)"; \
+	set +a; \
 	network_args=""; \
 	if docker network inspect $(COMPOSE_PROJECT_NETWORK) >/dev/null 2>&1; then \
 	  network_args="--network $(COMPOSE_PROJECT_NETWORK)"; \

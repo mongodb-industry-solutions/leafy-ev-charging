@@ -1,46 +1,46 @@
 ![EV Charging Demo Banner](docs/assets/ev-charging-banner.png)
 
-# S2DM EV Charging Demo App
+# LeafyCharge EV Charging Demo
 
-Welcome to the **EV Charging Demo App**! This repository is the practical, **physical layer application** that demonstrates how we can bridge the gap in automotive data interoperability using the **Simplified Semantic Data Modeling (S2DM)** approach.
+LeafyCharge is a compact demo that shows how [MongoDB](https://www.mongodb.com/) can support the operational data layer behind modern EV charging experiences.
 
-This project is part of a two-repository experiment. While this repository focuses on the concrete application implementation, it works hand-in-hand with our conceptual layer:
+It connects station discovery, reservations, charging sessions, telemetry, incidents, and operator analytics in one easy-to-follow application.
 
-👉 **[Conceptual Modeling Repo](https://github.com/COVESA/s2dm-example-charging-session-model)**
+This demo builds on earlier COVESA S2DM/VDM work, including the related [conceptual model repository](https://github.com/COVESA/s2dm-example-charging-session-model).
 
-Together, they illustrate how models derived from S2DM, such as the [Vehicle Data Model (VDM)](https://covesa.global/project/vehicle-data-model/), serve as a contract between data producers and consumers. They show how a model transitions from a descriptive, conceptual layer into prescriptive artifacts that influence physical layer systems like databases and APIs.
+## What The Demo Shows
 
----
+LeafyCharge has three views over the same charging network:
 
-## From Models to Systems: The EV Charging Example
+- **Driver experience**: find nearby stations, filter by connector, price, power, and availability, reserve a charging point, run a session, and report an incident.
+- **Operator experience**: monitor availability, utilization, session activity, telemetry load, revenue signals, and customer-impacting incidents.
+- **Data modeller view**: explain how domain models, API contracts, and MongoDB document structures relate to each other.
 
-The EV charging ecosystem is a perfect example of this challenge. With many different actors—from vehicles and charging stations to mobility operators—needing to exchange data reliably, systems often define the same concepts in slightly different ways, creating interoperability gaps and fragile integrations.
+Throughout the app, MongoDB spotlight callouts show the database behavior behind the UI: geospatial queries, faceted aggregation, atomic reservation updates, rich session documents, change streams, time-series telemetry, and real-time analytics.
 
-![EV Charging Interoperability](docs/assets/ev-charging-interoperability.png)
+## Why MongoDB For EV Charging
 
-S2DM solves this by bridging the conceptual and physical layers. A shared domain model is translated into **artifacts** that act as enforceable contracts across target systems.
+EV charging data is naturally varied and fast-moving. Stations, EVSEs, connectors, tariffs, reservations, users, vehicles, charger status, diagnostics, telemetry, payments, roaming metadata, and incidents all evolve at different speeds. MongoDB is a good fit because it lets teams model this variety around real application access patterns while still applying validation, indexing, governance, and retention where needed.
 
-![S2DM Artifacts Generation](docs/assets/s2dm-artifacts-general.png)
+In this demo, MongoDB is used as one operational data layer for:
 
-### Seeing it in Action
+- **Geospatial discovery** with GeoJSON station locations and `2dsphere` indexes.
+- **Real-time availability** with atomic updates when a driver reserves a charging point.
+- **Session history** using document patterns that keep the booking, pricing, vehicle, station snapshot, charging, cost, and feedback context together.
+- **Live telemetry** using change streams and a native time-series collection.
+- **Operational analytics** with aggregation pipelines over the same data that serves the application.
+- **AI-ready workflows** where operational facts, incidents, telemetry, search indexes, vectors, and agent state can live in a governed platform.
 
-This demo application illustrates with a practical example how a conceptual model governs the physical layer by using generated artifacts across the stack:
-
-![S2DM Artifacts Example](docs/assets/s2dm-artifacts-example.png)
-
-- **Storage Layer**: The conceptual model is translated into a [MongoDB](https://www.mongodb.com/) compatible JSON Schema to enforce [schema validation](https://www.mongodb.com/docs/manual/core/schema-validation/) rules. This provides a unified and flexible data foundation that adapts to changing requirements while maintaining control, allowing teams to enforce rules with varying validation levels.
-- **Application Layer**: A **schema-first GraphQL API** defines the communication contract. This schema not only structures the API but also drives code generation for both backend and frontend type definitions, ensuring the application aligns perfectly with the model.
-
----
+The value is architectural simplicity: fewer synchronization paths, less duplicated data movement, and a clearer foundation for customer apps, operator tools, reporting, automation, and AI-assisted operations.
 
 ## Architecture
 
-The system is intentionally minimal to focus on the concepts, consisting of four main components:
+The system is intentionally small so the data flows are easy to follow:
 
-1. **Backend**: A Node.js + Express server exposing a **schema-first GraphQL API** (Apollo Server).
-2. **Frontend**: A Next.js (App Router) client that consumes the GraphQL API to show charging station data.
-3. **Simulator**: A Python + FastAPI worker that listens to MongoDB change streams (`chargingSessions`) and emits real-time telemetry back into the database.
-4. **Database**: MongoDB (either the bundled local Docker container or a MongoDB Atlas deployment).
+1. **Frontend**: a Next.js app with driver, operator, and data-modeller views.
+2. **Backend**: a Node.js + Express GraphQL API.
+3. **Simulator**: a Python + FastAPI worker that reacts to charging session changes and writes telemetry.
+4. **Database**: MongoDB, either local through Docker or a MongoDB Atlas deployment.
 
 ```mermaid
 flowchart LR
@@ -52,68 +52,56 @@ flowchart LR
 
 ## Getting Started
 
-Ready to see it in action? Follow these simple steps to spin up the entire ecosystem on your machine.
-
 ### Prerequisites
 
-- **Docker Desktop** or **Docker Engine** (with `docker compose` available).
-- **Node.js** (v24+) and **npm** (if running the web apps locally).
-- **Python** 3.12+ (if running the simulator locally).
-- **[MongoDB Atlas](https://www.mongodb.com/products/platform)** cluster (M0 free tier or higher) optional to use the fully managed cloud version instead of the local container.
+- Docker Desktop or Docker Engine with `docker compose`.
+- Node.js v24+ and npm, if running the web apps locally.
+- Python 3.12+, if running the simulator locally.
+- Optional: a [MongoDB Atlas](https://www.mongodb.com/products/platform) cluster if you want to use a managed cloud database instead of the local MongoDB container.
 
-### 1. Setup Environment Variables
-
-Copy the example environment file to set up your configuration:
+### 1. Set Up Environment Variables
 
 ```bash
 cp .env.example .env
 ```
 
-### 2. Run the Application
+For the local Docker path, the `Makefile` provides the MongoDB connection string automatically. For Atlas, set `MONGODB_URI` in `.env` to your Atlas connection string.
 
-#### With Docker (Recommended)
+### 2. Run With Docker
 
-Docker provides the easiest way to run the entire stack.
+```bash
+make build
+```
 
-**Start the Stack**
+Use these commands after the first build:
 
-Build and start the full stack. First, ensure `MONGODB_URI` in `.env` is correctly set if using MongoDB Atlas. Choose your target:
+- `make start` starts the local stack again.
+- `make stop` stops services without deleting data.
+- `make clean` removes services.
+- `make cleandb` removes services and deletes local MongoDB data.
 
-- **Local**: `make build`
-- **Atlas**: `make build-atlas`
+To run the app against Atlas instead of the local MongoDB container:
 
-_(Note: If your images are already built, you can simply use `make start` or `make start-atlas` to spin everything back up)._
+```bash
+make build-atlas
+```
 
-**Teardown**
+Then use `make start-atlas`, `make stop-atlas`, and `make clean-atlas` as needed.
 
-To stop the services without losing data:
+### 3. Run Locally Without Docker
 
-- **Local**: `make stop`
-- **Atlas**: `make stop-atlas`
+Make sure `MONGODB_URI` in `.env` points to a running MongoDB deployment.
 
-To completely remove the services:
+> The backend seeds an empty database automatically on first run, so local development needs `mongorestore` from the [MongoDB Database Tools](https://www.mongodb.com/docs/database-tools/installation/installation/) on `PATH`. Docker images already include it.
 
-- **Local**: `make clean`
-- **Atlas**: `make clean-atlas`
-
-#### Local Development (Without Docker)
-
-If you prefer to run the services directly on your machine without Docker, first make sure `MONGODB_URI` in `.env` points to a running MongoDB deployment (like Atlas or a local instance).
-
-> The backend seeds an empty database automatically on first run, so it needs `mongorestore` (from [mongodb-database-tools](https://www.mongodb.com/docs/database-tools/installation/installation/)) on `PATH`. Docker users don't need to install anything — the image already bundles it.
-
-**Web Apps (Backend & Frontend)**
-
-Install dependencies and start both the backend and frontend in parallel using Turborepo:
+Start the frontend and backend:
 
 ```bash
 npm install
 npm run dev
 ```
 
-**Simulator**
-
-Open a separate terminal and start the simulator:
+In another terminal, start the simulator:
 
 ```bash
 cd simulator
@@ -123,24 +111,32 @@ pip install -r requirements.txt
 python run.py
 ```
 
-### 3. Explore the Endpoints
+### 4. Open The Demo
 
-Once the containers are up and running, you can access the different parts of the system:
+- Frontend UI: [http://localhost:3000](http://localhost:3000)
+- Backend GraphQL API: [http://localhost:4000/graphql](http://localhost:4000/graphql)
+- Simulator health check: [http://localhost:8000/health](http://localhost:8000/health)
 
-- **Frontend UI**: [http://localhost:3000](http://localhost:3000)
-- **Backend GraphQL API**: [http://localhost:4000/graphql](http://localhost:4000/graphql)
-- **Simulator Health Check**: [http://localhost:8000/health](http://localhost:8000/health)
+## Suggested Demo Flow
 
----
+1. Start on the home page and explain the driver and operator perspectives.
+2. Open Station Finder and use map filters for connector type, power, price, fast charging, and availability.
+3. Open a station and reserve a charging point.
+4. Go to Session Activity, start a session, and complete it.
+5. Report an incident from the session.
+6. Switch to Admin View and open the Analytics Dashboard.
+7. Use the curly-brace MongoDB spotlights to show the real queries, document shapes, and pipelines behind the experience.
+
+The goal is not to present every screen. The goal is to show how a single operational data platform can support the driver journey, live operations, analytics, and future automation.
 
 ## Tech Stack
 
-- **Node.js** (v24+) & **TypeScript** (strict mode)
-- **Frontend**: Next.js (App Router), Apollo Client, GraphQL Code Generator
-- **Backend**: Express, Apollo Server, GraphQL Code Generator
-- **Simulator**: Python 3.12+, FastAPI, Uvicorn, Pydantic, PyMongo
-- **Infrastructure**: Docker, Docker Compose
-- **Database**: MongoDB
+- Node.js v24+ and TypeScript
+- Next.js App Router, Apollo Client, GraphQL Code Generator
+- Express, Apollo Server, GraphQL Code Generator
+- Python 3.12+, FastAPI, Uvicorn, Pydantic, PyMongo
+- Docker and Docker Compose
+- MongoDB
 
 ## Folder Structure
 
@@ -155,12 +151,11 @@ Once the containers are up and running, you can access the different parts of th
 └── .env.example        # Template for environment variables
 ```
 
-## Troubleshooting & Notes
+## Notes
 
-- **Schema-first GraphQL**: The SDL source files live under `backend/schema/governed` and `backend/schema/app`. If you modify them, remember to re-run `npm run codegen` in the respective folders to update the generated types.
-- **MongoDB Compass**: The local container starts as a single-node **Replica Set** (`rs0`). If you want to connect a tool like MongoDB Compass to your local instance, use this connection string:
+- **Schema-first GraphQL**: SDL files live under `backend/schema/governed` and `backend/schema/app`. If you modify them, run `npm run codegen` to update generated types.
+- **MongoDB Compass**: the local container starts as a single-node replica set (`rs0`). To connect with Compass, use:
   `mongodb://localhost:27017/?replicaSet=rs0&directConnection=true`
-- **Docker Credential Helper Issues**: If `docker compose` fails while pulling images with a keychain/credentials error, try resetting your Docker Desktop login credentials. Alternatively, run compose with a temporary `DOCKER_CONFIG` that bypasses the credential helper.
 
 ## License
 

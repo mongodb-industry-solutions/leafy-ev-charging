@@ -31,11 +31,11 @@ In this demo, MongoDB is used as one operational data layer for:
 - **Operational analytics** with aggregation pipelines over the same data that serves the application.
 - **AI-ready workflows** where operational facts, incidents, telemetry, search indexes, vectors, and agent state can live in a governed platform.
 
+![LeafyCharge architecture](frontend/public/architecture.svg)
+
 The value is architectural simplicity: fewer synchronization paths, less duplicated data movement, and a clearer foundation for customer apps, operator tools, reporting, automation, and AI-assisted operations.
 
 ## Architecture
-
-The system is intentionally small so the data flows are easy to follow:
 
 1. **Frontend**: a Next.js app with driver, operator, and data-modeller views.
 2. **Backend**: a Node.js + Express GraphQL API.

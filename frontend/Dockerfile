@@ -27,6 +27,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 # Kanopy routes ingress traffic to port 8080.
 ENV PORT=8080
+ENV HOSTNAME="0.0.0.0" 
 
 # Next.js standalone output. `outputFileTracingRoot` is pinned to the monorepo
 # root, so the bundle preserves the workspace layout and the server entrypoint

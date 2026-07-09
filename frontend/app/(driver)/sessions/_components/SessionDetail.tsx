@@ -612,7 +612,6 @@ export function SessionDetail({
             liveJson={session}
             liveLabel="This session"
           />
-          {(isActive || isBooked) && <MongoSpotlight id="session-changestream" />}
           <SessionStatusBadge status={session.status} />
         </div>
       </div>

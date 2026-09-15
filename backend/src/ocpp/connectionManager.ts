@@ -43,3 +43,5 @@ export class OcppConnectionManager {
     return true;
   }
 }
+
+export const ocppConnections = new OcppConnectionManager();

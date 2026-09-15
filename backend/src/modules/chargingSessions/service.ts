@@ -1,5 +1,7 @@
 import type { Db } from "mongodb";
 import { ObjectId } from "mongodb";
+import { randomUUID } from "node:crypto";
+import type { OcppConnectionManager } from "../../ocpp/connectionManager";
 
 import {
   findChargingSessionsByUser,
@@ -12,12 +14,12 @@ import {
   markSessionCanceled,
   markSessionCompleted,
   addSessionFeedback as addSessionFeedbackToSession,
-  type ChargingSessionDoc
+  type ChargingSessionDoc,
 } from "../../db/repositories/chargingSessions";
 import {
   findChargingStationById,
   markChargingPointReserved,
-  markChargingPointAvailable
+  markChargingPointAvailable,
 } from "../../db/repositories/chargingStations";
 
 const DEMO_VEHICLE_SNAPSHOTS: Record<
@@ -27,13 +29,13 @@ const DEMO_VEHICLE_SNAPSHOTS: Record<
   "64f111111111111111111111": {
     vinLast6: "BMWI03",
     make: "BMW",
-    model: "i3"
+    model: "i3",
   },
   "64f222222222222222222222": {
     vinLast6: "VWID04",
     make: "Volkswagen",
-    model: "ID.4"
-  }
+    model: "ID.4",
+  },
 };
 
 export class UserAlreadyHasActiveBookingError extends Error {
@@ -99,7 +101,10 @@ type GetChargingSessionsInput = {
   cursor?: string;
 };
 
-export async function getChargingSessionsByUser(db: Db, input: GetChargingSessionsInput) {
+export async function getChargingSessionsByUser(
+  db: Db,
+  input: GetChargingSessionsInput,
+) {
   const result = await findChargingSessionsByUser(db, input);
 
   return {
@@ -115,19 +120,19 @@ export async function getChargingSessionsByUser(db: Db, input: GetChargingSessio
           name: doc.stationSnapshot.name,
           location: { lat, lng },
           addressShort: doc.stationSnapshot.addressShort,
-          chargingPointLabel: doc.stationSnapshot.chargingPointLabel
+          chargingPointLabel: doc.stationSnapshot.chargingPointLabel,
         },
         vehicleSnapshot: {
           vinLast6: doc.vehicleSnapshot.vinLast6,
           make: doc.vehicleSnapshot.make,
-          model: doc.vehicleSnapshot.model
+          model: doc.vehicleSnapshot.model,
         },
         status: doc.status,
         booking: {
           bookedAt: doc.booking.bookedAt.toISOString(),
           expiresAt: doc.booking.expiresAt.toISOString(),
           canceledAt: doc.booking.canceledAt?.toISOString(),
-          cancelReason: doc.booking.cancelReason ?? null
+          cancelReason: doc.booking.cancelReason ?? null,
         },
         charging: {
           startedAt: doc.charging.startedAt?.toISOString(),
@@ -136,14 +141,14 @@ export async function getChargingSessionsByUser(db: Db, input: GetChargingSessio
             ? {
                 type: doc.charging.connectorUsed.type ?? null,
                 power: doc.charging.connectorUsed.power ?? null,
-                tethered: doc.charging.connectorUsed.tethered ?? null
+                tethered: doc.charging.connectorUsed.tethered ?? null,
               }
             : null,
           meterStartKwh: doc.charging.meterStartKwh ?? null,
           meterStopKwh: doc.charging.meterStopKwh ?? null,
           energyDeliveredKwh: doc.charging.energyDeliveredKwh ?? null,
           socStartPercent: doc.charging.socStartPercent ?? null,
-          socStopPercent: doc.charging.socStopPercent ?? null
+          socStopPercent: doc.charging.socStopPercent ?? null,
         },
         feedback: mapSessionFeedback(doc),
         pricingSnapshot: {
@@ -151,22 +156,23 @@ export async function getChargingSessionsByUser(db: Db, input: GetChargingSessio
           priceCentsPerKwh: doc.pricingSnapshot.priceCentsPerKwh,
           idleFee: doc.pricingSnapshot.idleFee
             ? {
-                priceCentsPerMinute: doc.pricingSnapshot.idleFee.priceCentsPerMinute,
-                afterMinutes: doc.pricingSnapshot.idleFee.afterMinutes
+                priceCentsPerMinute:
+                  doc.pricingSnapshot.idleFee.priceCentsPerMinute,
+                afterMinutes: doc.pricingSnapshot.idleFee.afterMinutes,
               }
-            : null
+            : null,
         },
         cost: {
           totalCents: doc.cost.totalCents ?? null,
           energyCents: doc.cost.energyCents ?? null,
-          idleCents: doc.cost.idleCents ?? null
+          idleCents: doc.cost.idleCents ?? null,
         },
         createdAt: doc.createdAt.toISOString(),
-        updatedAt: doc.updatedAt.toISOString()
+        updatedAt: doc.updatedAt.toISOString(),
       };
     }),
     hasNextPage: result.hasNextPage,
-    endCursor: result.endCursor
+    endCursor: result.endCursor,
   };
 }
 
@@ -177,7 +183,11 @@ type ReserveChargingPointInput = {
   chargingPointId: string;
 };
 
-function formatAddressShort(address: { street?: string; city?: string; postalCode?: string; country?: string } | undefined): string {
+function formatAddressShort(
+  address:
+    | { street?: string; city?: string; postalCode?: string; country?: string }
+    | undefined,
+): string {
   if (!address) return "";
   const parts = [address.street, address.city].filter(Boolean);
   return parts.join(", ") || "Unknown";
@@ -197,7 +207,10 @@ export async function createBooking(db: Db, input: ReserveChargingPointInput) {
     throw new UserAlreadyHasActiveBookingError();
   }
 
-  const hasConflict = await hasConflictOnChargingPoint(db, input.chargingPointId);
+  const hasConflict = await hasConflictOnChargingPoint(
+    db,
+    input.chargingPointId,
+  );
   if (hasConflict) {
     throw new ChargingPointUnavailableError();
   }
@@ -207,8 +220,8 @@ export async function createBooking(db: Db, input: ReserveChargingPointInput) {
     throw new StationOrPointNotFoundError();
   }
 
-  const pointIndex = station.chargingPoints.findIndex(
-    (cp) => cp.chargingPointId.equals(chargingPointObjectId)
+  const pointIndex = station.chargingPoints.findIndex((cp) =>
+    cp.chargingPointId.equals(chargingPointObjectId),
   );
   if (pointIndex < 0) {
     throw new StationOrPointNotFoundError();
@@ -219,12 +232,16 @@ export async function createBooking(db: Db, input: ReserveChargingPointInput) {
     throw new ChargingPointUnavailableError();
   }
 
-  const vehicleSnapshot = await getVehicleSnapshotFromSession(db, input.vehicleId);
-  const snapshot = vehicleSnapshot ?? DEMO_VEHICLE_SNAPSHOTS[input.vehicleId] ?? {
-    vinLast6: "------",
-    make: "BMW",
-    model: "i4"
-  };
+  const vehicleSnapshot = await getVehicleSnapshotFromSession(
+    db,
+    input.vehicleId,
+  );
+  const snapshot = vehicleSnapshot ??
+    DEMO_VEHICLE_SNAPSHOTS[input.vehicleId] ?? {
+      vinLast6: "------",
+      make: "BMW",
+      model: "i4",
+    };
 
   const now = new Date();
   const expiresAt = new Date(now.getTime() + 30 * 60 * 1000);
@@ -241,7 +258,7 @@ export async function createBooking(db: Db, input: ReserveChargingPointInput) {
       name: station.name,
       location: station.location,
       addressShort: formatAddressShort(station.address),
-      chargingPointLabel
+      chargingPointLabel,
     },
     vehicleSnapshot: snapshot,
     status: "BOOKED" as const,
@@ -249,7 +266,7 @@ export async function createBooking(db: Db, input: ReserveChargingPointInput) {
       bookedAt: now,
       expiresAt,
       canceledAt: null,
-      cancelReason: null
+      cancelReason: null,
     },
     charging: {
       startedAt: null,
@@ -259,23 +276,27 @@ export async function createBooking(db: Db, input: ReserveChargingPointInput) {
       meterStopKwh: null,
       energyDeliveredKwh: null,
       socStartPercent: null,
-      socStopPercent: null
+      socStopPercent: null,
     },
     pricingSnapshot: {
       currency: station.pricing?.currency ?? "EUR",
       priceCentsPerKwh: station.pricing?.defaultTariff?.priceCentsPerKwh ?? 0,
       idleFee: {
         priceCentsPerMinute: 20,
-        afterMinutes: 5
-      }
+        afterMinutes: 5,
+      },
     },
     cost: { totalCents: null, energyCents: null, idleCents: null },
     createdAt: now,
-    updatedAt: now
+    updatedAt: now,
   };
 
   const inserted = await insertChargingSession(db, sessionDoc);
-  const marked = await markChargingPointReserved(db, stationObjectId, chargingPointObjectId);
+  const marked = await markChargingPointReserved(
+    db,
+    stationObjectId,
+    chargingPointObjectId,
+  );
   if (!marked) {
     await db.collection("chargingSessions").deleteOne({ _id: inserted._id });
     throw new ChargingPointUnavailableError();
@@ -296,7 +317,7 @@ function mapSessionDocToGraphQL(doc: ChargingSessionDoc) {
       name: doc.stationSnapshot.name,
       location: { lat, lng },
       addressShort: doc.stationSnapshot.addressShort,
-      chargingPointLabel: doc.stationSnapshot.chargingPointLabel
+      chargingPointLabel: doc.stationSnapshot.chargingPointLabel,
     },
     vehicleSnapshot: doc.vehicleSnapshot,
     status: doc.status,
@@ -304,7 +325,7 @@ function mapSessionDocToGraphQL(doc: ChargingSessionDoc) {
       bookedAt: doc.booking.bookedAt.toISOString(),
       expiresAt: doc.booking.expiresAt.toISOString(),
       canceledAt: doc.booking.canceledAt?.toISOString() ?? null,
-      cancelReason: doc.booking.cancelReason ?? null
+      cancelReason: doc.booking.cancelReason ?? null,
     },
     charging: {
       startedAt: doc.charging.startedAt?.toISOString() ?? null,
@@ -313,26 +334,28 @@ function mapSessionDocToGraphQL(doc: ChargingSessionDoc) {
         ? {
             type: doc.charging.connectorUsed.type ?? null,
             power: doc.charging.connectorUsed.power ?? null,
-            tethered: doc.charging.connectorUsed.tethered ?? null
+            tethered: doc.charging.connectorUsed.tethered ?? null,
           }
         : null,
       meterStartKwh: doc.charging.meterStartKwh ?? null,
       meterStopKwh: doc.charging.meterStopKwh ?? null,
       energyDeliveredKwh: doc.charging.energyDeliveredKwh ?? null,
       socStartPercent: doc.charging.socStartPercent ?? null,
-      socStopPercent: doc.charging.socStopPercent ?? null
+      socStopPercent: doc.charging.socStopPercent ?? null,
     },
     feedback: mapSessionFeedback(doc),
     pricingSnapshot: doc.pricingSnapshot,
     cost: doc.cost,
     createdAt: doc.createdAt.toISOString(),
-    updatedAt: doc.updatedAt.toISOString()
+    updatedAt: doc.updatedAt.toISOString(),
   };
 }
 
-export function createBookingResponse(doc: Awaited<ReturnType<typeof createBooking>>) {
+export function createBookingResponse(
+  doc: Awaited<ReturnType<typeof createBooking>>,
+) {
   return {
-    session: mapSessionDocToGraphQL(doc)
+    session: mapSessionDocToGraphQL(doc),
   };
 }
 
@@ -340,7 +363,11 @@ type StartChargingSessionInput = {
   sessionId: string;
 };
 
-export async function startChargingSession(db: Db, input: StartChargingSessionInput) {
+export async function startChargingSession(
+  db: Db,
+  connections: OcppConnectionManager,
+  input: StartChargingSessionInput,
+) {
   if (!isValidObjectId(input.sessionId)) {
     throw new ChargingSessionNotFoundError();
   }
@@ -358,21 +385,46 @@ export async function startChargingSession(db: Db, input: StartChargingSessionIn
 
   const station = await findChargingStationById(db, session.stationId);
   const point = station?.chargingPoints.find((cp) =>
-    cp.chargingPointId.equals(session.chargingPointId)
+    cp.chargingPointId.equals(session.chargingPointId),
   );
   const connectors = point?.connectors ?? [];
-  const preferredConnector = connectors.reduce<(typeof connectors)[number] | null>(
-    (best, connector) => {
-      if (!best) return connector;
-      return connector.power > best.power ? connector : best;
+  const preferredConnector = connectors.reduce<
+    (typeof connectors)[number] | null
+  >((best, connector) => {
+    if (!best) return connector;
+    return connector.power > best.power ? connector : best;
+  }, null);
+
+  const sent = connections.send("simulation", [
+    2,
+    randomUUID(),
+    "RequestStartTransaction",
+    {
+      idToken: {
+        idToken: String(session.userId),
+        type: "Central",
+      },
+      remoteStartId: Date.now(),
+      evseId: 1,
+      customData: {
+        vendorId: "LeafyCharge",
+        sessionId: String(session._id),
+        stationId: String(session.stationId),
+        chargingPointId: String(session.chargingPointId),
+        connectorType: preferredConnector?.type ?? null,
+        connectorPowerKw: preferredConnector?.power ?? null,
+      },
     },
-    null
-  );
+  ]);
+
+  if (!sent) {
+    throw new Error("Simulator is not connected");
+  }
 
   const updated = await markSessionActive(db, input.sessionId, {
     type: preferredConnector?.type ?? null,
     power: preferredConnector?.power ?? null,
-    tethered: preferredConnector?.tethered ?? null
+    tethered: preferredConnector?.tethered ?? null,
   });
   if (!updated) {
     throw new InvalidSessionTransitionError();
@@ -385,7 +437,10 @@ type CancelChargingSessionInput = {
   reason?: string | null;
 };
 
-export async function cancelChargingSession(db: Db, input: CancelChargingSessionInput) {
+export async function cancelChargingSession(
+  db: Db,
+  input: CancelChargingSessionInput,
+) {
   if (!isValidObjectId(input.sessionId)) {
     throw new ChargingSessionNotFoundError();
   }
@@ -403,7 +458,11 @@ export async function cancelChargingSession(db: Db, input: CancelChargingSession
     throw new InvalidSessionTransitionError();
   }
 
-  await markChargingPointAvailable(db, updated.stationId, updated.chargingPointId);
+  await markChargingPointAvailable(
+    db,
+    updated.stationId,
+    updated.chargingPointId,
+  );
   return updated;
 }
 
@@ -411,7 +470,10 @@ type CompleteChargingSessionInput = {
   sessionId: string;
 };
 
-export async function completeChargingSession(db: Db, input: CompleteChargingSessionInput) {
+export async function completeChargingSession(
+  db: Db,
+  input: CompleteChargingSessionInput,
+) {
   if (!isValidObjectId(input.sessionId)) {
     throw new ChargingSessionNotFoundError();
   }
@@ -429,7 +491,11 @@ export async function completeChargingSession(db: Db, input: CompleteChargingSes
     throw new InvalidSessionTransitionError();
   }
 
-  await markChargingPointAvailable(db, updated.stationId, updated.chargingPointId);
+  await markChargingPointAvailable(
+    db,
+    updated.stationId,
+    updated.chargingPointId,
+  );
   return updated;
 }
 
@@ -444,7 +510,7 @@ function mapSessionFeedback(doc: ChargingSessionDoc) {
     ? {
         rating: doc.feedback.rating,
         comment: doc.feedback.comment ?? null,
-        createdAt: doc.feedback.createdAt.toISOString()
+        createdAt: doc.feedback.createdAt.toISOString(),
       }
     : null;
 }
@@ -454,7 +520,10 @@ function normalizeFeedbackComment(comment?: string | null): string | null {
   return trimmed ? trimmed : null;
 }
 
-export async function addSessionFeedback(db: Db, input: AddSessionFeedbackInput) {
+export async function addSessionFeedback(
+  db: Db,
+  input: AddSessionFeedbackInput,
+) {
   if (!isValidObjectId(input.sessionId)) {
     throw new ChargingSessionNotFoundError();
   }
@@ -476,7 +545,7 @@ export async function addSessionFeedback(db: Db, input: AddSessionFeedbackInput)
 
   const updated = await addSessionFeedbackToSession(db, input.sessionId, {
     rating: input.rating,
-    comment: normalizeFeedbackComment(input.comment)
+    comment: normalizeFeedbackComment(input.comment),
   });
   if (!updated) {
     throw new InvalidSessionTransitionError();
@@ -486,33 +555,33 @@ export async function addSessionFeedback(db: Db, input: AddSessionFeedbackInput)
 }
 
 export function createStartChargingSessionResponse(
-  doc: Awaited<ReturnType<typeof startChargingSession>>
+  doc: Awaited<ReturnType<typeof startChargingSession>>,
 ) {
   return {
-    session: mapSessionDocToGraphQL(doc)
+    session: mapSessionDocToGraphQL(doc),
   };
 }
 
 export function createCancelChargingSessionResponse(
-  doc: Awaited<ReturnType<typeof cancelChargingSession>>
+  doc: Awaited<ReturnType<typeof cancelChargingSession>>,
 ) {
   return {
-    session: mapSessionDocToGraphQL(doc)
+    session: mapSessionDocToGraphQL(doc),
   };
 }
 
 export function createCompleteChargingSessionResponse(
-  doc: Awaited<ReturnType<typeof completeChargingSession>>
+  doc: Awaited<ReturnType<typeof completeChargingSession>>,
 ) {
   return {
-    session: mapSessionDocToGraphQL(doc)
+    session: mapSessionDocToGraphQL(doc),
   };
 }
 
 export function createAddSessionFeedbackResponse(
-  doc: Awaited<ReturnType<typeof addSessionFeedback>>
+  doc: Awaited<ReturnType<typeof addSessionFeedback>>,
 ) {
   return {
-    session: mapSessionDocToGraphQL(doc)
+    session: mapSessionDocToGraphQL(doc),
   };
 }

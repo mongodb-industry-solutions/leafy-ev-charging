@@ -21,12 +21,11 @@ import { createServer } from "node:http";
 
 import { OcppConnectionManager } from "../ocpp/connectionManager";
 import { attachOcppServer } from "../ocpp/WSserver";
+import { ocppConnections } from "../ocpp/connectionManager";
 
 const { runtimeSchemaDirectories } = require("../../schema/schema-sources.cjs") as {
   runtimeSchemaDirectories: string[];
 };
-
-const ocppConnections = new OcppConnectionManager();
 
 const readGraphqlFiles = async (directory: string): Promise<string[]> => {
   const entries = await readdir(directory, { withFileTypes: true });

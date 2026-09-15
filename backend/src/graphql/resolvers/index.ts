@@ -2,6 +2,8 @@ import { GraphQLError } from "graphql";
 import type { GraphQLContext } from "../../server/context";
 import type { ConnectorType } from "../../types/connectorType";
 import { findVehiclesByUserId } from "../../db/repositories/vehicles";
+import { ocppConnections } from "../../ocpp/connectionManager";
+
 import {
   getChargingStationFacets,
   getMapItemsInBounds
@@ -139,7 +141,11 @@ export const resolvers = {
       context: GraphQLContext
     ) => {
       try {
-        const doc = await startChargingSession(context.db, args.input);
+        const doc = await startChargingSession(
+        context.db,
+        ocppConnections,
+        args.input
+      );
         return createStartChargingSessionResponse(doc);
       } catch (err) {
         if (err instanceof ChargingSessionNotFoundError) {

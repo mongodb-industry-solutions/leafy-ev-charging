@@ -17,6 +17,7 @@ class Settings:
     session_telemetry_interval_seconds: float
     session_reconciliation_interval_seconds: float
     change_stream_retry_seconds: float
+    csms_ocpp_url: str
 
 
 def _port_from_url(url: str, default: int = 8000) -> int:
@@ -44,4 +45,8 @@ def get_settings() -> Settings:
             os.getenv("SESSION_RECONCILIATION_INTERVAL_SECONDS", "10")
         ),
         change_stream_retry_seconds=float(os.getenv("CHANGE_STREAM_RETRY_SECONDS", "2")),
+        csms_ocpp_url=os.getenv(
+            "CSMS_OCPP_URL",
+            "ws://localhost:4000/ocpp/simulation",
+        ),
     )

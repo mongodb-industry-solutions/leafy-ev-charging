@@ -1,0 +1,2 @@
+# Not pure OCPP
+El estandar OCPP pide que haya 1 conexion de websocket por cada estacion de carga, sin embargo esto es imposible, la arquitectura de esta demo es que dentro del requestTransaction se va a enviar un charging point ID, y en ese momento el simulador va a empezar a enviar informacion de telemetria con ese ID de charging point.

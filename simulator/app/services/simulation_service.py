@@ -9,6 +9,7 @@ from typing import Any
 from bson.objectid import ObjectId
 
 from app.config import get_settings
+# To be deleted
 from app.db.mongo import (
     get_charging_points_collection,
     get_charging_sessions_collection,

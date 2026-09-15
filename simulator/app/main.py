@@ -4,6 +4,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.services.simulation_service import SimulationService
+from app.config import get_settings
+from app.services.csms_client import CsmsClient
+
+settings = get_settings()
+csms_client = CsmsClient(settings.csms_ocpp_url)
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -11,7 +17,6 @@ logging.basicConfig(
 )
 
 app = FastAPI(title="EV Charging Simulator")
-service = SimulationService()
 
 app.add_middleware(
     CORSMiddleware,
@@ -24,12 +29,12 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def start_simulation_service() -> None:
-    await service.start()
+    await csms_client.start()
 
 
 @app.on_event("shutdown")
 async def stop_simulation_service() -> None:
-    await service.stop()
+    await csms_client.stop()
 
 
 @app.get("/health")

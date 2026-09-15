@@ -17,9 +17,16 @@ import { connectMongo } from "../db/mongo";
 import { resolvers } from "../graphql/resolvers/index";
 import { createGraphQLContext } from "./context";
 
+import { createServer } from "node:http";
+
+import { OcppConnectionManager } from "../ocpp/connectionManager";
+import { attachOcppServer } from "../ocpp/WSserver";
+
 const { runtimeSchemaDirectories } = require("../../schema/schema-sources.cjs") as {
   runtimeSchemaDirectories: string[];
 };
+
+const ocppConnections = new OcppConnectionManager();
 
 const readGraphqlFiles = async (directory: string): Promise<string[]> => {
   const entries = await readdir(directory, { withFileTypes: true });
@@ -100,9 +107,12 @@ const startServer = async (): Promise<void> => {
   });
 
   const port = Number(new URL(backendUrl).port || 4000);
-  app.listen(port, () => {
-    // eslint-disable-next-line no-console
-    console.log(`Backend GraphQL server listening on port ${port}`);
+  const httpServer = createServer(app);
+
+  attachOcppServer(httpServer, ocppConnections);
+
+  httpServer.listen(port, () => {
+    console.log(`Backend GraphQL and OCPP server listening on port ${port}`);
   });
 };
 

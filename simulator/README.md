@@ -1,18 +1,17 @@
 # Simulator (FastAPI)
 
-FastAPI service that watches charging sessions in MongoDB and emits simulated telemetry for active sessions.
+FastAPI service that receives OCPP commands from the CSMS and emits simulated OCPP transaction events.
 
 On startup, it:
 
-- listens to MongoDB change streams on `chargingSessions`
-- starts telemetry simulation when a session becomes `ACTIVE`
-- stops telemetry simulation when a session is no longer `ACTIVE`
+- connects to the backend CSMS over OCPP 2.1 WebSockets
+- starts a simulation after `RequestStartTransaction`
+- emits `TransactionEvent` lifecycle and meter updates
 - prevents duplicate simulations for the same session ID
 
 ## Prerequisites
 
 - Docker and Docker Compose, or Python 3.12+ for local development
-- A reachable MongoDB replica set or compatible deployment with change streams enabled
 
 ## Run With Docker Compose
 
@@ -20,7 +19,7 @@ From the repository root:
 
 ```bash
 cp .env.example .env
-MONGODB_URI=mongodb://mongodb:27017/?replicaSet=rs0&directConnection=true docker compose --profile local up --build mongodb simulator
+docker compose --profile local up --build backend simulator
 ```
 
 The simulator is exposed on `http://localhost:8000`.
@@ -31,16 +30,10 @@ Health check:
 curl http://localhost:8000/health
 ```
 
-To start the full application stack instead of only MongoDB and the simulator:
+To start the full application stack:
 
 ```bash
-MONGODB_URI=mongodb://mongodb:27017/?replicaSet=rs0&directConnection=true docker compose --profile local up --build
-```
-
-To run the stack against MongoDB Atlas instead of the local container, set `MONGODB_URI` in `.env`, optionally set `MONGODB_DATABASE`, and start only the application services:
-
-```bash
-docker compose up --build frontend backend simulator
+docker compose --profile local up --build
 ```
 
 ## Run Locally Without Docker
@@ -59,9 +52,6 @@ python run.py
 
 Key variables used by the simulator:
 
-- `MONGODB_URI` (default `mongodb://localhost:27017/`)
-- `MONGODB_DATABASE` (default `charging_demo`)
 - `SIMULATOR_URL` (default `http://localhost:8000`)
 - `SESSION_TELEMETRY_INTERVAL_SECONDS` (default `2`)
-- `SESSION_RECONCILIATION_INTERVAL_SECONDS` (default `10`)
-- `CHANGE_STREAM_RETRY_SECONDS` (default `2`)
+- `CSMS_OCPP_URL` (default `ws://localhost:4000/ocpp/simulation`)

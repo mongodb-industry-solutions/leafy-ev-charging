@@ -10,13 +10,9 @@ load_dotenv()
 
 @dataclass(frozen=True)
 class Settings:
-    mongodb_uri: str
-    mongodb_database: str
     simulator_url: str
     bind_port: int
     session_telemetry_interval_seconds: float
-    session_reconciliation_interval_seconds: float
-    change_stream_retry_seconds: float
     csms_ocpp_url: str
 
 
@@ -31,8 +27,6 @@ def _port_from_url(url: str, default: int = 8000) -> int:
 def get_settings() -> Settings:
     simulator_url = os.getenv("SIMULATOR_URL", "http://localhost:8000")
     return Settings(
-        mongodb_uri=os.getenv("MONGODB_URI", "mongodb://localhost:27017/"),
-        mongodb_database=os.getenv("MONGODB_DATABASE", "charging_demo"),
         simulator_url=simulator_url,
         bind_port=_port_from_url(simulator_url),
         session_telemetry_interval_seconds=float(
@@ -41,10 +35,6 @@ def get_settings() -> Settings:
                 os.getenv("SIMULATION_INTERVAL_SECONDS", "2"),
             )
         ),
-        session_reconciliation_interval_seconds=float(
-            os.getenv("SESSION_RECONCILIATION_INTERVAL_SECONDS", "10")
-        ),
-        change_stream_retry_seconds=float(os.getenv("CHANGE_STREAM_RETRY_SECONDS", "2")),
         csms_ocpp_url=os.getenv(
             "CSMS_OCPP_URL",
             "ws://localhost:4000/ocpp/simulation",

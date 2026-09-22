@@ -472,6 +472,7 @@ type CompleteChargingSessionInput = {
 
 export async function completeChargingSession(
   db: Db,
+  connections: OcppConnectionManager,
   input: CompleteChargingSessionInput,
 ) {
   if (!isValidObjectId(input.sessionId)) {
@@ -484,6 +485,18 @@ export async function completeChargingSession(
   }
   if (session.status !== "ACTIVE") {
     throw new InvalidSessionTransitionError();
+  }
+
+  const sent = connections.send("simulation", [
+    2,
+    randomUUID(),
+    "RequestStopTransaction",
+    {
+      transactionId: input.sessionId,
+    },
+  ]);
+  if (!sent) {
+    throw new Error("Simulator is not connected");
   }
 
   const updated = await markSessionCompleted(db, input.sessionId);

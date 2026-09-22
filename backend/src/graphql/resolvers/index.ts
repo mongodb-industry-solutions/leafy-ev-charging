@@ -194,7 +194,11 @@ export const resolvers = {
       context: GraphQLContext
     ) => {
       try {
-        const doc = await completeChargingSession(context.db, args.input);
+        const doc = await completeChargingSession(
+          context.db,
+          ocppConnections,
+          args.input,
+        );
         return createCompleteChargingSessionResponse(doc);
       } catch (err) {
         if (err instanceof ChargingSessionNotFoundError) {

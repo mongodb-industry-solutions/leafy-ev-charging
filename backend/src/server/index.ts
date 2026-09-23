@@ -108,7 +108,7 @@ const startServer = async (): Promise<void> => {
   const port = Number(new URL(backendUrl).port || 4000);
   const httpServer = createServer(app);
 
-  attachOcppServer(httpServer, ocppConnections);
+  attachOcppServer(db, httpServer, ocppConnections);
 
   httpServer.listen(port, () => {
     console.log(`Backend GraphQL and OCPP server listening on port ${port}`);

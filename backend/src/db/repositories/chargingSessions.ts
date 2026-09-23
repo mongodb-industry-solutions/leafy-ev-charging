@@ -106,6 +106,13 @@ type CursorPayload = {
   id: string;
 };
 
+export type ApplyTransactionEventInput = {
+  transactionId: string;
+  eventType: "Started" | "Updated" | "Ended";
+  timestamp: Date;
+  meterRegisterKwh: number;
+};
+
 const ALWAYS_VISIBLE_SESSION_STATUSES: ChargingSessionDoc["status"][] = [
   "ACTIVE",
   "BOOKED",
@@ -421,4 +428,70 @@ export async function getVehicleSnapshotFromSession(
       { projection: { vehicleSnapshot: 1 } }
     );
   return doc?.vehicleSnapshot ?? null;
+}
+
+
+export async function applyTransactionEvent(
+  database: Db,
+  event: ApplyTransactionEventInput
+): Promise<ChargingSessionDoc | null> {
+  if (!ObjectId.isValid(event.transactionId)) {
+    return null;
+  }
+
+  const sessions = database.collection<ChargingSessionDoc>("chargingSessions");
+  const sessionId = new ObjectId(event.transactionId);
+  const session = await sessions.findOne({
+    _id: sessionId,
+    status: "ACTIVE"
+  });
+
+  if (!session) {
+    return null;
+  }
+
+  const meterStartKwh =
+    event.eventType === "Started"
+      ? event.meterRegisterKwh
+      : session.charging.meterStartKwh;
+
+  if (meterStartKwh == null) {
+    throw new Error(
+      `Cannot apply ${event.eventType} event before the session meter has started`
+    );
+  }
+
+  const energyDeliveredKwh = Math.max(
+    event.meterRegisterKwh - meterStartKwh,
+    0
+  );
+  const energyCents = Math.round(
+    energyDeliveredKwh * session.pricingSnapshot.priceCentsPerKwh
+  );
+  const idleCents = session.cost.idleCents ?? 0;
+
+  const set: Record<string, unknown> = {
+    "charging.meterStopKwh": event.meterRegisterKwh,
+    "charging.energyDeliveredKwh": energyDeliveredKwh,
+    "cost.energyCents": energyCents,
+    "cost.totalCents": energyCents + idleCents,
+    updatedAt: event.timestamp
+  };
+
+  if (event.eventType === "Started") {
+    set["charging.startedAt"] = event.timestamp;
+    set["charging.meterStartKwh"] = event.meterRegisterKwh;
+  }
+
+  if (event.eventType === "Ended") {
+    set.status = "COMPLETED";
+    set["charging.endedAt"] = event.timestamp;
+  }
+  console.log(`Applied transaction event for session ${sessionId.toHexString()}`);
+  return sessions.findOneAndUpdate(
+    { _id: sessionId, status: "ACTIVE" },
+    { $set: set },
+    { returnDocument: "after" }
+  );
+  
 }

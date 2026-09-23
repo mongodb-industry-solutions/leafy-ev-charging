@@ -188,16 +188,6 @@ export function SessionSummaryModal({
       return;
     }
 
-    setCompletedSession({
-      ...currentSession,
-      status: updatedSession.status,
-      charging: {
-        ...currentSession.charging,
-        startedAt: updatedSession.charging.startedAt ?? currentSession.charging.startedAt
-      },
-      updatedAt: updatedSession.updatedAt
-    });
-
     await onSessionChanged?.();
   };
 

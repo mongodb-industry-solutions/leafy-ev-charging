@@ -4,6 +4,8 @@ import { URL } from "node:url";
 import { WebSocket, WebSocketServer } from "ws";
 
 import { OcppConnectionManager } from "./connectionManager";
+import { applyTransactionEvent } from "../db/repositories/chargingSessions";
+import { Db } from "mongodb";
 
 type OcppCall = [
   messageType: 2,
@@ -12,7 +14,15 @@ type OcppCall = [
   payload: Record<string, unknown>
 ];
 
+type ParsedTransactionEvent = {
+  transactionId: string;
+  eventType: "Started" | "Updated" | "Ended";
+  timestamp: Date;
+  meterRegisterKwh: number;
+};
+
 export function attachOcppServer(
+  db: Db,
   httpServer: Server,
   connections: OcppConnectionManager
 ): void {
@@ -57,7 +67,8 @@ export function attachOcppServer(
           socket,
           chargePointId,
           rawMessage.toString(),
-          connections
+          connections,
+          db
         );
       });
 
@@ -82,7 +93,8 @@ async function handleOcppMessage(
   socket: WebSocket,
   chargePointId: string,
   rawMessage: string,
-  connections: OcppConnectionManager
+  connections: OcppConnectionManager,
+  db: Db,
 ): Promise<void> {
   let message: unknown;
 
@@ -133,13 +145,22 @@ async function handleOcppMessage(
   }
 
   if (action === "TransactionEvent") {
-    console.log(
-      `Transaction event from ${chargePointId}:`,
-      payload
-    );
-
-    return;
+  try {
+    const event = parseTransactionEvent(payload);
+    console.log(`Validated TransactionEvent from ${chargePointId}:`, event);
+    socket.send(JSON.stringify([3, messageId, {}]));
+    await applyTransactionEvent(db, event);
+  } catch (error) {
+    socket.send(JSON.stringify([
+      4,
+      messageId,
+      "FormationViolation",
+      error instanceof Error ? error.message : "Invalid TransactionEvent",
+      {}
+    ]));
   }
+  return;
+}
 
   if (action === "MeterValues") {
     console.log(
@@ -161,4 +182,83 @@ async function handleOcppMessage(
     `Action not implemented: ${action}`,
     {}
   ]);
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+
+
+function parseTransactionEvent(value: unknown): ParsedTransactionEvent {
+  if (!isRecord(value)) {
+    throw new Error("TransactionEvent payload must be an object");
+  }
+
+  const transactionInfo = value.transactionInfo;
+  if (!isRecord(transactionInfo)) {
+    throw new Error("TransactionEvent is missing transactionInfo");
+  }
+
+  const transactionId = transactionInfo.transactionId;
+  if (typeof transactionId !== "string" || transactionId.trim() === "") {
+    throw new Error("TransactionEvent has an invalid transactionId");
+  }
+
+  const eventType = value.eventType;
+  if (
+    eventType !== "Started" &&
+    eventType !== "Updated" &&
+    eventType !== "Ended"
+  ) {
+    throw new Error("TransactionEvent has an unsupported eventType");
+  }
+
+  const timestamp =
+    typeof value.timestamp === "string" ? new Date(value.timestamp) : null;
+  if (!timestamp || Number.isNaN(timestamp.getTime())) {
+    throw new Error("TransactionEvent has an invalid timestamp");
+  }
+
+  if (!Array.isArray(value.meterValue)) {
+    throw new Error("TransactionEvent is missing meterValue");
+  }
+
+  let meterRegisterKwh: number | undefined;
+
+  for (const meterValue of value.meterValue) {
+    if (!isRecord(meterValue) || !Array.isArray(meterValue.sampledValue)) {
+      continue;
+    }
+
+    for (const sample of meterValue.sampledValue) {
+      if (
+        !isRecord(sample) ||
+        sample.measurand !== "Energy.Active.Import.Register"
+      ) {
+        continue;
+      }
+
+      const rawValue = sample.value;
+      if (
+        (typeof rawValue !== "number" && typeof rawValue !== "string") ||
+        (typeof rawValue === "string" && rawValue.trim() === "")
+      ) {
+        throw new Error("TransactionEvent has an invalid energy register value");
+      }
+
+      const registerWh = Number(rawValue);
+      if (!Number.isFinite(registerWh) || registerWh < 0) {
+        throw new Error("TransactionEvent has an invalid energy register value");
+      }
+
+      meterRegisterKwh = registerWh / 1000;
+    }
+  }
+
+  if (meterRegisterKwh === undefined) {
+    throw new Error("TransactionEvent is missing its energy register");
+  }
+
+  return { transactionId, eventType, timestamp, meterRegisterKwh };
 }

@@ -6,6 +6,7 @@ import { WebSocket, WebSocketServer } from "ws";
 import { OcppConnectionManager } from "./connectionManager";
 import { applyTransactionEvent } from "../db/repositories/chargingSessions";
 import { Db } from "mongodb";
+import { markChargingPointAvailable } from "../db/repositories/chargingStations";
 
 type OcppCall = [
   messageType: 2,
@@ -145,20 +146,71 @@ async function handleOcppMessage(
   }
 
   if (action === "TransactionEvent") {
+  let event: ParsedTransactionEvent;
+
   try {
-    const event = parseTransactionEvent(payload);
-    console.log(`Validated TransactionEvent from ${chargePointId}:`, event);
-    socket.send(JSON.stringify([3, messageId, {}]));
-    await applyTransactionEvent(db, event);
+    event = parseTransactionEvent(payload);
   } catch (error) {
-    socket.send(JSON.stringify([
-      4,
-      messageId,
-      "FormationViolation",
-      error instanceof Error ? error.message : "Invalid TransactionEvent",
-      {}
-    ]));
+    socket.send(
+      JSON.stringify([
+        4,
+        messageId,
+        "FormationViolation",
+        error instanceof Error ? error.message : "Invalid TransactionEvent",
+        {}
+      ])
+    );
+    return;
   }
+
+  try {
+    const updatedSession = await applyTransactionEvent(db, event);
+
+    if (!updatedSession) {
+      socket.send(
+        JSON.stringify([
+          4,
+          messageId,
+          "GenericError",
+          `No active session found for transaction ${event.transactionId}`,
+          {}
+        ])
+      );
+      return;
+    }
+
+    if (event.eventType === "Ended") {
+      const released = await markChargingPointAvailable(
+        db,
+        updatedSession.stationId,
+        updatedSession.chargingPointId
+      );
+
+      if (!released) {
+        console.warn(
+          `Charging point was not released for session ${event.transactionId}; it may already be available`
+        );
+      }
+    }
+
+    socket.send(JSON.stringify([3, messageId, {}]));
+  } catch (error) {
+    console.error(
+      `Failed to persist TransactionEvent for ${event.transactionId}`,
+      error
+    );
+
+    socket.send(
+      JSON.stringify([
+        4,
+        messageId,
+        "InternalError",
+        "Failed to persist TransactionEvent",
+        {}
+      ])
+    );
+  }
+
   return;
 }
 

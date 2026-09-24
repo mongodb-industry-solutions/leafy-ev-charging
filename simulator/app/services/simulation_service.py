@@ -500,6 +500,10 @@ class SimulationService:
                     
 
                     if random.random() < FAULT_PROBABILITY:
+                    
+                        
+                        # Fault which stops the simulation, as if the charging point turned off as a safety mechanism
+                        
                         fault_seq_no = self._csms_client.next_transaction_sequence(transaction_id)
 
                         fault_frame = _build_fault_frame(
@@ -521,6 +525,16 @@ class SimulationService:
                             action=fault_frame[2],
                             payload=fault_frame[3],
                         )
+                        await self._send_ended_event(
+                            timestamp=advance.simulated_until,
+                            context=context,
+                            state=state,
+                            transaction_id=transaction_id,
+                            trigger_reason="Trigger",
+                            stopped_reason="Other",
+                        )
+                        self._csms_client.clear_transaction_sequence(transaction_id)
+                        return
             except asyncio.CancelledError:
                 raise
             except Exception:

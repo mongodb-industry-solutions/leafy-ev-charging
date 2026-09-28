@@ -54,6 +54,20 @@ type ReportSessionIncidentPayload {
   incidentId: ID!
 }
 
+enum ChatRole {
+  USER
+  ASSISTANT
+}
+
+input ChatMessageInput {
+  role: ChatRole!
+  content: String!
+}
+
+type ChatReply {
+  reply: String!
+}
+
 type Mutation {
   reserveChargingPoint(
     input: ReserveChargingPointInput!
@@ -73,4 +87,7 @@ type Mutation {
   reportSessionIncident(
     input: ReportSessionIncidentInput!
   ): ReportSessionIncidentPayload!
+  sendChatMessage(
+    messages: [ChatMessageInput!]!
+  ): ChatReply!
 }

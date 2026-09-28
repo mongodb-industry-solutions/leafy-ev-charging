@@ -3,10 +3,11 @@ import type { GraphQLContext } from "../../server/context";
 import type { ConnectorType } from "../../types/connectorType";
 import { findVehiclesByUserId } from "../../db/repositories/vehicles";
 import { ocppConnections } from "../../ocpp/connectionManager";
+import { run } from "../../../agent/consumer/graph";
 
 import {
   getChargingStationFacets,
-  getMapItemsInBounds
+  getMapItemsInBounds,
 } from "../../modules/chargingStations/service";
 import {
   getChargingSessionsByUser,
@@ -27,20 +28,19 @@ import {
   InvalidSessionTransitionError,
   BookingExpiredError,
   InvalidSessionFeedbackError,
-  SessionFeedbackAlreadyExistsError
+  SessionFeedbackAlreadyExistsError,
 } from "../../modules/chargingSessions/service";
 import {
   reportSessionIncident,
   createReportSessionIncidentResponse,
   IncidentSessionNotFoundError,
-  InvalidIncidentDescriptionError
+  InvalidIncidentDescriptionError,
 } from "../../modules/incidents/service";
 import { getAdminDashboard } from "../../modules/adminDashboard/service";
 
-
 export const resolvers = {
   Query: {
-// Users are now handled client-side via guest identity.
+    // Users are now handled client-side via guest identity.
     // The users query is deprecated and will return an empty list.
     users: async () => {
       return [];
@@ -48,14 +48,19 @@ export const resolvers = {
     adminDashboard: async (
       _parent: unknown,
       _args: unknown,
-      context: GraphQLContext
+      context: GraphQLContext,
     ) => {
       return getAdminDashboard(context.db);
     },
     chargingStationsInBounds: async (
       _parent: unknown,
       args: {
-        bounds: { minLng: number; minLat: number; maxLng: number; maxLat: number };
+        bounds: {
+          minLng: number;
+          minLat: number;
+          maxLng: number;
+          maxLat: number;
+        };
         zoom: number;
         filters?: {
           connectorTypes?: ConnectorType[];
@@ -68,7 +73,7 @@ export const resolvers = {
           tethered?: boolean;
         };
       },
-      context: GraphQLContext
+      context: GraphQLContext,
     ) => {
       const { bounds, zoom, filters } = args;
       return getMapItemsInBounds(context.db, bounds, zoom, filters ?? {});
@@ -76,21 +81,26 @@ export const resolvers = {
     chargingStationFacets: async (
       _parent: unknown,
       _args: unknown,
-      context: GraphQLContext
+      context: GraphQLContext,
     ) => {
       return getChargingStationFacets(context.db);
     },
     chargingSessions: async (
       _parent: unknown,
-      args: { userId: string; limit?: number; cursor?: string; fromDate?: string },
-      context: GraphQLContext
+      args: {
+        userId: string;
+        limit?: number;
+        cursor?: string;
+        fromDate?: string;
+      },
+      context: GraphQLContext,
     ) => {
       return getChargingSessionsByUser(context.db, args);
     },
     vehicles: async (
       _parent: unknown,
       args: { userId: string },
-      context: GraphQLContext
+      context: GraphQLContext,
     ) => {
       const vehicles = await findVehiclesByUserId(context.db, args.userId);
       return vehicles.map((vehicle) => ({
@@ -103,33 +113,43 @@ export const resolvers = {
         batteryCapacityKwh: vehicle.batteryCapacityKwh,
         maxChargePowerKw: vehicle.maxChargePowerKw,
         connectorTypes: vehicle.connectorTypes,
-        createdAt: vehicle.createdAt.toISOString()
+        createdAt: vehicle.createdAt.toISOString(),
       }));
-    }
+    },
   },
   Mutation: {
     reserveChargingPoint: async (
       _parent: unknown,
-      args: { input: { userId: string; vehicleId: string; stationId: string; chargingPointId: string } },
-      context: GraphQLContext
+      args: {
+        input: {
+          userId: string;
+          vehicleId: string;
+          stationId: string;
+          chargingPointId: string;
+        };
+      },
+      context: GraphQLContext,
     ) => {
       try {
         const doc = await createBooking(context.db, args.input);
         return createBookingResponse(doc);
       } catch (err) {
         if (err instanceof UserAlreadyHasActiveBookingError) {
-          throw new GraphQLError("User already has an active or booked session", {
-            extensions: { code: "USER_ALREADY_HAS_ACTIVE_BOOKING" }
-          });
+          throw new GraphQLError(
+            "User already has an active or booked session",
+            {
+              extensions: { code: "USER_ALREADY_HAS_ACTIVE_BOOKING" },
+            },
+          );
         }
         if (err instanceof ChargingPointUnavailableError) {
           throw new GraphQLError("Charging point is not available", {
-            extensions: { code: "CHARGING_POINT_UNAVAILABLE" }
+            extensions: { code: "CHARGING_POINT_UNAVAILABLE" },
           });
         }
         if (err instanceof StationOrPointNotFoundError) {
           throw new GraphQLError("Station or charging point not found", {
-            extensions: { code: "NOT_FOUND" }
+            extensions: { code: "NOT_FOUND" },
           });
         }
         throw err;
@@ -138,30 +158,33 @@ export const resolvers = {
     startChargingSession: async (
       _parent: unknown,
       args: { input: { sessionId: string } },
-      context: GraphQLContext
+      context: GraphQLContext,
     ) => {
       try {
         const doc = await startChargingSession(
-        context.db,
-        ocppConnections,
-        args.input
-      );
+          context.db,
+          ocppConnections,
+          args.input,
+        );
         return createStartChargingSessionResponse(doc);
       } catch (err) {
         if (err instanceof ChargingSessionNotFoundError) {
           throw new GraphQLError("Charging session not found", {
-            extensions: { code: "NOT_FOUND" }
+            extensions: { code: "NOT_FOUND" },
           });
         }
         if (err instanceof BookingExpiredError) {
           throw new GraphQLError("Booked session has expired", {
-            extensions: { code: "BOOKING_EXPIRED" }
+            extensions: { code: "BOOKING_EXPIRED" },
           });
         }
         if (err instanceof InvalidSessionTransitionError) {
-          throw new GraphQLError("Session cannot be started from current status", {
-            extensions: { code: "INVALID_SESSION_STATE" }
-          });
+          throw new GraphQLError(
+            "Session cannot be started from current status",
+            {
+              extensions: { code: "INVALID_SESSION_STATE" },
+            },
+          );
         }
         throw err;
       }
@@ -169,7 +192,7 @@ export const resolvers = {
     cancelChargingSession: async (
       _parent: unknown,
       args: { input: { sessionId: string; reason?: string | null } },
-      context: GraphQLContext
+      context: GraphQLContext,
     ) => {
       try {
         const doc = await cancelChargingSession(context.db, args.input);
@@ -177,13 +200,16 @@ export const resolvers = {
       } catch (err) {
         if (err instanceof ChargingSessionNotFoundError) {
           throw new GraphQLError("Charging session not found", {
-            extensions: { code: "NOT_FOUND" }
+            extensions: { code: "NOT_FOUND" },
           });
         }
         if (err instanceof InvalidSessionTransitionError) {
-          throw new GraphQLError("Session cannot be canceled from current status", {
-            extensions: { code: "INVALID_SESSION_STATE" }
-          });
+          throw new GraphQLError(
+            "Session cannot be canceled from current status",
+            {
+              extensions: { code: "INVALID_SESSION_STATE" },
+            },
+          );
         }
         throw err;
       }
@@ -191,7 +217,7 @@ export const resolvers = {
     completeChargingSession: async (
       _parent: unknown,
       args: { input: { sessionId: string } },
-      context: GraphQLContext
+      context: GraphQLContext,
     ) => {
       try {
         const doc = await completeChargingSession(
@@ -203,21 +229,26 @@ export const resolvers = {
       } catch (err) {
         if (err instanceof ChargingSessionNotFoundError) {
           throw new GraphQLError("Charging session not found", {
-            extensions: { code: "NOT_FOUND" }
+            extensions: { code: "NOT_FOUND" },
           });
         }
         if (err instanceof InvalidSessionTransitionError) {
-          throw new GraphQLError("Session cannot be completed from current status", {
-            extensions: { code: "INVALID_SESSION_STATE" }
-          });
+          throw new GraphQLError(
+            "Session cannot be completed from current status",
+            {
+              extensions: { code: "INVALID_SESSION_STATE" },
+            },
+          );
         }
         throw err;
       }
     },
     addSessionFeedback: async (
       _parent: unknown,
-      args: { input: { sessionId: string; rating: number; comment?: string | null } },
-      context: GraphQLContext
+      args: {
+        input: { sessionId: string; rating: number; comment?: string | null };
+      },
+      context: GraphQLContext,
     ) => {
       try {
         const doc = await addSessionFeedback(context.db, args.input);
@@ -225,23 +256,29 @@ export const resolvers = {
       } catch (err) {
         if (err instanceof ChargingSessionNotFoundError) {
           throw new GraphQLError("Charging session not found", {
-            extensions: { code: "NOT_FOUND" }
+            extensions: { code: "NOT_FOUND" },
           });
         }
         if (err instanceof InvalidSessionFeedbackError) {
           throw new GraphQLError("Rating must be between 1 and 5", {
-            extensions: { code: "INVALID_INPUT" }
+            extensions: { code: "INVALID_INPUT" },
           });
         }
         if (err instanceof SessionFeedbackAlreadyExistsError) {
-          throw new GraphQLError("Session feedback has already been submitted", {
-            extensions: { code: "FEEDBACK_ALREADY_EXISTS" }
-          });
+          throw new GraphQLError(
+            "Session feedback has already been submitted",
+            {
+              extensions: { code: "FEEDBACK_ALREADY_EXISTS" },
+            },
+          );
         }
         if (err instanceof InvalidSessionTransitionError) {
-          throw new GraphQLError("Session feedback can only be added to completed sessions", {
-            extensions: { code: "INVALID_SESSION_STATE" }
-          });
+          throw new GraphQLError(
+            "Session feedback can only be added to completed sessions",
+            {
+              extensions: { code: "INVALID_SESSION_STATE" },
+            },
+          );
         }
         throw err;
       }
@@ -255,7 +292,7 @@ export const resolvers = {
           description: string;
         };
       },
-      context: GraphQLContext
+      context: GraphQLContext,
     ) => {
       try {
         const doc = await reportSessionIncident(context.db, args.input);
@@ -263,21 +300,52 @@ export const resolvers = {
       } catch (err) {
         if (err instanceof IncidentSessionNotFoundError) {
           throw new GraphQLError("Charging session not found", {
-            extensions: { code: "NOT_FOUND" }
+            extensions: { code: "NOT_FOUND" },
           });
         }
         if (err instanceof InvalidIncidentDescriptionError) {
           throw new GraphQLError("Incident description is required", {
-            extensions: { code: "INVALID_INPUT" }
+            extensions: { code: "INVALID_INPUT" },
           });
         }
         throw err;
       }
-    }
+    },
+    sendChatMessage: async (
+      _parent: unknown,
+      args: {
+        messages: { role: "USER" | "ASSISTANT"; content: string }[];
+      },
+    ) => {
+      if (
+        args.messages.length === 0 ||
+        args.messages.length > 40 ||
+        args.messages.at(-1)?.role !== "USER" ||
+        args.messages.some((message) => !message.content.trim()) ||
+        args.messages.reduce(
+          (total, message) => total + message.content.length,
+          0,
+        ) > 40000
+      ) {
+        throw new GraphQLError("Invalid or oversized conversation", {
+          extensions: { code: "BAD_USER_INPUT" },
+        });
+      }
+
+      try {
+        const reply = await run(args.messages);
+        return { reply };
+      } catch (error) {
+        console.error("Chat generation failed", error);
+        throw new GraphQLError("Unable to generate a reply", {
+          extensions: { code: "INTERNAL_SERVER_ERROR" },
+        });
+      }
+            },
   },
   MapItem: {
     __resolveType(obj: { __typename: string }) {
       return obj.__typename;
-    }
-  }
+    },
+  },
 };

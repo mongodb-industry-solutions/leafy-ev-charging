@@ -1,0 +1,5 @@
+mutation SendChatMessage($messages: [ChatMessageInput!]!) {
+  sendChatMessage(messages: $messages) {
+    reply
+  }
+}

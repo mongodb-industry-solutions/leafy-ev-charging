@@ -2,22 +2,22 @@ const schemaSourceGroups = [
   {
     directory: "governed",
     backendPointer: "./schema/governed/**/*.graphql",
-    frontendPointer: "../backend/schema/governed/**/*.graphql"
+    frontendPointer: "../CSMS/schema/governed/**/*.graphql"
   },
   {
     directory: "app/types",
     backendPointer: "./schema/app/types/**/*.graphql",
-    frontendPointer: "../backend/schema/app/types/**/*.graphql"
+    frontendPointer: "../CSMS/schema/app/types/**/*.graphql"
   },
   {
     directory: "app/extensions",
     backendPointer: "./schema/app/extensions/**/*.graphql",
-    frontendPointer: "../backend/schema/app/extensions/**/*.graphql"
+    frontendPointer: "../CSMS/schema/app/extensions/**/*.graphql"
   },
   {
     directory: "app/operations",
     backendPointer: "./schema/app/operations/**/*.graphql",
-    frontendPointer: "../backend/schema/app/operations/**/*.graphql"
+    frontendPointer: "../CSMS/schema/app/operations/**/*.graphql"
   }
 ];
 

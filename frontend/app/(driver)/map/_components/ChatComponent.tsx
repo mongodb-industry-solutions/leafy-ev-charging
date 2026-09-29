@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useMutation } from "@apollo/client/react";
+import { useUserContext } from "@/contexts/UserContext";
 import {
   AgentAudience,
   ChatRole,
@@ -16,6 +17,7 @@ type Message = {
 
 
 export default function ChatComponent() {
+  const { selectedUser } = useUserContext();
   const [messages, setMessages] = useState<Message[]>([]);
   const [draft, setDraft] = useState("");
   const [pending, setPending] = useState(false);
@@ -24,7 +26,7 @@ export default function ChatComponent() {
 
   async function send() {
     const content = draft.trim();
-    if (!content || pending) return;
+    if (!content || pending || !selectedUser) return;
 
     const next: Message[] = [...messages, { role: "user", content }];
     setMessages(next);
@@ -36,6 +38,7 @@ export default function ChatComponent() {
       const { data } = await sendChatMessage({
         variables: {
           audience: AgentAudience.Driver,
+          userId: selectedUser.id,
           messages: next.map((message) => ({
             role: message.role === "user" ? ChatRole.User : ChatRole.Assistant,
             content: message.content
@@ -77,7 +80,7 @@ export default function ChatComponent() {
         <input aria-label="Message" value={draft} disabled={pending}
           onChange={(event) => setDraft(event.target.value)}
           className="min-w-0 flex-1 rounded border p-2 text-sm" />
-        <button disabled={pending || !draft.trim()}
+        <button disabled={pending || !draft.trim() || !selectedUser}
           aria-label="Send message" title="Send message"
           className="flex h-10 w-15 shrink-0 items-center justify-center rounded border disabled:opacity-40">
           <span className="material-symbols-outlined">send</span>

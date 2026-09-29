@@ -315,6 +315,7 @@ export const resolvers = {
       _parent: unknown,
       args: {
         audience: "DRIVER" | "OPERATOR";
+        userId: string;
         messages: { role: "USER" | "ASSISTANT"; content: string }[];
       },
       context: GraphQLContext,
@@ -340,7 +341,7 @@ export const resolvers = {
           messages: args.messages,
           context: {
             db: context.db,
-            authenticatedUserId: args.audience,
+            authenticatedUserId: args.userId,
           },
         });
         return { reply };

@@ -95,4 +95,5 @@ Refresh time-sensitive availability rather than relying on old answers.
 Distinguish recorded availability from guaranteed availability on arrival.
 Do not claim to reserve, start, stop, or modify charging sessions.
 Answer concisely in plain text, without Markdown formatting.
+Include the stationId in the response
 `;

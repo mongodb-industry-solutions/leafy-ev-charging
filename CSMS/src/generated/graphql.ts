@@ -126,6 +126,11 @@ export type AdminTelemetryTrendPoint = {
   sampleCount: Scalars['Int']['output'];
 };
 
+export enum AgentAudience {
+  Driver = 'DRIVER',
+  Operator = 'OPERATOR'
+}
+
 export type BoundsInput = {
   maxLat: Scalars['Float']['input'];
   maxLng: Scalars['Float']['input'];
@@ -217,6 +222,21 @@ export type ChargingStationFiltersInput = {
   tethered?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+export type ChatMessageInput = {
+  content: Scalars['String']['input'];
+  role: ChatRole;
+};
+
+export type ChatReply = {
+  __typename?: 'ChatReply';
+  reply: Scalars['String']['output'];
+};
+
+export enum ChatRole {
+  Assistant = 'ASSISTANT',
+  User = 'USER'
+}
+
 export type CompleteChargingSessionInput = {
   sessionId: Scalars['ID']['input'];
 };
@@ -289,6 +309,7 @@ export type Mutation = {
   completeChargingSession: CompleteChargingSessionPayload;
   reportSessionIncident: ReportSessionIncidentPayload;
   reserveChargingPoint: ReserveChargingPointPayload;
+  sendChatMessage: ChatReply;
   startChargingSession: StartChargingSessionPayload;
 };
 
@@ -315,6 +336,13 @@ export type MutationReportSessionIncidentArgs = {
 
 export type MutationReserveChargingPointArgs = {
   input: ReserveChargingPointInput;
+};
+
+
+export type MutationSendChatMessageArgs = {
+  audience: AgentAudience;
+  messages: Array<ChatMessageInput>;
+  userId: Scalars['ID']['input'];
 };
 
 
@@ -589,6 +617,7 @@ export type ResolversTypes = {
   AdminRecentIncident: ResolverTypeWrapper<AdminRecentIncident>;
   AdminRecentSession: ResolverTypeWrapper<AdminRecentSession>;
   AdminTelemetryTrendPoint: ResolverTypeWrapper<AdminTelemetryTrendPoint>;
+  AgentAudience: AgentAudience;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   BoundsInput: BoundsInput;
   CancelChargingSessionInput: CancelChargingSessionInput;
@@ -599,6 +628,9 @@ export type ResolversTypes = {
   ChargingStation: ResolverTypeWrapper<ChargingStation>;
   ChargingStationFacets: ResolverTypeWrapper<ChargingStationFacets>;
   ChargingStationFiltersInput: ChargingStationFiltersInput;
+  ChatMessageInput: ChatMessageInput;
+  ChatReply: ResolverTypeWrapper<ChatReply>;
+  ChatRole: ChatRole;
   CompleteChargingSessionInput: CompleteChargingSessionInput;
   CompleteChargingSessionPayload: ResolverTypeWrapper<CompleteChargingSessionPayload>;
   ConnectorFacet: ResolverTypeWrapper<ConnectorFacet>;
@@ -662,6 +694,8 @@ export type ResolversParentTypes = {
   ChargingStation: ChargingStation;
   ChargingStationFacets: ChargingStationFacets;
   ChargingStationFiltersInput: ChargingStationFiltersInput;
+  ChatMessageInput: ChatMessageInput;
+  ChatReply: ChatReply;
   CompleteChargingSessionInput: CompleteChargingSessionInput;
   CompleteChargingSessionPayload: CompleteChargingSessionPayload;
   ConnectorFacet: ConnectorFacet;
@@ -852,6 +886,10 @@ export type ChargingStationFacetsResolvers<ContextType = GraphQLContext, ParentT
   priceRange?: Resolver<ResolversTypes['NumericRange'], ParentType, ContextType>;
 };
 
+export type ChatReplyResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['ChatReply'] = ResolversParentTypes['ChatReply']> = {
+  reply?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+};
+
 export type CompleteChargingSessionPayloadResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['CompleteChargingSessionPayload'] = ResolversParentTypes['CompleteChargingSessionPayload']> = {
   session?: Resolver<ResolversTypes['ChargingSession'], ParentType, ContextType>;
 };
@@ -887,6 +925,7 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   completeChargingSession?: Resolver<ResolversTypes['CompleteChargingSessionPayload'], ParentType, ContextType, RequireFields<MutationCompleteChargingSessionArgs, 'input'>>;
   reportSessionIncident?: Resolver<ResolversTypes['ReportSessionIncidentPayload'], ParentType, ContextType, RequireFields<MutationReportSessionIncidentArgs, 'input'>>;
   reserveChargingPoint?: Resolver<ResolversTypes['ReserveChargingPointPayload'], ParentType, ContextType, RequireFields<MutationReserveChargingPointArgs, 'input'>>;
+  sendChatMessage?: Resolver<ResolversTypes['ChatReply'], ParentType, ContextType, RequireFields<MutationSendChatMessageArgs, 'audience' | 'messages' | 'userId'>>;
   startChargingSession?: Resolver<ResolversTypes['StartChargingSessionPayload'], ParentType, ContextType, RequireFields<MutationStartChargingSessionArgs, 'input'>>;
 };
 
@@ -1016,6 +1055,7 @@ export type Resolvers<ContextType = GraphQLContext> = {
   ChargingSession?: ChargingSessionResolvers<ContextType>;
   ChargingStation?: ChargingStationResolvers<ContextType>;
   ChargingStationFacets?: ChargingStationFacetsResolvers<ContextType>;
+  ChatReply?: ChatReplyResolvers<ContextType>;
   CompleteChargingSessionPayload?: CompleteChargingSessionPayloadResolvers<ContextType>;
   ConnectorFacet?: ConnectorFacetResolvers<ContextType>;
   ConnectorInfo?: ConnectorInfoResolvers<ContextType>;

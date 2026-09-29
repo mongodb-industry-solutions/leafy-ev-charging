@@ -8,7 +8,7 @@ from typing import Any, Awaitable, Protocol
 
 MESSAGE_TYPE_SESSION_SAMPLE = "SESSION_SAMPLE"
 MESSAGE_TYPE_FAULT = "FAULT"
-FAULT_PROBABILITY = 0.02
+FAULT_PROBABILITY = 0.002
 logger = logging.getLogger(__name__)
 
 

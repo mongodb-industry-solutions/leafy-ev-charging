@@ -95,5 +95,6 @@ type Mutation {
   sendChatMessage(
     messages: [ChatMessageInput!]!
     audience: AgentAudience!
+    userId: ID!
   ): ChatReply!
 }

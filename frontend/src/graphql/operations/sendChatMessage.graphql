@@ -1,8 +1,9 @@
 mutation SendChatMessage(
   $messages: [ChatMessageInput!]!
   $audience: AgentAudience!
+  $userId: ID!
 ) {
-  sendChatMessage(messages: $messages, audience: $audience) {
+  sendChatMessage(messages: $messages, audience: $audience, userId: $userId) {
     reply
   }
 }

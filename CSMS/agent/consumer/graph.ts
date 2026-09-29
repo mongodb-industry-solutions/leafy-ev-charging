@@ -27,7 +27,18 @@ export async function runConsumer(
   const tools = createConsumerTools(context.db, context.authenticatedUserId);
   const toolNode = new ToolNode(tools);
   const model = chatModel.bindTools(tools);
-  const system = new SystemMessage(SYSTEM_PROMPT);
+  const now = new Date();
+  const recentFrom = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+  const system = new SystemMessage(
+    `${SYSTEM_PROMPT}\n\n` +
+    `Current server time (UTC): ${now.toISOString()}.\n` +
+    `For recent charging history without an explicit date range, use ` +
+    `from="${recentFrom.toISOString()}" and to="${now.toISOString()}". ` +
+    `This is the default last-30-days window; tell the user the period searched. ` +
+    `Honor explicit user-requested dates instead. Never assume a year from training data. ` +
+    `An empty result only means no matches for the supplied filters and period, ` +
+    `not that the user has never charged.`
+  );
 
   console.log("[Agent] Starting", {
     messageCount: messages.length,

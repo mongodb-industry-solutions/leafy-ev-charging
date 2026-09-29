@@ -3,7 +3,7 @@ import type { GraphQLContext } from "../../server/context";
 import type { ConnectorType } from "../../types/connectorType";
 import { findVehiclesByUserId } from "../../db/repositories/vehicles";
 import { ocppConnections } from "../../ocpp/connectionManager";
-import { run } from "../../../agent/consumer/graph";
+import { activateAgent } from "../../../agent/activate";
 
 import {
   getChargingStationFacets,
@@ -314,8 +314,10 @@ export const resolvers = {
     sendChatMessage: async (
       _parent: unknown,
       args: {
+        audience: "DRIVER" | "OPERATOR";
         messages: { role: "USER" | "ASSISTANT"; content: string }[];
       },
+      context: GraphQLContext,
     ) => {
       if (
         args.messages.length === 0 ||
@@ -333,7 +335,14 @@ export const resolvers = {
       }
 
       try {
-        const reply = await run(args.messages);
+        const reply = await activateAgent({
+          audience: args.audience,
+          messages: args.messages,
+          context: {
+            db: context.db,
+            authenticatedUserId: args.audience,
+          },
+        });
         return { reply };
       } catch (error) {
         console.error("Chat generation failed", error);
@@ -341,7 +350,7 @@ export const resolvers = {
           extensions: { code: "INTERNAL_SERVER_ERROR" },
         });
       }
-            },
+    },
   },
   MapItem: {
     __resolveType(obj: { __typename: string }) {

@@ -59,6 +59,11 @@ enum ChatRole {
   ASSISTANT
 }
 
+enum AgentAudience {
+  DRIVER
+  OPERATOR
+}
+
 input ChatMessageInput {
   role: ChatRole!
   content: String!
@@ -89,5 +94,6 @@ type Mutation {
   ): ReportSessionIncidentPayload!
   sendChatMessage(
     messages: [ChatMessageInput!]!
+    audience: AgentAudience!
   ): ChatReply!
 }

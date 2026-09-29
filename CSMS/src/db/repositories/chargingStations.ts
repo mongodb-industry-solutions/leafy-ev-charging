@@ -44,6 +44,7 @@ type AvailabilityDoc = {
   totalPoints: number;
   operationalPoints?: number;
   availableNowPoints: number;
+  lastComputedAt?: Date;
 };
 
 type PricingDoc = {
@@ -71,9 +72,21 @@ export type ChargingStationDoc = {
     coordinates: [number, number];
   };
   address?: AddressDoc;
+  timezone?: string;
+  hasFastCharging?: boolean;
+  characteristics?: {
+    parkingType?: "PUBLIC" | "PRIVATE" | "CUSTOMER_ONLY";
+    amenities?: string[];
+    access?: {
+      open24h?: boolean;
+      openingHours?: Array<{ day?: string; open?: string; close?: string }>;
+    };
+  };
   chargingPoints: ChargingPointDoc[];
   availability: AvailabilityDoc;
   pricing: PricingDoc;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export async function findChargingStationById(

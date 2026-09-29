@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useMutation } from "@apollo/client/react";
 import {
+  AgentAudience,
   ChatRole,
   SendChatMessageDocument
 } from "@/graphql/generated/graphql";
@@ -20,17 +21,21 @@ export default function ChatComponent() {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [sendChatMessage] = useMutation(SendChatMessageDocument);
+
   async function send() {
     const content = draft.trim();
     if (!content || pending) return;
 
     const next: Message[] = [...messages, { role: "user", content }];
+    setMessages(next);
+    setDraft("");
     setPending(true);
     setError("");
 
     try {
       const { data } = await sendChatMessage({
         variables: {
+          audience: AgentAudience.Driver,
           messages: next.map((message) => ({
             role: message.role === "user" ? ChatRole.User : ChatRole.Assistant,
             content: message.content
@@ -42,8 +47,9 @@ export default function ChatComponent() {
       if (!reply) throw new Error("Empty chat response");
 
       setMessages([...next, { role: "assistant", content: reply }]);
-      setDraft("");
     } catch {
+      setMessages(messages);
+      setDraft(content);
       setError("Message could not be sent. Please try again.");
     } finally {
       setPending(false);
@@ -59,6 +65,11 @@ export default function ChatComponent() {
             {message.content}
           </p>
         ))}
+        {pending && (
+          <p role="status" className="text-sm italic text-slate-500">
+            Thinking...
+          </p>
+        )}
       </div>
       {error && <p role="alert" className="text-xs text-red-700">{error}</p>}
       <form onSubmit={(event) => { event.preventDefault(); void send(); }}

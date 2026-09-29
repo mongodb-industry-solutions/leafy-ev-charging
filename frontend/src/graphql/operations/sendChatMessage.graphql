@@ -1,5 +1,8 @@
-mutation SendChatMessage($messages: [ChatMessageInput!]!) {
-  sendChatMessage(messages: $messages) {
+mutation SendChatMessage(
+  $messages: [ChatMessageInput!]!
+  $audience: AgentAudience!
+) {
+  sendChatMessage(messages: $messages, audience: $audience) {
     reply
   }
 }

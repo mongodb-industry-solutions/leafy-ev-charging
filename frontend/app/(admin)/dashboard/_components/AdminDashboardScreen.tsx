@@ -30,6 +30,8 @@ import {
   formatTariffCentsPerKwh,
   formatTimestamp
 } from "./formatters";
+import ChatComponent from "./ChatComponent";
+import { useState } from "react";
 
 type DashboardData = NonNullable<AdminDashboardQuery["adminDashboard"]>;
 
@@ -207,6 +209,9 @@ function ChartTooltipContent({ active, payload, label, formatter }: {
 }
 
 function DashboardShell({ dashboard }: { dashboard: DashboardData | null }) {
+
+  const [chatOpen, setChatOpen] = useState(false);
+
   const summaryCards = [
     {
       title: "Network footprint",
@@ -797,6 +802,50 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData | null }) {
             </table>
           </div>
         </SectionCard>
+        <div className="absolute bottom-6 right-4 z-[1000] flex items-center gap-2">
+                <MongoSpotlight
+                  id="map-geo"
+                  label="Geospatial search"
+                  className="cursor-pointer rounded-full border border-white/70
+              bg-white/85 px-4 py-2 text-xs font-medium leading-none
+              text-slate-600 shadow backdrop-blur-xl"
+                />
+        
+                <div className="relative">
+                  {chatOpen && (
+                    <div
+                      id="agent-chat-panel"
+                      className="absolute bottom-full right-0 mb-3 h-120
+                  max-h-[100dvh] w-120 max-w-[calc(100vw_-_2rem)]
+                  overflow-auto rounded-lg border border-white/70
+                  bg-white/85 p-4 shadow-lg backdrop-blur-xl"
+                    >
+                      <ChatComponent />
+                    </div>
+                  )}
+        
+                  <button
+                    type="button"
+                    onClick={() => setChatOpen((open) => !open)}
+                    aria-expanded={chatOpen}
+                    aria-controls="agent-chat-panel"
+                    aria-label={chatOpen ? "Collapse chat" : "Open chat"}
+                    title={chatOpen ? "Collapse chat" : "Open chat"}
+                    className="flex items-center justify-center rounded-full
+                border border-white/70 bg-white/85 px-3 py-2
+                text-slate-600 shadow backdrop-blur-xl
+                hover:bg-white/95 hover:text-slate-800"
+                  >
+                    <span
+                      className="material-symbols-outlined"
+                      style={{ fontSize: 16, lineHeight: 1 }}
+                      aria-hidden="true"
+                    >
+                      {chatOpen ? "expand_more" : "chat_bubble"}
+                    </span>
+                  </button>
+                </div>
+              </div>
       </div>
     </main>
   );
@@ -836,6 +885,8 @@ export function AdminDashboardScreen() {
       </main>
     );
   }
+
+
 
   if (!dashboard) {
     return (

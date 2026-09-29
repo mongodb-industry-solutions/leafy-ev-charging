@@ -3,6 +3,7 @@ import {
   type ChatInput,
   type ConsumerContext
 } from "./consumer/graph";
+import { runOperator } from "./ops/graph";
 
 type ActivateAgentInput = {
   audience: "DRIVER" | "OPERATOR";
@@ -19,7 +20,7 @@ export async function activateAgent({
     case "DRIVER":
       return runConsumer(messages, context);
     case "OPERATOR":
-      throw new Error("Operator agent is not implemented yet");
+      return runOperator(messages);
     default:
       throw new Error("Unsupported agent audience");
   }

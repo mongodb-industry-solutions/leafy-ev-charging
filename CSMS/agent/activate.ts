@@ -20,7 +20,7 @@ export async function activateAgent({
     case "DRIVER":
       return runConsumer(messages, context);
     case "OPERATOR":
-      return runOperator(messages);
+      return runOperator(messages, context.db);
     default:
       throw new Error("Unsupported agent audience");
   }

@@ -3,9 +3,14 @@ import type { Server } from "node:http";
 import { URL } from "node:url";
 import { WebSocket, WebSocketServer } from "ws";
 
+import { ObjectId, type Db } from "mongodb";
+
 import { OcppConnectionManager } from "./connectionManager";
-import { applyTransactionEvent } from "../db/repositories/chargingSessions";
-import { Db } from "mongodb";
+import {
+  applyTransactionEvent,
+  findChargingSessionById,
+} from "../db/repositories/chargingSessions";
+import { insertChargingStationIncident } from "../db/repositories/incidents";
 import { markChargingPointAvailable } from "../db/repositories/chargingStations";
 
 type OcppCall = [
@@ -141,6 +146,71 @@ async function handleOcppMessage(
       `Status from ${chargePointId}:`,
       payload
     );
+
+    return;
+  }
+
+    if (action === "NotifyEvent") {
+    try {
+      if (!Array.isArray(payload.eventData)) {
+        throw new Error("NotifyEvent is missing eventData");
+      }
+
+      for (const item of payload.eventData) {
+        if (!isRecord(item)) {
+          continue;
+        }
+
+        const variable = isRecord(item.variable) ? item.variable : {};
+        const isOverheating =
+          item.techCode === "E_OVERHEAT_WARN" ||
+          item.actualValue === "E_OVERHEAT_WARN";
+
+        if (!isOverheating) {
+          continue;
+        }
+
+        const transactionId = item.transactionId;
+        if (
+          typeof transactionId !== "string" ||
+          !ObjectId.isValid(transactionId)
+        ) {
+          throw new Error("Overheating event has an invalid transactionId");
+        }
+
+        const session = await findChargingSessionById(db, transactionId);
+        if (!session) {
+          throw new Error(
+            `No charging session found for transaction ${transactionId}`
+          );
+        }
+
+        const component = isRecord(item.component) ? item.component : {};
+        const eventTimestamp =
+          typeof item.timestamp === "string" ? new Date(item.timestamp) : null;
+
+        await insertChargingStationIncident(db, {
+          stationId: session.stationId,
+          chargingPointId: session.chargingPointId,
+          sessionId: session._id,
+          severity: "HIGH",
+          description: `Overheating detected: techCode=${item.techCode}, actualValue=${item.actualValue}`,
+        });
+      }
+
+      socket.send(JSON.stringify([3, messageId, {}]));
+    } catch (error) {
+      console.error(`Failed to persist NotifyEvent from ${chargePointId}`, error);
+      socket.send(
+        JSON.stringify([
+          4,
+          messageId,
+          "InternalError",
+          "Failed to persist NotifyEvent",
+          {},
+        ])
+      );
+    }
 
     return;
   }

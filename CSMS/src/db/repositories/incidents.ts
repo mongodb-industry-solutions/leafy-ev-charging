@@ -7,14 +7,14 @@ export type IncidentDoc = {
   _id: ObjectId;
   createdAt: Date;
   updatedAt: Date;
-  type: "USER_REPORT";
+  type: "USER_REPORT" | "CONNECTOR_FAULT";
   severity: IncidentSeverityDoc;
   status: "OPEN";
   stationId: ObjectId;
   chargingPointId?: ObjectId | null;
   sessionId?: ObjectId | null;
   detection: {
-    source: "USER";
+    source: "USER" | "SYSTEM";
   };
   description: string;
   resolution: {
@@ -49,6 +49,40 @@ export async function insertUserReportedIncident(
     sessionId: input.sessionId ?? null,
     detection: {
       source: "USER"
+    },
+    description: input.description,
+    resolution: {
+      resolvedAt: null,
+      resolvedByUserId: null,
+      notes: null
+    }
+  };
+
+  const result = await database.collection<IncidentDoc>("incidents").insertOne(doc as IncidentDoc);
+
+  return {
+    _id: result.insertedId,
+    ...doc
+  };
+}
+
+export async function insertChargingStationIncident(
+  database: Db,
+  input: InsertIncidentInput
+): Promise<IncidentDoc> {
+  const nowDate = new Date();
+
+  const doc: Omit<IncidentDoc, "_id"> = {
+    createdAt: nowDate,
+    updatedAt: nowDate,
+    type: "CONNECTOR_FAULT",
+    severity: input.severity,
+    status: "OPEN",
+    stationId: input.stationId,
+    chargingPointId: input.chargingPointId ?? null,
+    sessionId: input.sessionId ?? null,
+    detection: {
+      source: "SYSTEM"
     },
     description: input.description,
     resolution: {

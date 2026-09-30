@@ -8,7 +8,7 @@ from typing import Any, Awaitable, Protocol
 
 MESSAGE_TYPE_SESSION_SAMPLE = "SESSION_SAMPLE"
 MESSAGE_TYPE_FAULT = "FAULT"
-FAULT_PROBABILITY = 0.002
+FAULT_PROBABILITY = 0.02
 logger = logging.getLogger(__name__)
 
 
@@ -525,16 +525,11 @@ class SimulationService:
                             action=fault_frame[2],
                             payload=fault_frame[3],
                         )
-                        await self._send_ended_event(
-                            timestamp=advance.simulated_until,
-                            context=context,
-                            state=state,
-                            transaction_id=transaction_id,
-                            trigger_reason="Trigger",
-                            stopped_reason="Other",
-                        )
-                        self._csms_client.clear_transaction_sequence(transaction_id)
-                        return
+                        
+                        logger.info(
+                            "overheating warning sent; continuing session %s",
+                            session_id,
+                            )
             except asyncio.CancelledError:
                 raise
             except Exception:

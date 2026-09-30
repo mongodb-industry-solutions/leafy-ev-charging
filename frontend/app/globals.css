@@ -867,3 +867,33 @@
   border-top: 14px solid rgb(71 85 105);
   margin-top: -2px;
 }
+
+@keyframes chat-panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.chat-panel-enter {
+  animation: chat-panel-enter 160ms ease-out both;
+}
+
+@keyframes chat-panel-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
+.chat-panel-exit {
+  animation: chat-panel-exit 140ms ease-in both;
+}

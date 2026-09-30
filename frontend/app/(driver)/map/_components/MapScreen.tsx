@@ -48,6 +48,7 @@ export function MapScreen() {
   );
   const [sessionModalOpen, setSessionModalOpen] = useState(false);
   const [modalSession, setModalSession] = useState<typeof session>(null);
+  const [chatVisible, setChatVisible] = useState(false);
 
   const [locationPin, setLocationPin] = useState<{
     lat: number;
@@ -210,6 +211,7 @@ export function MapScreen() {
         </div>
       </div>
 
+
       <div className="absolute bottom-6 right-4 z-[1000] flex items-center gap-2">
         <MongoSpotlight
           id="map-geo"
@@ -220,37 +222,35 @@ export function MapScreen() {
         />
 
         <div className="relative">
-          {chatOpen && (
-            <div
-              id="agent-chat-panel"
-              className="absolute bottom-full right-0 mb-3 h-120
-          max-h-[100dvh] w-120 max-w-[calc(100vw_-_2rem)]
-          overflow-auto rounded-lg border border-white/70
-          bg-white/85 p-4 shadow-lg backdrop-blur-xl"
-            >
-              <ChatComponent />
-            </div>
-          )}
+          <div
+            id="agent-chat-panel"
+            aria-hidden={!chatOpen}
+            onAnimationEnd={(event) => {
+              if (event.target === event.currentTarget && !chatOpen) {
+                setChatVisible(false);
+              }
+            }}
+            className={`${chatVisible ? (chatOpen ? "chat-panel-enter" : "chat-panel-exit") : "hidden"} absolute bottom-full right-0 mb-3 h-120 max-h-[100dvh] w-120 max-w-[calc(100vw_-_2rem)] overflow-auto rounded-lg border border-white/70 bg-white/85 p-4 shadow-lg backdrop-blur-xl`}
+          >
+            <ChatComponent />
+          </div>
 
           <button
             type="button"
-            onClick={() => setChatOpen((open) => !open)}
+            onClick={() => {
+              if (!chatOpen) setChatVisible(true);
+              setChatOpen((open) => !open);
+            }}
             aria-expanded={chatOpen}
             aria-controls="agent-chat-panel"
             aria-label={chatOpen ? "Collapse chat" : "Open chat"}
             title={chatOpen ? "Collapse chat" : "Open chat"}
-            className="flex items-center justify-center rounded-full
-        border border-white/70 bg-white/85 px-3 py-2
-        text-slate-600 shadow backdrop-blur-xl
-        hover:bg-white/95 hover:text-slate-800"
+            className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-white/70 bg-white/85 px-4 py-1.5 text-xs font-medium leading-none text-slate-600 shadow backdrop-blur-xl hover:bg-white/95"
           >
-            <span
-              className="material-symbols-outlined"
-              style={{ fontSize: 16, lineHeight: 1 }}
-              aria-hidden="true"
-            >
+            <span style={{ fontSize: 20, lineHeight: 1 }} className="material-symbols-outlined text-base leading-none" aria-hidden="true">
               {chatOpen ? "expand_more" : "chat_bubble"}
             </span>
+            <span>AI Driving Assistant</span>
           </button>
         </div>
       </div>
@@ -272,7 +272,7 @@ export function MapScreen() {
           error={error}
         />
       </div>
-     
+
     </main>
   );
 }

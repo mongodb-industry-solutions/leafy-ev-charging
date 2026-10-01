@@ -30,7 +30,7 @@ export function SessionMiniMap({ lat, lng, sessionId }: SessionMiniMapProps) {
       <MapContainer
         key={sessionId}
         center={[lat, lng]}
-        zoom={ZOOM}
+        zoom={17}
         zoomControl={false}
         dragging={false}
         scrollWheelZoom={false}
@@ -43,7 +43,7 @@ export function SessionMiniMap({ lat, lng, sessionId }: SessionMiniMapProps) {
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-          maxZoom={17}
+          maxZoom={19}
         />
         <Marker position={[lat, lng]} icon={stationPinIcon} />
       </MapContainer>

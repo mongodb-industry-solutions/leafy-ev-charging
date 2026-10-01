@@ -3,9 +3,6 @@
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { divIcon } from "leaflet";
 
-const TILE_URL = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
-const TILE_ATTRIBUTION = '&copy; OpenStreetMap contributors &copy; CARTO';
-const ZOOM = 17;
 
 const stationPinIcon = divIcon({
   className: "",
@@ -33,7 +30,7 @@ export function SessionMiniMap({ lat, lng, sessionId }: SessionMiniMapProps) {
       <MapContainer
         key={sessionId}
         center={[lat, lng]}
-        zoom={ZOOM}
+        zoom={17}
         zoomControl={false}
         dragging={false}
         scrollWheelZoom={false}
@@ -44,9 +41,8 @@ export function SessionMiniMap({ lat, lng, sessionId }: SessionMiniMapProps) {
         style={{ height: "100%", width: "100%" }}
       >
         <TileLayer
-          url={TILE_URL}
-          attribution={TILE_ATTRIBUTION}
-          subdomains="abcd"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
           maxZoom={19}
         />
         <Marker position={[lat, lng]} icon={stationPinIcon} />

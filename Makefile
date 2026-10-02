@@ -79,7 +79,6 @@ preview-ghpages:
 	        frontend/app/\(admin\)/dashboard/page.tsx \
 	        frontend/app/\(driver\)/map/page.tsx \
 	        frontend/app/\(driver\)/sessions/page.tsx > /dev/null
-	rm -rf frontend/app/api
 	(cd frontend && GITHUB_PAGES_PREVIEW=true NEXT_PUBLIC_GITHUB_PAGES=true npm run build) \
 	  || (git checkout $(GHPAGES_PAGES) && exit 1)
 	git checkout $(GHPAGES_PAGES)

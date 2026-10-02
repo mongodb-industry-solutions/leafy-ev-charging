@@ -2,6 +2,7 @@
 
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { divIcon } from "leaflet";
+import { useCartoApiKey } from "@/hooks/useCartoApiKey";
 
 
 const stationPinIcon = divIcon({
@@ -25,6 +26,8 @@ interface SessionMiniMapProps {
 }
 
 export function SessionMiniMap({ lat, lng, sessionId }: SessionMiniMapProps) {
+  const cartoApiKey = useCartoApiKey();
+
   return (
     <div className="group relative h-full w-full overflow-hidden rounded-xl">
       <MapContainer
@@ -42,7 +45,7 @@ export function SessionMiniMap({ lat, lng, sessionId }: SessionMiniMapProps) {
       >
         <TileLayer
           attribution='&copy; OpenStreetMap contributors &copy; CARTO'
-          url={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY}`}
+          url={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${cartoApiKey}`}
           subdomains="abcd"
           maxZoom={19}
         />

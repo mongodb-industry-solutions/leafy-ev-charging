@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { MapContainer, TileLayer, useMapEvents } from "react-leaflet";
 import { useMap } from "react-leaflet";
+import { useCartoApiKey } from "@/hooks/useCartoApiKey";
 import { useMapBounds } from "../_hooks/useMapBounds";
 import { useChargingStationsQuery } from "../_hooks/useChargingStationsQuery";
 import { useStationClusters } from "../_hooks/useStationClusters";
@@ -242,6 +243,7 @@ export function StationMap({
   onSessionChanged,
   onReservationComplete
 }: StationMapProps) {
+  const cartoApiKey = useCartoApiKey();
   const [mounted, setMounted] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [expandedStationId, setExpandedStationId] = useState<string | null>(null);
@@ -280,7 +282,7 @@ export function StationMap({
           <>
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-              url={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY}`}
+              url={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${cartoApiKey}`}
               subdomains="abcd"
               maxZoom={MAP_MAX_ZOOM}
             />

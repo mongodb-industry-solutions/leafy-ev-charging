@@ -39,6 +39,9 @@ jobs:
           echo "$stub" > 'frontend/app/(driver)/map/page.tsx'
           echo "$stub" > 'frontend/app/(driver)/sessions/page.tsx'
 
+      - name: Remove API routes (unsupported in static export)
+        run: rm -rf frontend/app/api
+
       - name: Build static export
         run: cd frontend && npm run build
         env:

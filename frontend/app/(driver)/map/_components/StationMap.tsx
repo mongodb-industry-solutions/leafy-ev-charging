@@ -279,8 +279,9 @@ export function StationMap({
         {mapReady && (
           <>
             <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; OpenStreetMap contributors &copy; CARTO'
+              url={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY}`}
+              subdomains="abcd"
               maxZoom={MAP_MAX_ZOOM}
             />
             <MapFocusController

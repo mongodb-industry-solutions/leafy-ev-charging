@@ -41,8 +41,9 @@ export function SessionMiniMap({ lat, lng, sessionId }: SessionMiniMapProps) {
         style={{ height: "100%", width: "100%" }}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; OpenStreetMap contributors &copy; CARTO'
+          url={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY}`}
+          subdomains="abcd"
           maxZoom={19}
         />
         <Marker position={[lat, lng]} icon={stationPinIcon} />
@@ -51,7 +52,7 @@ export function SessionMiniMap({ lat, lng, sessionId }: SessionMiniMapProps) {
         <p className="rounded bg-white/85 px-1.5 py-0.5 text-[10px] leading-none text-slate-700 shadow-sm">
           <span className="pointer-events-auto">
             <a
-              href="https://www.openstreetmap.org/copyright"
+              href={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY}`}
               target="_blank"
               rel="noopener noreferrer"
               className="hover:underline"

@@ -52,7 +52,7 @@ export function SessionMiniMap({ lat, lng, sessionId }: SessionMiniMapProps) {
         <p className="rounded bg-white/85 px-1.5 py-0.5 text-[10px] leading-none text-slate-700 shadow-sm">
           <span className="pointer-events-auto">
             <a
-              href={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY}`}
+              href="https://www.openstreetmap.org/copyright"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:underline"

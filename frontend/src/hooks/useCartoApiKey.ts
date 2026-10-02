@@ -16,11 +16,11 @@ function loadCartoApiKey(): Promise<string> {
       .then((data) => {
         const key =
           data && typeof data.cartoApiKey === "string" ? data.cartoApiKey : "";
-        cachedCartoApiKey = key;
+        cachedCartoApiKey = key || null;
         return key;
       })
       .catch(() => {
-        cachedCartoApiKey = "";
+        cachedCartoApiKey = null;
         return "";
       })
       .finally(() => {

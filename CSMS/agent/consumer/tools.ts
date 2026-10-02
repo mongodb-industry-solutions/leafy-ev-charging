@@ -1,5 +1,10 @@
 import { ObjectId, type Db, type Document } from "mongodb";
-import type { ChargingStationDoc } from "../../src/db/repositories/chargingStations";
+import {
+  buildAddressMatch,
+  type ChargingStationDoc,
+  type StationAddressFilter,
+} from "../../src/db/repositories/chargingStations";
+import { buildSharedHistoryMatch } from "../../src/db/repositories/chargingSessions";
 
 const STATION_SORTS = {
   price: { field: "pricing.defaultTariff.priceCentsPerKwh", direction: 1 },
@@ -9,6 +14,14 @@ const STATION_SORTS = {
   open24h: { field: "isOpen24h", direction: -1 },
   freshness: { field: "availabilityComputedAt", direction: -1 },
 } as const;
+
+export type AreaSearch = {
+  longitude: number;
+  latitude: number;
+  radiusMeters: number;
+};
+
+export type LocationSearch = Partial<AreaSearch> & StationAddressFilter;
 
 export type StationSearchCriteria = {
   stationIds?: string[];
@@ -45,6 +58,158 @@ export type StationSearchResult = {
 function _parseObjectId(value: string): ObjectId {
   if (!/^[a-fA-F0-9]{24}$/.test(value)) throw new Error("Invalid ID");
   return new ObjectId(value);
+}
+
+// Cap on nearby stations returned to the model. If more match, the result
+// is flagged truncated instead of failing the call.
+const AREA_RESULT_CAP = 1000;
+
+function _hasCoordinates(location: LocationSearch): boolean {
+  return (
+    location.longitude !== undefined ||
+    location.latitude !== undefined ||
+    location.radiusMeters !== undefined
+  );
+}
+
+function _parseArea(location: LocationSearch): AreaSearch {
+  const { longitude, latitude, radiusMeters } = location;
+  if (
+    longitude === undefined ||
+    latitude === undefined ||
+    radiusMeters === undefined
+  ) {
+    throw new Error("Provide longitude, latitude, and radiusMeters together");
+  }
+  if (
+    ![longitude, latitude, radiusMeters].every(Number.isFinite) ||
+    Math.abs(longitude) > 180 ||
+    Math.abs(latitude) > 90 ||
+    radiusMeters <= 0 ||
+    radiusMeters > 100000
+  ) {
+    throw new Error("Invalid coordinates or radius; maximum radius is 100 km");
+  }
+  return { longitude, latitude, radiusMeters };
+}
+
+const EARTH_RADIUS_METERS = 6371000;
+
+function _haversineMeters(
+  origin: { longitude: number; latitude: number },
+  point: [number, number],
+): number {
+  const toRadians = (degrees: number) => (degrees * Math.PI) / 180;
+  const deltaLat = toRadians(point[1] - origin.latitude);
+  const deltaLng = toRadians(point[0] - origin.longitude);
+  const lat1 = toRadians(origin.latitude);
+  const lat2 = toRadians(point[1]);
+  const h =
+    Math.sin(deltaLat / 2) ** 2 +
+    Math.cos(lat1) * Math.cos(lat2) * Math.sin(deltaLng / 2) ** 2;
+  return 2 * EARTH_RADIUS_METERS * Math.asin(Math.min(1, Math.sqrt(h)));
+}
+
+export type NearbyStation = { stationId: string; distanceMeters: number };
+
+export type AreaSearchResult = {
+  stations: NearbyStation[];
+  area: AreaSearch | null;
+  truncated: boolean;
+};
+
+export async function findChargingStationsInArea(
+  db: Db,
+  location: LocationSearch,
+): Promise<AreaSearchResult> {
+  if (_hasCoordinates(location)) {
+    const area = _parseArea(location);
+    const rows = await db
+      .collection("chargingStations")
+      .aggregate<{ _id: ObjectId; distanceMeters: number }>(
+        [
+          {
+            $geoNear: {
+              near: {
+                type: "Point",
+                coordinates: [area.longitude, area.latitude],
+              },
+              distanceField: "distanceMeters",
+              maxDistance: area.radiusMeters,
+              key: "location",
+              spherical: true,
+            },
+          },
+          { $limit: AREA_RESULT_CAP + 1 },
+          { $project: { _id: 1, distanceMeters: 1 } },
+        ],
+        { maxTimeMS: 5000 },
+      )
+      .toArray();
+
+    return {
+      stations: rows.slice(0, AREA_RESULT_CAP).map((row) => ({
+        stationId: String(row._id),
+        distanceMeters: row.distanceMeters,
+      })),
+      area,
+      truncated: rows.length > AREA_RESULT_CAP,
+    };
+  }
+
+  const addressMatch = buildAddressMatch(location);
+  if (Object.keys(addressMatch).length === 0) {
+    throw new Error(
+      "Provide coordinates or at least one address field (street, city, country, postalCode)",
+    );
+  }
+
+  const matches = await db
+    .collection<ChargingStationDoc>("chargingStations")
+    .find(addressMatch, {
+      projection: { _id: 1, location: 1 },
+      maxTimeMS: 5000,
+    })
+    .limit(AREA_RESULT_CAP + 1)
+    .toArray();
+
+  if (matches.length === 0) {
+    return { stations: [], area: null, truncated: false };
+  }
+
+  const capped = matches.slice(0, AREA_RESULT_CAP);
+  const centroid = {
+    longitude:
+      capped.reduce(
+        (sum, station) => sum + station.location.coordinates[0],
+        0,
+      ) / capped.length,
+    latitude:
+      capped.reduce(
+        (sum, station) => sum + station.location.coordinates[1],
+        0,
+      ) / capped.length,
+  };
+
+  const stations = capped.map((station) => ({
+    stationId: String(station._id),
+    distanceMeters: Math.round(
+      _haversineMeters(centroid, station.location.coordinates),
+    ),
+  }));
+
+  return {
+    stations,
+    area: {
+      longitude: centroid.longitude,
+      latitude: centroid.latitude,
+      radiusMeters: stations.reduce(
+        (max, station) => Math.max(max, station.distanceMeters),
+        0,
+      ),
+    },
+    truncated: matches.length > AREA_RESULT_CAP,
+  };
 }
 
 export async function findChargingStation(
@@ -97,14 +262,12 @@ export async function findChargingStation(
   if ((sortBy === "price" || maxPriceCentsPerKwh !== undefined) && !currency) {
     throw new Error("Specify currency when sorting or filtering by price");
   }
-  if (stationIds === undefined || stationIds.length === 0) return [];
+  if (stationIds !== undefined && stationIds.length === 0) return [];
 
-  const match: Document = {
-    _id: { $in: [...new Set(stationIds ?? [])].map((id) => new ObjectId(id)) },
-  };
-  if (currency) match["pricing.currency"] = currency;
+  const priceMatch: Document = {};
+  if (currency) priceMatch["pricing.currency"] = currency;
   if (sortBy === "price" || maxPriceCentsPerKwh !== undefined) {
-    match["pricing.defaultTariff.priceCentsPerKwh"] = {
+    priceMatch["pricing.defaultTariff.priceCentsPerKwh"] = {
       $type: "number",
       $gte: 0,
       ...(maxPriceCentsPerKwh !== undefined
@@ -113,10 +276,28 @@ export async function findChargingStation(
     };
   }
 
+  // Match usable charging points before $unwind so fewer documents expand.
+  const pointMatch: Document = { outOfService: { $ne: true } };
+  if (availableOnly) pointMatch["availableNow"] = true;
+
   const sort = STATION_SORTS[sortBy];
 
   const pipeline: Document[] = [
-    { $match: match },
+    {
+      $match: {
+        // Omitted stationIds means a network-wide search.
+        ...(stationIds
+          ? {
+              _id: {
+                $in: [...new Set(stationIds)].map((id) => new ObjectId(id)),
+              },
+            }
+          : {}),
+        ...priceMatch,
+        // Match usable charging points before $unwind so fewer documents expand.
+        chargingPoints: { $elemMatch: pointMatch },
+      },
+    },
     { $unwind: "$chargingPoints" },
     {
       $match: {
@@ -175,7 +356,12 @@ export async function findChargingStation(
         },
       },
     },
-    { $sort: { [sort.field]: sort.direction, _id: 1 } },
+    {
+      $sort: {
+        [sort.field]: sort.direction,
+        _id: 1,
+      },
+    },
     { $limit: limit },
     {
       $project: {
@@ -207,72 +393,79 @@ export async function findChargingStation(
     .toArray();
 }
 
-export async function findStationsInArea(
-  db: Db,
-  area: { longitude: number; latitude: number; radiusMeters: number },
-) {
-  const { longitude, latitude, radiusMeters } = area;
-  if (
-    ![longitude, latitude, radiusMeters].every(Number.isFinite) ||
-    Math.abs(longitude) > 180 ||
-    Math.abs(latitude) > 90 ||
-    radiusMeters <= 0 ||
-    radiusMeters > 100000
-  ) {
-    throw new Error("Invalid coordinates or radius; maximum radius is 100 km");
-  }
-  const stations = await db
-    .collection("chargingStations")
-    .find(
-      {
-        location: {
-          $near: {
-            $geometry: {
-              type: "Point",
-              coordinates: [longitude, latitude],
-            },
-            $maxDistance: radiusMeters,
-          },
-        },
-      },
-      {
-        projection: { _id: 1 },
-        maxTimeMS: 5000,
-      },
-    )
-    .limit(1001)
-    .toArray();
+const ADDRESS_FIELDS = [
+  "address.street",
+  "address.city",
+  "address.postalCode",
+  "address.country",
+] as const;
 
-  if (stations.length > 1000) {
-    throw new Error("Search area too large; narrow it");
-  }
+function _escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
+function _exactQuery(value: string): Document {
+  const match = { $regex: `^${_escapeRegExp(value)}$`, $options: "i" };
   return {
-    stationIds: stations.map((station) => String(station._id)),
-    area,
+    $or: [{ name: match }, { operator: match }, { stationCode: match }],
+  };
+}
+
+function _addressQuery(parts: string[]): Document {
+  return {
+    $and: parts.map((part) => ({
+      $or: ADDRESS_FIELDS.map((field) => ({
+        [field]: { $regex: _escapeRegExp(part), $options: "i" },
+      })),
+    })),
   };
 }
 
 export async function getSelectedChargerDetails(db: Db, stationId: string) {
-  return db.collection<ChargingStationDoc>("chargingStations").findOne(
-    { _id: _parseObjectId(stationId) },
-    {
-      maxTimeMS: 5000,
-      projection: {
-        stationCode: 1,
-        name: 1,
-        operator: 1,
-        location: 1,
-        address: 1,
-        timezone: 1,
-        characteristics: 1,
-        chargingPoints: 1,
-        pricing: 1,
-        availability: 1,
-        updatedAt: 1,
-      },
+  const collection = db.collection<ChargingStationDoc>("chargingStations");
+  const options = {
+    maxTimeMS: 5000,
+    projection: {
+      stationCode: 1,
+      name: 1,
+      operator: 1,
+      location: 1,
+      address: 1,
+      timezone: 1,
+      characteristics: 1,
+      chargingPoints: 1,
+      pricing: 1,
+      availability: 1,
+      updatedAt: 1,
     },
-  );
+  };
+
+  if (/^[a-fA-F0-9]{24}$/.test(stationId)) {
+    return collection.findOne({ _id: _parseObjectId(stationId) }, options);
+  }
+
+  const query = stationId.trim();
+  if (!query) return null;
+
+  const findMatches = (filter: Document) =>
+    collection.find(filter, options).limit(10).toArray();
+
+  let matches: ChargingStationDoc[];
+  if (query.includes(",")) {
+    const parts = query
+      .split(",")
+      .map((part) => part.trim())
+      .filter(Boolean);
+    matches = parts.length > 0 ? await findMatches(_addressQuery(parts)) : [];
+    if (matches.length === 0) matches = await findMatches(_exactQuery(query));
+  } else {
+    matches = await findMatches(_exactQuery(query));
+    if (matches.length === 0) matches = await findMatches(_addressQuery([query]));
+  }
+
+  if (matches.length === 0) return null;
+  if (matches.length === 1) return matches[0];
+  return matches;
 }
 
 export async function getMyChargingHistory(
@@ -288,7 +481,9 @@ export async function getMyChargingHistory(
     from >= to
   )
     throw new Error("Invalid history criteria");
-  const match: Document = { userId: _parseObjectId(userId) };
+  // Session-agnostic: match the caller's sessions plus the shared demo
+  // history, so past sessions stay visible after a new session is loaded.
+  const match: Document = buildSharedHistoryMatch(userId);
   if (mode === "current") match.status = { $in: ["ACTIVE", "BOOKED"] };
   else match["charging.endedAt"] = { $gte: from, $lt: to };
   if (mode === "spending") {

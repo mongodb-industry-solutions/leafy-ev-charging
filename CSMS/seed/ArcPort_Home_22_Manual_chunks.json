@@ -1,0 +1,1514 @@
+[
+  {
+    "text": "ArcPort Home 22 > Table of Contents\n\n1. Safety Instructions\n2. Description and Features\n   - 2.1 Description\n   - 2.2 Features\n   - 2.3 Operating modes\n   - 2.4 What's in the box\n   - 2.5 Product overview and connections\n3. Installation\n   - 3.1 Before you begin\n   - 3.2 Site and mounting requirements\n   - 3.3 Electrical requirements\n   - 3.4 Step-by-step installation\n   - 3.5 Wiring diagrams\n   - 3.6 Post-installation checklist\n4. System Examples\n5. Setup, Configuration and Operation\n   - 5.1 First-use setup via NordLink (Bluetooth)\n   - 5.2 First-use setup via Wi-Fi access point\n   - 5.3 Pairing with a Nexus Hub\n   - 5.4 Nexus Hub setup and options\n   - 5.5 NordLink app reference\n   - 5.6 Touchscreen reference\n   - 5.7 Firmware updates\n   - 5.8 Reset and password recovery\n   - 5.9 Maintenance and cleaning\n6. Troubleshooting\n   - 6.1 Vehicle detection and signal calibration\n   - 6.2 Hub pairing problems\n   - 6.3 Wi-Fi problems\n   - 6.4 Frequently asked questions\n   - 6.5 Codes: errors, warnings and notices\n   - 6.6 Common user errors and how to avoid them\n   - 6.7 Overheating and thermal management\n7. Technical Specification\n   - 7.1 Dimensions\n8. Appendix\n   - 8.1 Grid-operator load control (dry-contact input)\n   - 8.2 Modbus TCP integration\n   - 8.3 Web interface reference\n   - 8.4 Light ring status reference\n9. Warranty, Support and Disposal\n10. Glossary\n11. Revision History\n\n**Part II — Technical Service Manual**\n\n12. Service Requirements, Tools and Safe Working\n13. Internal Architecture and Test Points\n14. Diagnostic Method and Data Sources\n15. Error Code Repair Procedures (E-01 to E-09)\n16. Warning and Notice Procedures (W-201 to W-214, N-401 to N-408)\n17. Symptom-Based Troubleshooting (incl. 17.11 Overheating diagnosis)\n18. Reference Measurements and Expected Values\n19. Commissioning and Periodic Inspection Test Procedure\n20. Component Replacement Procedures\n21. Diagnostic Log and Event Code Reference\n22. Service Record Templates\n\n---\n\n# 1. Safety Instructions\n\nRead all safety instructions before installing or using the ArcPort Home 22. Failure to follow them can result in fire, electric shock, serious injury or damage to equipment.\n\n**Qualified personnel only.** Installation, adjustment and internal servicing must be carried out by a licensed electrician or equivalent qualified person. Do not perform any servicing other than that described in this manual unless you are qualified to do so.\n\n**Follow local rules.** All electrical work must comply with the wiring regulations of the country of installation and with the instructions in this manual. Where this manual and local regulations differ, local regulations take priority.\n\n**Intended use.** The ArcPort Home 22 is designed for charging road electric vehicles that use an IEC 62196 Type 2 connector. Use it only for that purpose and only within the specified operating parameters.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "Table of Contents",
+    "heading": "Table of Contents",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > Warnings and cautions\n\n> ⚠️ **WARNING — risk of electric shock, fire and injury**\n\n- Never install near fire sources, explosive materials, combustible materials, or in locations where gas or chemical explosions could occur.\n- The unit must be connected to protective earth at all times. If earth is missing, the unit will refuse to charge.\n- Isolate the supply and verify it is dead before installing or opening the unit.\n- Supervise children near the equipment. This product is not a toy.\n- Do not insert fingers, tools or metal objects into the vehicle socket or any opening in the housing.\n- Do not use the station if the housing is cracked, the socket is damaged, the supply cable is damaged, or the unit behaves abnormally.\n- Do not use adapters, extension cords or cable reels between the station and the vehicle unless approved by the vehicle manufacturer and compliant with local regulations.\n- Do not apply strong force to the housing, socket or display. Do not use sharp objects on the product.\n- Do not open, disassemble or modify the unit unless you are a qualified installer following this manual. Unauthorised modification voids the warranty.\n- Do not touch live electrical parts. Several areas inside the unit carry mains voltage even when the station is idle.\n- Do not allow the vehicle cable to lie in standing water or snow, and do not charge if the connector or socket is wet or iced over.\n- Ensure the earth connection is correct to prevent damage to the equipment and the vehicle.\n- Transport the unit in its original packaging to avoid damage.\n- Store the unit in a dry place between –40 °C and +80 °C.\n- Do not operate the unit outside its operating range of –25 °C to +50 °C.\n- Wireless emissions from this device could potentially affect certain medical electronic implants. People with implants should consult the implant manufacturer before using or standing close to the station.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "Warnings and cautions",
+    "heading": "Warnings and cautions",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > Symbols used in this manual\n\n| Symbol | Meaning |\n|---|---|\n| ⚠️ | Warning: risk of injury or serious damage |\n| ℹ️ | Note: useful information |\n| 💡 | Tip: a faster or better way of doing something |\n| 🔧 | Installer: procedure for qualified personnel only |\n\n---\n\n# 2. Description and Features",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "Symbols used in this manual",
+    "heading": "Symbols used in this manual",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 2.1 Description\n\nThe ArcPort Home 22 is an AC charging station for electric vehicles. It delivers up to **22 kW** in three-phase installations or **7.4 kW** in single-phase installations, with a configurable charging current of **6–32 A** per phase.\n\nThe station connects to your home network via Wi-Fi and can be operated in several ways:\n\n- Locally, with the built-in 4.3-inch colour touchscreen\n- Locally over Bluetooth, with the **NordLink** mobile app\n- From any browser on your network, using the built-in web interface\n- Through a **Nexus Hub** energy gateway\n- From anywhere in the world, through the **NordCloud** portal and the NordLink Remote function\n\nWhen your home has solar panels and a Nexus Hub, the ArcPort can charge your vehicle using only surplus solar energy, so power that would otherwise be sold back to the grid at a low tariff is stored in your vehicle's battery instead.\n\nA programmable **Halo light ring** around the socket shows the charging status from a distance, with 48 selectable light effects. The impact-resistant, UV-stabilised polycarbonate housing is rated IP54 and can be mounted indoors or outdoors.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "2.1 Description",
+    "heading": "2.1 Description",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 2.2 Features\n\n- Three-phase 22 kW or single-phase 7.4 kW charging\n- Configurable current from 6 A to 32 A\n- 4.3-inch colour touchscreen with a lock function\n- Wi-Fi (802.11 b/g/n, 2.4 GHz) and Bluetooth Low Energy\n- Built-in web interface\n- MQTT and Modbus TCP support for integration with energy-management systems\n- Solar-surplus charging with Nexus Hub\n- Time-based scheduling with up to 12 schedules\n- Session statistics: energy, duration, cost and solar savings\n- Integrated DC 6 mA residual-current detection (an upstream type A RCD is still required — see Section 3.3)\n- Welded-contactor detection, earth-presence detection and control-pilot short-circuit detection\n- Over-the-air firmware updates via NordCloud\n- Halo light ring with 48 light effects and per-state configuration\n- Dry-contact input for grid-operator load reduction\n- Operating temperature range from –25 °C to +50 °C",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "2.2 Features",
+    "heading": "2.2 Features",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 2.3 Operating modes\n\nThe ArcPort Home 22 has three operating modes.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "2.3 Operating modes",
+    "heading": "2.3 Operating modes",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 2.3 Operating modes > Solar mode\n\nIn Solar mode the station monitors the energy flow of your house through the Nexus Hub. It starts charging when your solar system produces more energy than the house is using, and adjusts the charging current as the surplus rises and falls.\n\n> ℹ️ Solar mode requires a Nexus Hub in the system, and communication between the Hub and the ArcPort must be enabled. See Sections 5.3 and 5.4.\n\n**How does it work?**\n\nCharging starts automatically when the vehicle is connected and all of the following are true:\n\n1. The home battery's state of charge is above the value set in **Start charging at battery SoC (%)**. If you do not have a home battery, this condition is ignored.\n2. There is enough surplus solar power. Surplus is calculated as:\n\n   *Surplus = total solar production − household loads (excluding the vehicle)*\n\n   For example, with the minimum charging current set to 6 A on a 230 V phase, you need at least **1,380 W** of surplus (230 V × 6 A). If you raise the minimum charging current, the required surplus rises accordingly.\n\n3. Alternatively, if surplus is below the minimum, you can enable **Top up from grid in Solar mode**. The ArcPort then draws the missing power from the grid so the vehicle can charge at the minimum current.\n\n**Example:** With only 800 W of surplus and a 6 A minimum, 580 W is drawn from the grid to reach the required 1,380 W.\n\n> 💡 Enable **Smooth-start hold** to reduce the number of start/stop cycles on days with passing clouds. The station will continue charging at the minimum current for a configurable time when the surplus briefly drops.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "2.3 Operating modes > Solar mode",
+    "heading": "Solar mode",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 2.3 Operating modes > Manual mode\n\nIn Manual mode you choose the charging current between 6 A and the configured maximum. Charging starts and stops on your command, regardless of solar production. You can control Manual mode from:\n\n- The touchscreen slider\n- The web interface\n- The NordLink app (Bluetooth or Remote)\n- The Nexus Hub touchscreen or its remote console\n- The NordCloud dashboard",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "2.3 Operating modes > Manual mode",
+    "heading": "Manual mode",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 2.3 Operating modes > Scheduled mode\n\nScheduled mode lets you charge at specific times, for example overnight when electricity is cheaper. Each schedule has a start time, end time, maximum current and repeat pattern. The station follows the schedules automatically. Up to 12 schedules can be stored.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "2.3 Operating modes > Scheduled mode",
+    "heading": "Scheduled mode",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 2.4 What's in the box\n\n- 1 × ArcPort Home 22 charging station\n- 1 × 25 mm nylon cable gland (cable diameter 10–18 mm), pre-fitted\n- 1 × Wall-mounting template (paper)\n- 4 × Wall plugs (8 mm) and 4 × stainless-steel screws (5 × 50 mm)\n- 1 × Torx T20 security driver bit\n- 1 × Quick start guide\n\n> ℹ️ A charging cable is not included. The ArcPort has a Type 2 **socket** and requires a Mode 3 charging cable (Type 2 to the vehicle's connector).",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "2.4 What's in the box",
+    "heading": "2.4 What's in the box",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 2.5 Product overview and connections\n\n**Front**\n\n1. Halo light ring\n2. Type 2 vehicle socket with spring-loaded cover\n3. 4.3-inch touchscreen\n4. Model label\n\n**Underside**\n\n5. Mains cable gland\n6. Optional second gland knock-out (for the dry-contact cable)\n\n**Inside (behind the backing plate)**\n\n7. Mains terminals (L1, L2, L3, N, PE)\n8. Dry-contact input terminals\n9. Information label with model, serial number, Wi-Fi password and Bluetooth pairing code\n10. DEF button (reset)\n11. Status LEDs\n\n---\n\n# 3. Installation\n\n> 🔧 This product may only be installed by a licensed electrician.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "2.5 Product overview and connections",
+    "heading": "2.5 Product overview and connections",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 3.1 Before you begin\n\n- Make sure you have the latest version of this manual. It is available at **docs.nordvane.example/arcport**.\n- Check the unit for transport damage. Do not install a damaged unit.\n- Confirm that your mains supply and distribution board can support the charging power you intend to use (see 3.3).\n- Obtain any permits or grid-operator approvals that apply in your country.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "3.1 Before you begin",
+    "heading": "3.1 Before you begin",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 3.2 Site and mounting requirements\n\n- The unit can be mounted on a wall or a pole. The mounting surface must be **solid, flat and vertical**.\n- Mount the station so that the socket is between **0.9 m and 1.5 m** above the ground, unless local regulations specify otherwise.\n- Allow at least **200 mm** of free space on each side and **300 mm** below the unit for cable routing.\n- Avoid direct, prolonged sunlight where possible. A shaded position reduces the chance of thermal derating in hot climates.\n- Keep the station away from sources of heat, steam and corrosive vapour.\n- Choose a location within reach of your vehicle's charging port, taking into account the length of your charging cable.\n- Make sure the Wi-Fi signal at the mounting location is adequate. An RSSI better than **–70 dBm** is recommended. You can test with a smartphone beforehand.\n- In coastal or industrial atmospheres, consult your installer about additional protection.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "3.2 Site and mounting requirements",
+    "heading": "3.2 Site and mounting requirements",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 3.3 Electrical requirements\n\n> ⚠️ Incorrect electrical protection is the most common cause of installation faults. Read this section carefully.\n\n- **Supply protection:** protect the AC supply line with a circuit breaker or fuse rated at **40 A or less** per phase. Size the cable accordingly. If the supply is rated lower, the breaker must be sized to match.\n- **Residual-current protection:** an **external RCD is required**. We recommend a **type B** RCD (or type A combined with an external 6 mA DC detection device, where permitted by local regulations). Match the RCD rating to the maximum charging power used: a 40 A RCD for regular 22 kW charging, or a correspondingly lower rating if you limit the station's charging current.\n- **Dedicated circuit:** the station must be supplied by its own dedicated circuit.\n- **Recommended cable cross-section:** **6 mm²** (AWG 10). Larger cross-sections may be required for long cable runs; the terminals accept 4–10 mm².\n- **Earthing:** a reliable protective earth connection is mandatory. Where the supply uses a PME (TN-C-S) arrangement, follow local regulations on earth-electrode and open-PEN protection.\n- **Supply voltage:** 230 V single-phase or 400 V three-phase, 50 Hz. Operating range is 170–265 V per phase.\n- **Overvoltage protection:** a surge protective device (SPD) in the distribution board is recommended, particularly in areas with frequent lightning.\n\n| Charging power | Supply | Recommended breaker | Recommended RCD |\n|---|---|---|---|\n| 22 kW | 3-phase, 32 A | 32–40 A | 40 A type B |\n| 11 kW | 3-phase, 16 A | 16–20 A | 25 A type B |\n| 7.4 kW | 1-phase, 32 A | 32–40 A | 40 A type B |\n| 3.7 kW | 1-phase, 16 A | 16–20 A | 25 A type B |\n\n> ℹ️ Tip: Setting the maximum charging current in software to match your supply is a good way of protecting the installation. See Step 3 of 3 in Section 5.1.\n\n**Information label.** Inside the unit you will find a label with the model, serial number, **Wi-Fi/web password**, and (depending on manufacture date) the unique **Bluetooth pairing code**. Photograph this label or write down the details for future reference. The initial password is used both for the web interface and for the station's Wi-Fi access point.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "3.3 Electrical requirements",
+    "heading": "3.3 Electrical requirements",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 3.4 Step-by-step installation\n\n**Tightening torque for the backing-plate screws: 1.0–1.2 Nm.**\n\n1. Switch off and lock out the supply circuit. Verify with a voltage tester that it is dead.\n2. Unscrew the 8 Torx screws and remove the black backing plate.\n3. Hold the backing plate (or the supplied paper template) against the wall at the intended height, level it, and mark the 4 fixing holes.\n4. Drill the 4 holes, insert the wall plugs, and set the template aside.\n5. If the supply cable enters from inside the building, mark and drill a cable passage through the wall. Seal the passage afterwards to keep out moisture and insects.\n6. Label each conductor of the supply cable (L1, L2, L3, N, PE) for identification.\n7. Pass the cable through the wall (if applicable), through the nylon gland, through the grommet, and into the station.\n8. Strip the conductors and terminate each with a **ferrule**.\n9. Connect the conductors to the mains terminals:\n   - **Three-phase:** L1, L2, L3, N, PE\n   - **Single-phase:** L1, N, PE only. Leave L2 and L3 unconnected.\n10. Tighten each terminal screw to the torque stated on the terminal label, and give each conductor a gentle pull test.\n11. If you are using the dry-contact input (Appendix 8.1), connect it now using the second gland.\n12. Tighten the gland nut around the cable so that the cable is gripped firmly and the seal is tight.\n13. Refit the backing plate and tighten the 8 screws to 1.0–1.2 Nm. Check that the seal is correctly seated all the way round.\n14. Mount the station on the wall using the 4 screws.\n15. Restore power. The Halo ring will pulse white and the display will show the first-setup QR code.\n\n> ⚠️ Do not leave the backing plate off while the unit is powered, except when performing the DEF-button procedure described in Section 5.8.\n\n> ⚠️ **Single-phase installations:** do not install the station on one phase of a three-phase system and leave the others unconnected without informing your grid operator. Some countries restrict single-phase loads above a certain current.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "3.4 Step-by-step installation",
+    "heading": "3.4 Step-by-step installation",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 3.5 Wiring diagrams\n\n**Three-phase connection (TN-S / TT)**\n\n```\n Distribution board                             ArcPort Home 22\n ┌─────────────────────┐                      ┌───────────────────┐\n │  3P+N Breaker 40 A  │─ L1 ────────────────▶│ L1                │\n │  Type B RCD  40 A   │─ L2 ────────────────▶│ L2                │\n │                     │─ L3 ────────────────▶│ L3                │\n │                     │─ N  ────────────────▶│ N                 │\n │  Earth bar          │─ PE ────────────────▶│ PE                │\n └─────────────────────┘                      └───────────────────┘\n```\n\n**Single-phase connection**\n\n```\n Distribution board                             ArcPort Home 22\n ┌─────────────────────┐                      ┌───────────────────┐\n │  1P+N Breaker 40 A  │─ L1 ────────────────▶│ L1                │\n │  Type B RCD  40 A   │─ N  ────────────────▶│ N                 │\n │  Earth bar          │─ PE ────────────────▶│ PE                │\n └─────────────────────┘                      │ L2, L3: not used  │\n                                              └───────────────────┘\n```",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "3.5 Wiring diagrams",
+    "heading": "3.5 Wiring diagrams",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 3.6 Post-installation checklist\n\nBefore handing the installation to the customer, confirm the following:\n\n- [ ] Supply isolated and verified dead before work began\n- [ ] Breaker and RCD correctly rated and tested\n- [ ] Earth continuity and earth-loop impedance measured and recorded\n- [ ] Phase sequence and polarity correct (three-phase)\n- [ ] Gland tight, backing-plate seal intact, all 8 screws torqued\n- [ ] Wi-Fi password and Bluetooth pairing code recorded\n- [ ] First setup completed (Section 5.1 or 5.2)\n- [ ] Maximum current set to match the supply\n- [ ] Test charge performed with a vehicle\n- [ ] Customer shown the touchscreen, the NordLink app and the light ring\n\n---\n\n# 4. System Examples\n\nThe ArcPort Home 22 fits a wide range of installations. The two most common are described below.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "3.6 Post-installation checklist",
+    "heading": "3.6 Post-installation checklist",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 4.1 Grid-connected house with solar and a Nexus Hub\n\n```\n   ☀ Solar array ──▶ Solar inverter ──┐\n                                      ▼\n   Grid ──▶ Meter ──▶ Main board ──▶ House loads\n                         │\n                         ├──▶ [RCD B 40 A] ──▶ ArcPort Home 22 ──▶ 🚗\n                         │\n                         └──▶ Nexus Hub  (reads energy flows, coordinates charging)\n                                 ▲\n                                 └─ Wi-Fi / Ethernet to ArcPort and NordCloud\n```\n\nIn this system the Nexus Hub measures production and consumption, and tells the ArcPort how much surplus is available. The ArcPort adjusts its current accordingly.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "4.1 Grid-connected house with solar and a Nexus Hub",
+    "heading": "4.1 Grid-connected house with solar and a Nexus Hub",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 4.2 Off-grid or backup system with battery\n\nIn an off-grid or backup system, the ArcPort can be fed from the output side of an inverter/charger. Set **Charger position** to *Inverter output* so that the station knows its power comes from the inverter and not from the grid.\n\n> ℹ️ In systems without a physical home battery, enable **Virtual battery** in the Hub settings so that Solar mode can still run. See Section 5.5.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "4.2 Off-grid or backup system with battery",
+    "heading": "4.2 Off-grid or backup system with battery",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 4.3 Key to the system diagram\n\n| Key | Description |\n|---|---|\n| A | Solar array |\n| B | Solar inverter (grid-feed) |\n| C | Mobile device with the NordLink app (setup over Wi-Fi or Bluetooth) |\n| D | ArcPort Home 22 installed on the mains side of an inverter/charger |\n| E | Inverter/charger (single-phase or three-phase) |\n| F | ArcPort Home 22 installed on the output side of an inverter/charger |\n| G | Home battery |\n| H | Nexus Hub |\n| I | Dedicated RCD, type B, 40 A for 22 kW charging |\n\nMultiple ArcPort stations can be installed in the same system. Available power is shared between them according to a first-come-first-served rule, or equally, depending on the Hub's **Load-sharing** setting.\n\n---\n\n# 5. Setup, Configuration and Operation\n\n> ℹ️ A new ArcPort must go through **first-use setup** before it can charge. The same setup is required after a full factory reset.\n\nYou can complete first-use setup in either of two ways:\n\n- **5.1** — with the NordLink app over Bluetooth (fastest for most users)\n- **5.2** — through the station's own Wi-Fi access point and a web browser\n\n> ℹ️ Bluetooth is **disabled** on units shipped with firmware 1.9 or earlier. For those units, complete Section 5.2 first and then enable Bluetooth in the web interface's *Network* menu. Units shipped with firmware 2.0 or later have Bluetooth enabled by default.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "4.3 Key to the system diagram",
+    "heading": "4.3 Key to the system diagram",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.1 First-use setup via NordLink (Bluetooth) > Preparation\n\n1. Install **NordLink** from the App Store or Google Play and open it.\n2. Find your station in the device list. It appears as **ARCP-NV-xxxxxxxx**.\n3. Tap the station. The pairing dialogue starts. Enter the pairing code, which is either **000000** or the unique code printed on the label inside the housing.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.1 First-use setup via NordLink (Bluetooth) > Preparation",
+    "heading": "Preparation",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.1 First-use setup via NordLink (Bluetooth) > Start initial setup\n\nIf pairing succeeds, the status page appears. A warning, **W-201: Initial setup not completed**, will be displayed. Tap the cog-wheel icon in the top right to open Settings and begin.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.1 First-use setup via NordLink (Bluetooth) > Start initial setup",
+    "heading": "Start initial setup",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.1 First-use setup via NordLink (Bluetooth) > Step 1 of 3 — Configure Wi-Fi access\n\nYou must choose one of the following to continue:\n\n- **Access Point (AP) mode.** The station creates its own Wi-Fi network. All fields are pre-filled; the AP passphrase is the password printed on the internal label. Choose this if you have no home Wi-Fi at the installation location or no Nexus Hub.\n- **Station mode.** The station joins your home Wi-Fi network. Type the network name (SSID) and password, or tap **Scan** to select a nearby network from a list and enter its password.\n\n> ⚠️ The ArcPort supports **2.4 GHz** Wi-Fi only (802.11 b/g/n). It cannot join a 5 GHz-only network.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.1 First-use setup via NordLink (Bluetooth) > Step 1 of 3 — Configure Wi-Fi access",
+    "heading": "Step 1 of 3 — Configure Wi-Fi access",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.1 First-use setup via NordLink (Bluetooth) > Step 2 of 3 — Change web-access credentials\n\nThis step protects access to the web interface. The default user name is **admin** and the default password is the one printed on the internal label. Choose your own user name and a strong password.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.1 First-use setup via NordLink (Bluetooth) > Step 2 of 3 — Change web-access credentials",
+    "heading": "Step 2 of 3 — Change web-access credentials",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.1 First-use setup via NordLink (Bluetooth) > Step 3 of 3 — Set the maximum charging current\n\nChoose the highest current the station is allowed to deliver (range **6–32 A**). Set this value in line with your supply and breaker. See Section 3.3.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.1 First-use setup via NordLink (Bluetooth) > Step 3 of 3 — Set the maximum charging current",
+    "heading": "Step 3 of 3 — Set the maximum charging current",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.1 First-use setup via NordLink (Bluetooth) > Setup complete\n\nYou are returned to the status page and the setup warning disappears. The ArcPort is now ready for use.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.1 First-use setup via NordLink (Bluetooth) > Setup complete",
+    "heading": "Setup complete",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.2 First-use setup via Wi-Fi access point\n\nWhen powered for the first time, the station broadcasts its own Wi-Fi network.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.2 First-use setup via Wi-Fi access point",
+    "heading": "5.2 First-use setup via Wi-Fi access point",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.2 First-use setup via Wi-Fi access point > Connect to the access point\n\nUse any one of these methods:\n\n1. Scan the QR code on the internal label.\n2. Open the Wi-Fi settings on your phone or laptop, and choose the network **ARCP-NV-xxxxxxxx**. The password is printed on the internal label.\n3. Scan the QR code shown on the touchscreen during first setup.\n\n> ℹ️ After first setup is complete, the QR code on the display changes to a link to the Nordvane support site.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.2 First-use setup via Wi-Fi access point > Connect to the access point",
+    "heading": "Connect to the access point",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.2 First-use setup via Wi-Fi access point > Web-based setup wizard\n\nOpen a browser and go to **http://192.168.4.1**. Log in with user **admin** and the password from the label. The setup wizard starts.\n\n**Step 1 — Location.** Choose your region, country and time zone. Daylight-saving changes are applied automatically.\n\n**Step 2 — Off-peak charging.** In some regions, regulations or utility programmes require new charging stations to avoid charging during certain peak periods by default. If your chosen location requires this, the wizard will show an **Off-peak charging** option, already enabled. You can turn it off now or later.\n\n**Step 3 — Wi-Fi.** Choose how the station connects to a network.\n\n- *Access point mode:* the unit creates its own network. This is intended for setup or for installations without a Nexus Hub. You can change the SSID, password, IP address and netmask.\n- *Station mode:* the unit joins your existing Wi-Fi, which should also include your Nexus Hub if you have one.\n  1. Switch the Wi-Fi mode from AP to **Station**.\n  2. Click **Scan** to search for networks, or click **Add** to type a known network by hand.\n  3. Tick your network and click **Apply**.\n  4. Type your Wi-Fi password and click **Next**.\n  5. If you need a fixed IP address instead of DHCP, change **IP mode** to *Manual* and complete the IP address, mask, gateway and DNS fields.\n\n**Step 4 — Access.** Choose your own user name and a new password. The password must contain at least 8 characters with a mix of lower-case, upper-case and special characters.\n\n**Step 5 — Charging current.** Enter the maximum charging current (6–32 A).\n\n**Step 6 — Finish.** Click **Save**. The station restarts. When it comes back, log in with the credentials you just created. The dashboard will appear and the ArcPort is ready.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.2 First-use setup via Wi-Fi access point > Web-based setup wizard",
+    "heading": "Web-based setup wizard",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.3 Pairing with a Nexus Hub\n\nPairing is recommended if you want Solar mode, remote access through NordCloud, or integration with other energy-management features. The ArcPort and the Hub use **MQTT** for communication. Modbus TCP is still available as an alternative (see Appendix 8.2).\n\n> ℹ️ **Version requirements:** ArcPort firmware 3.0 or later · Nexus Hub OS 2.6 or later · NordLink app 4.1 or later.\n\nThe two devices must be **on the same network and subnet**. The Hub must first be placed in pairing mode, where it listens for a request from the ArcPort.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.3 Pairing with a Nexus Hub",
+    "heading": "5.3 Pairing with a Nexus Hub",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.3 Pairing with a Nexus Hub > 5.3.1 Put the Hub into pairing mode\n\n1. On the Hub's touchscreen or web interface, go to **Settings → Integrations → Paired Devices**.\n2. Tap **Start pairing**. A countdown shows the time remaining (**2 minutes**).\n3. If the time runs out, tap **Start pairing** again.\n\nSome Hub models also have a physical button. Double-press it with a pointed object; the blue LED flashes steadily while pairing is active.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.3 Pairing with a Nexus Hub > 5.3.1 Put the Hub into pairing mode",
+    "heading": "5.3.1 Put the Hub into pairing mode",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.3 Pairing with a Nexus Hub > 5.3.2 Pair using the ArcPort web interface\n\n1. Log in to the ArcPort web interface and go to **General → Hub**.\n2. Set **Communication** to *Enabled*.\n3. Set **Communication type** to *MQTT*.\n4. Click **Discover**. A list of Hubs found on your network appears.\n5. Click the Hub you want to use. Its IP address and Portal ID are filled in automatically.\n6. Check that Hub pairing mode is still active, then click **Pair**.\n7. A confirmation message appears. Click **Save** at the bottom of the page.\n\nThe ArcPort now appears in the Hub's device list and on its overview screen.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.3 Pairing with a Nexus Hub > 5.3.2 Pair using the ArcPort web interface",
+    "heading": "5.3.2 Pair using the ArcPort web interface",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.3 Pairing with a Nexus Hub > 5.3.3 Pair using NordLink\n\n1. Connect to the ArcPort with NordLink.\n2. Go to **Settings → General → Hub**.\n3. Turn **Enable communication** on and set **Communication type** to *MQTT*.\n4. Tap **Discover** and select your Hub from the list.\n5. Make sure Hub pairing mode is still active, then tap **Pair**.\n6. The status changes to **Communication established** in green.\n\n> 💡 If discovery finds nothing, type the Hub's IP address and Portal ID by hand. Some routers block the mDNS packets that discovery relies on.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.3 Pairing with a Nexus Hub > 5.3.3 Pair using NordLink",
+    "heading": "5.3.3 Pair using NordLink",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.4 Nexus Hub setup and options\n\nOnce paired, the ArcPort appears in the Hub's device list, showing its mode and status.\n\n**Charging Station page.** Shows the current session with power per phase, energy and duration. From here you can change the charge mode, set the current for the active mode, and enable or disable charging.\n\n**Setup menu.**\n\n- **Position:** where the station is wired in the system (*Grid side* or *Inverter output*).\n- **Autostart:** begin charging as soon as a vehicle is plugged in.\n\n> ℹ️ *Enable charging* does not mean the vehicle will start charging immediately. It means the station is ready to charge when conditions allow, for example when a schedule becomes active.\n\n**Device page.** Shows connection details, product ID, firmware version, serial number and the station's name, which you can change.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.4 Nexus Hub setup and options",
+    "heading": "5.4 Nexus Hub setup and options",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.5 NordLink app reference > 5.5.1 Connecting\n\n1. Make sure Bluetooth is enabled on both your phone and the ArcPort.\n2. Open NordLink and tap the station in the list.\n3. Enter the pairing code when requested.\n4. The overview page appears.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.5 NordLink app reference > 5.5.1 Connecting",
+    "heading": "5.5.1 Connecting",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.5 NordLink app reference > 5.5.2 Overview page\n\nThe overview page shows charging state, charging controls, live values and session statistics.\n\n**Controls**\n\n- **Start/Stop** — start or stop charging in Manual mode. After you press Stop, the current is first reduced to the minimum and the contactor opens after about 2 seconds.\n- **Charging mode** — switch between *Manual*, *Solar* and *Scheduled*.\n- **Charging current** — set the current (6–32 A, within the minimum and maximum set in General settings). In Scheduled mode this is disabled because the schedule defines it.\n\n**Live values**\n\n- **Power** — the total power for all phases.\n\n**Session statistics**\n\n- **Session time** — duration of the current session\n- **Session energy** — energy delivered in this session\n- **Session cost** — the cost of grid energy used, based on your energy price\n- **Session solar savings** — money saved by energy supplied from solar\n- **Lifetime energy** — total energy delivered since installation",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.5 NordLink app reference > 5.5.2 Overview page",
+    "heading": "5.5.2 Overview page",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.5 NordLink app reference > 5.5.3 Settings page\n\nTap the cog wheel to open Settings, which contains: **Network**, **General**, **Scheduler**, **Light Ring** and **Access**.\n\nThe three-dot menu at the top right provides:\n\n- **Import settings** — load previously saved settings from a file\n- **Save settings** — save the current settings to a file, for backup or to copy to another station\n- **Share settings** — send the file by email or message\n- **Product info** — model, serial number, name, firmware version and Bluetooth switch\n- **Reset to defaults** — return all settings to factory defaults",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.5 NordLink app reference > 5.5.3 Settings page",
+    "heading": "5.5.3 Settings page",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.5 NordLink app reference > 5.5.4 Product info\n\n- **Product** — name and model number\n- **Serial number**\n- **Pairing code** — hidden by default; tap *Change* to set a new one\n- **Custom name** — a friendly name for the station\n- **Firmware** — the installed firmware version\n- **Bluetooth** — enable or disable Bluetooth\n\n> ⚠️ If you disable Bluetooth in NordLink, you can only re-enable it from the web interface's *Network* menu, or by performing a factory reset.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.5 NordLink app reference > 5.5.4 Product info",
+    "heading": "5.5.4 Product info",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.5 NordLink app reference > 5.5.5 Network settings\n\n**Network information**\n\n- **Current status** — the status of the network connection\n- **Connected to** — the Wi-Fi network in use\n- **IP address** — the station's address on your network\n\n**Wi-Fi settings**\n\n- **Mode** — *Use local Wi-Fi* or *Create access point*. Use access-point mode only if there is no other Wi-Fi network.\n- **IP configuration** — *Automatic (DHCP)* is recommended. Manual configuration is for advanced networks.\n- **Scan period** — how often the station scans for networks in the background. Set to *Disabled* if you only ever use one network.\n\n**Known Wi-Fi networks**\n\nThe network currently in use is shown in green with **Forget** and **Disable** buttons. Use **Add manually** for hidden networks, or **Scan** to list nearby networks.\n\n> ℹ️ In Station mode the ArcPort is designed for standards-compliant, correctly managed networks. Use a router or access point that meets local radio-equipment regulations.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.5 NordLink app reference > 5.5.5 Network settings",
+    "heading": "5.5.5 Network settings",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.5 NordLink app reference > 5.5.6 General settings\n\n**Charging settings**\n\n| Setting | Description |\n|---|---|\n| **Charger position** | Where the station is wired: before an inverter (grid side) or after it (inverter output). |\n| **Autostart** | Begin charging automatically when the vehicle is connected. Disable it to prevent unauthorised use. |\n| **Keep contactor closed when charged** | If enabled, the contactor stays closed after charging is complete. Useful for pre-conditioning the cabin from mains power. Some vehicles report an error in this state. |\n| **Maximum charging current** | The highest current the station will ever deliver (6–32 A). |\n| **Minimum charging current** | The lowest current used while charging is active (6–32 A). Some vehicles need 8–10 A as a minimum. |\n| **Power calibration** | Corrects the displayed power by up to ±40 % (factor 0.6–1.4). |\n| **Actual power** | Shows the real-time total power. |\n\n**Other settings**\n\n- **Energy price per kWh** — used to calculate session cost and savings\n- **Hub** — settings for Hub communication\n- **Date & time** — time zone and clock\n- **System reboot** — restarts the station\n\n**Hub communication**\n\n| Setting | Description |\n|---|---|\n| **Selected Hub** | IP address and Portal ID of the Hub. |\n| **Start charging at battery SoC** | Minimum home-battery state of charge before Solar mode starts. |\n| **Stop charging at battery SoC if off-grid** | When the grid is unavailable, charging stops below this battery level. |\n| **Allow battery/grid power in Solar mode** | Continue at the minimum current when surplus is insufficient, to reduce start/stop cycling. The ArcPort cannot decide whether the power comes from the battery or the grid; that is determined by the inverter. |\n| **Top up from grid in Solar mode** | Make up any shortfall to the minimum power from the grid. |\n| **Battery/grid power timeout** | Maximum continuous time the station may draw battery or grid power in Solar mode. |\n| **Overload protection** | Reads overload status from the inverter. On overload, the station reduces current to the minimum and waits about 5 seconds. If the overload persists, charging stops and resumes only after the overload clears. If overloads recur within a short period, the maximum charging current is reduced by 10 %. |\n| **Input current limit** | Shows the grid current limit applied in grid-tied systems. |\n| **Virtual battery** | Emulates a battery for systems that have none, so Solar mode can still run. Do not enable this if a physical battery is installed. |\n\n**Pairing-related options**\n\n- **Enable communication** — turn Hub communication on or off\n- **Communication type** — MQTT (preferred) or Modbus TCP\n- **Establish communication / Unpair** — pair with, or disconnect from, a Hub\n- **Device discovery** — find Hubs on the local network\n\n**Date & time**\n\nThe correct date and time are essential for scheduled charging. Choose a region and time zone; if you choose UTC, also enter the correct offset.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.5 NordLink app reference > 5.5.6 General settings",
+    "heading": "5.5.6 General settings",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.5 NordLink app reference > 5.5.7 Scheduler\n\nWhen the charging mode is *Scheduled*, the station charges according to the schedules defined here. Multiple schedules can be created.\n\nTo add a schedule, tap **Add a new schedule** and set:\n\n- **Enabled** — switch the schedule on or off\n- **Start time** and **End time** — in 24-hour format\n- **Current** — the maximum current during this schedule\n- **Repeat** — *Daily*, *Mon–Fri*, *Weekends* or *Custom* (tick the days you want)\n\nTap **Save new schedule** to store it. Existing schedules can be enabled, edited or deleted at any time. A disabled schedule never runs.\n\n> 💡 **Example — cheap night rate:** Start 23:30, End 05:30, Current 16 A, Repeat Daily. Combine this with a second schedule on weekends from 10:00 to 15:00 at 32 A to use midday solar.\n\n> ⚠️ If the time cannot be synchronised, Scheduled mode will not start and warning W-207 appears.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.5 NordLink app reference > 5.5.7 Scheduler",
+    "heading": "5.5.7 Scheduler",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.5 NordLink app reference > 5.5.8 Light ring\n\nThe Halo ring shows the station's status at a glance. A separate light scene can be defined for each of the following states:\n\n- Disconnected\n- Connected\n- Waiting to start\n- Waiting for sun\n- Battery low\n- Charging (manual)\n- Charging (solar)\n- Charged\n- Fault\n\nFor each state you can choose:\n\n- **Mode:** Static, Blink, Breathe, Colour wipe, Colour wipe inverse, Colour wipe reverse, Colour wipe reverse inverse, Colour wipe random\n- **Colour:** from the colour picker, or by RGB value\n- **Period:** the speed of the effect\n- **Brightness:** 0–100 %\n- **Try this scene:** previews the effect\n\nThere is also a **Brightness limit** that caps the brightness of all scenes. To turn the ring off completely, set the brightness to 0.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.5 NordLink app reference > 5.5.8 Light ring",
+    "heading": "5.5.8 Light ring",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.5 NordLink app reference > 5.5.9 Access\n\nChange the web user name and password here. Changing the defaults is strongly recommended.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.5 NordLink app reference > 5.5.9 Access",
+    "heading": "5.5.9 Access",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.5 NordLink app reference > 5.5.10 Reset to defaults\n\nYou can reset all settings from NordLink. A confirmation message appears; tap **Yes** to continue. Afterwards, repeat first-use setup. On units shipped with firmware 1.9 or earlier, Bluetooth will also be switched off after a reset.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.5 NordLink app reference > 5.5.10 Reset to defaults",
+    "heading": "5.5.10 Reset to defaults",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.6 Touchscreen reference\n\nThe 4.3-inch touchscreen is at the front of the station.\n\n**Home screen**\n\n- Large status icon (disconnected, connected, charging, charged, fault)\n- Live power in kW\n- Session time, energy, cost and savings\n- Mode selector (Manual / Solar / Scheduled)\n- Current slider (Manual mode)\n- Start/Stop button\n\n**Settings screen** (tap the cog)\n\n- Display brightness and timeout\n- Language\n- Wi-Fi status and signal strength\n- Firmware version and serial number\n- QR code linking to online support\n\n**Screen lock**\n\nWhen the display lock is enabled, the touchscreen shows status but cannot start, stop or change anything. This is the recommended setting for stations in public or shared locations. Unlock it from the web interface or NordLink.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.6 Touchscreen reference",
+    "heading": "5.6 Touchscreen reference",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.7 Firmware updates\n\nFirmware can be updated remotely through NordCloud or manually through the web interface.\n\n**Remote update (easiest).** If the Nexus Hub is connected to NordCloud, open the Hub's page in NordCloud and choose **Update firmware** for the ArcPort. The update can be started with a single button press. Charging is not possible during the update.\n\n**Manual update through the web interface.**\n\n1. Download the latest firmware from the Nordvane professional portal. Make sure you pick the right file: files containing **AP22D** are for the display model (NV-AP22), and files containing **AP22N** are for the no-display model (NV-AP22-NS).\n2. Open the web interface and click the **Backup & FW** tab.\n3. Click **Open** and browse to the downloaded file (it ends in **.arcfw**).\n4. Click **Update**.\n\nAfter a successful update, the station restarts and the main page returns. All settings are preserved.\n\n> ⚠️ Do not switch off the station during an update. If the update fails, wait two minutes and try again. If it fails repeatedly, contact support.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.7 Firmware updates",
+    "heading": "5.7 Firmware updates",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.8 Reset and password recovery\n\n> ℹ️ A **full reset** returns every setting to the factory defaults and requires first-use setup to be repeated. A **partial reset** resets only the admin password and the Bluetooth pairing code, and keeps all other settings.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.8 Reset and password recovery",
+    "heading": "5.8 Reset and password recovery",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.8 Reset and password recovery > Full reset from the web interface\n\n1. Log in and click the **Backup & FW** tab.\n2. Click **Reset to factory defaults**.\n3. Repeat first-use setup (Section 5.2).",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.8 Reset and password recovery > Full reset from the web interface",
+    "heading": "Full reset from the web interface",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.8 Reset and password recovery > Full reset using NordLink\n\n1. Open NordLink and tap the station.\n2. Tap the cog wheel, then the three-dot menu, then **Reset to defaults**.\n3. Confirm with **Yes**, then repeat first-use setup (Section 5.1).",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.8 Reset and password recovery > Full reset using NordLink",
+    "heading": "Full reset using NordLink",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.8 Reset and password recovery > Partial or full reset using the DEF button\n\n> ⚠️ **Qualified personnel only.** This procedure requires the unit to be powered with the cover removed. Mains voltage is present inside and can be fatal. Touch only the DEF button; keep clear of all other parts, especially the area marked in red inside the unit.\n\n**Partial reset (admin password and pairing code)**\n\n1. Remove the backing plate.\n2. Press and hold the DEF button for **more than 5 seconds but less than 15 seconds**.\n3. When you release it, the Halo ring flashes green rapidly while the reset happens.\n4. Refit the backing plate and tighten the screws.\n5. Log in using the default password from the internal label and assign a new admin password.\n\nA phone that was already paired before the reset may remain connected. Other devices must pair with the default code.\n\n**Full reset**\n\n1. Remove the backing plate.\n2. Press and hold the DEF button for **more than 15 seconds**, until the Halo ring flashes blue rapidly, then release.\n3. Refit the backing plate and tighten the screws.\n4. Repeat first-use setup.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.8 Reset and password recovery > Partial or full reset using the DEF button",
+    "heading": "Partial or full reset using the DEF button",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 5.9 Maintenance and cleaning\n\nThe ArcPort Home 22 has no user-serviceable parts and needs no scheduled maintenance. We nevertheless recommend the following checks:\n\n| Interval | Check |\n|---|---|\n| Monthly | Inspect the socket, socket cover and charging cable for damage, dirt or moisture. |\n| Every 6 months | Clean the housing and display with a soft damp cloth. Use no solvents, abrasives or high-pressure water. |\n| Every 12 months | Check that the unit is firmly fixed to the wall and that the gland is tight. |\n| Every 12–24 months | Test the upstream RCD with its test button. Have a qualified electrician perform periodic inspection as required by local regulations. |\n\n> ⚠️ Switch off the supply before cleaning near the socket. Never spray water directly into the socket.\n\n---\n\n# 6. Troubleshooting",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "5.9 Maintenance and cleaning",
+    "heading": "5.9 Maintenance and cleaning",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.1 Vehicle detection and signal calibration\n\nStarting with firmware v3.0, the control-pilot (CP) signal is calibrated automatically each time a vehicle is connected. The manual calibration button is therefore hidden in NordLink and the web interface. If you still have trouble with vehicle detection, you can re-enable manual calibration by setting Modbus TCP register **4210** to **0** (see Appendix 8.2). This disables automatic calibration and shows the calibration button.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.1 Vehicle detection and signal calibration",
+    "heading": "6.1 Vehicle detection and signal calibration",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.1 Vehicle detection and signal calibration > What is the CP signal?\n\nCP (control pilot) is a communication line inside every Type 2 connector. It is bidirectional: the station tells the vehicle the maximum current available, and the vehicle tells the station whether it is connected, ready or charging.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.1 Vehicle detection and signal calibration > What is the CP signal?",
+    "heading": "What is the CP signal?",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.1 Vehicle detection and signal calibration > Why does it need calibrating?\n\nThe CP signal can vary with cable length, cable manufacturer and component tolerances. Calibration measures the actual signal and adjusts the station's thresholds.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.1 Vehicle detection and signal calibration > Why does it need calibrating?",
+    "heading": "Why does it need calibrating?",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.1 Vehicle detection and signal calibration > When is calibration needed?\n\n- The vehicle is connected but the station still reports *Disconnected*\n- The vehicle is unplugged but the station still reports *Connected*\n- The station keeps switching between *Charging* and *Charged*\n- Charging will not start after a vehicle is connected because the state cannot be recognised",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.1 Vehicle detection and signal calibration > When is calibration needed?",
+    "heading": "When is calibration needed?",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.1 Vehicle detection and signal calibration > How to calibrate\n\nAfter re-enabling manual calibration:\n\n1. In the web interface go to **Settings → General → Charger → CP calibration**, or in NordLink open **Settings** and tap **Calibrate**.\n2. Press **Calibrate**.\n3. Connect the vehicle to the station, then tap **Next** in the app.\n4. Press **Vehicle is connected** to confirm (or tap **Next** again in NordLink).\n5. Wait while the station calculates. A message confirms success.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.1 Vehicle detection and signal calibration > How to calibrate",
+    "heading": "How to calibrate",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.2 Hub pairing problems\n\nFirst check that all versions meet the requirements in Section 5.3.\n\n**No Hub found during discovery**\n\n- Confirm that the ArcPort and the Hub are on the same network and subnet.\n- Check the ArcPort's Wi-Fi signal. A value better than –70 dBm is recommended.\n- Run discovery several times.\n- Some networks block mDNS packets. If so, enter the Hub's IP address and Portal ID by hand.\n\n**Errors during pairing**\n\n- Make sure Hub pairing mode is still active (it times out after 2 minutes).\n- A pairing error is shown with a code and reason.\n- A message reading only \"Pairing error\" is an internal error. Check versions, retry, refresh the web interface or reconnect NordLink.\n\n**W-204: Hub communication warning**\n\n- Both devices must be on the same network.\n- Check the Hub's IP address and Portal ID stored in the ArcPort.\n- Check that the ArcPort is still in the Hub's paired list.\n- Repeat pairing.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.2 Hub pairing problems",
+    "heading": "6.2 Hub pairing problems",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.3 Wi-Fi problems\n\n| Symptom | Likely cause | Remedy |\n|---|---|---|\n| Station does not appear in the Wi-Fi list | Hidden SSID or 5 GHz-only network | Add the network manually; enable 2.4 GHz on the router |\n| Frequent disconnection | Weak signal | Move the router or add an access point; target better than –70 dBm |\n| Cannot reach web interface | Different subnet or changed IP | Check the IP address in NordLink; use a fixed DHCP lease |\n| Wi-Fi works but the Hub does not connect | Router blocks client-to-client traffic | Disable \"AP isolation\" or \"client isolation\" |\n| Station reverts to AP mode | Wrong password or router changed | Re-enter credentials in the Network menu |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.3 Wi-Fi problems",
+    "heading": "6.3 Wi-Fi problems",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.4 Frequently asked questions > Q1: How do I prevent unauthorised people from using the station?\n\nDisable **Autostart** in General settings so that charging does not begin automatically when a vehicle is connected. Also enable **Lock charger display** so the touchscreen cannot start or stop charging. Charging can then only be controlled through the web interface, NordLink, NordCloud or the Hub.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.4 Frequently asked questions > Q1: How do I prevent unauthorised people from using the station?",
+    "heading": "Q1: How do I prevent unauthorised people from using the station?",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.4 Frequently asked questions > Q2: Does the ArcPort have RFID?\n\nNo. Use the method in Q1 to restrict access.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.4 Frequently asked questions > Q2: Does the ArcPort have RFID?",
+    "heading": "Q2: Does the ArcPort have RFID?",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.4 Frequently asked questions > Q3: The light ring annoys my neighbours at night. Can I turn it off?\n\nYes. Set the brightness limit in the Light Ring menu to 0, or to a low level. You can also use a Scheduled dimming profile in the web interface to dim the ring only at night.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.4 Frequently asked questions > Q3: The light ring annoys my neighbours at night. Can I turn it off?",
+    "heading": "Q3: The light ring annoys my neighbours at night. Can I turn it off?",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.4 Frequently asked questions > Q4: Why is my vehicle not recognised when I plug in?\n\nTry the CP calibration procedure in Section 6.1. Also check that the charging cable is fully inserted at both ends, that the cable and connector are clean and dry, and that the earth connection is good, because all measurements are relative to earth.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.4 Frequently asked questions > Q4: Why is my vehicle not recognised when I plug in?",
+    "heading": "Q4: Why is my vehicle not recognised when I plug in?",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.4 Frequently asked questions > Q5: Why does my ArcPort show up on more than one Hub?\n\nIf more than one Hub is on your network, enable the IP whitelist in the General tab of the web interface and add only the Hub that should control the station. Afterwards, remove the ArcPort from the other Hubs.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.4 Frequently asked questions > Q5: Why does my ArcPort show up on more than one Hub?",
+    "heading": "Q5: Why does my ArcPort show up on more than one Hub?",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.4 Frequently asked questions > Q6: How much solar power do I need to charge in Solar mode?\n\nThe minimum current for most vehicles is 6 A at 230 V, so you need more than about **1.4 kW** of surplus. If you enable **Top up from grid in Solar mode**, the shortfall is drawn from the grid. Some vehicles need a higher minimum current, for example 8–10 A; set the minimum charging current accordingly.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.4 Frequently asked questions > Q6: How much solar power do I need to charge in Solar mode?",
+    "heading": "Q6: How much solar power do I need to charge in Solar mode?",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.4 Frequently asked questions > Q7: Can I use more than one ArcPort in a system?\n\nYes. Available power is shared between them. Configure the sharing behaviour in the Hub.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.4 Frequently asked questions > Q7: Can I use more than one ArcPort in a system?",
+    "heading": "Q7: Can I use more than one ArcPort in a system?",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.4 Frequently asked questions > Q8: The vehicle is full but the station keeps starting and stopping. Why?\n\nThe station probably cannot decode the \"charged\" signal from the vehicle. Perform the CP calibration in Section 6.1.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.4 Frequently asked questions > Q8: The vehicle is full but the station keeps starting and stopping. Why?",
+    "heading": "Q8: The vehicle is full but the station keeps starting and stopping. Why?",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.4 Frequently asked questions > Q9: I keep getting warning W-204. What does it mean?\n\nThe ArcPort cannot read data from the Hub even though communication is enabled. For MQTT, the pairing may be lost or incomplete; see Section 6.2. For Modbus TCP, check that the IP address in General settings matches the Hub and that Modbus TCP is enabled on the Hub.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.4 Frequently asked questions > Q9: I keep getting warning W-204. What does it mean?",
+    "heading": "Q9: I keep getting warning W-204. What does it mean?",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.4 Frequently asked questions > Q10: Do I need a Hub?\n\nOnly for Solar mode. Manual and Scheduled modes work without one. A Hub is also needed for remote control through NordCloud.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.4 Frequently asked questions > Q10: Do I need a Hub?",
+    "heading": "Q10: Do I need a Hub?",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.4 Frequently asked questions > Q11: Can I control the ArcPort over Modbus TCP?\n\nYes. Modbus TCP provides more flexibility and access to more settings than the standard interfaces. The register list can be downloaded from the product page. Changes made through Modbus TCP are outside the standard support scope.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.4 Frequently asked questions > Q11: Can I control the ArcPort over Modbus TCP?",
+    "heading": "Q11: Can I control the ArcPort over Modbus TCP?",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.4 Frequently asked questions > Q12: Can I charge with a power-limited supply, such as a shared building connection?\n\nYes. Set the maximum charging current to the value allowed by your supply. With a Nexus Hub and a compatible energy meter, you can also enable dynamic load management so the ArcPort reduces its current when the building draws high power.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.4 Frequently asked questions > Q12: Can I charge with a power-limited supply, such as a shared building connection?",
+    "heading": "Q12: Can I charge with a power-limited supply, such as a shared building connection?",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.4 Frequently asked questions > Q13: Will the station keep working during a power cut?\n\nThe station needs mains power to operate. If it is on the output of a backup inverter, it will continue to run as long as the inverter can supply it. Charging current is then limited by Overload protection and the battery SoC limits.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.4 Frequently asked questions > Q13: Will the station keep working during a power cut?",
+    "heading": "Q13: Will the station keep working during a power cut?",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.4 Frequently asked questions > Q14: Can I mount the station on a pole?\n\nYes, provided the pole offers a solid, flat, vertical surface and the mounting hardware is rated for the station's weight (4.2 kg) with a safety factor.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.4 Frequently asked questions > Q14: Can I mount the station on a pole?",
+    "heading": "Q14: Can I mount the station on a pole?",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.4 Frequently asked questions > Q15: What happens to my settings after a firmware update?\n\nAll settings are retained.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.4 Frequently asked questions > Q15: What happens to my settings after a firmware update?",
+    "heading": "Q15: What happens to my settings after a firmware update?",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.5 Codes: errors, warnings and notices\n\nThe following codes appear in NordLink, on the Hub, on the touchscreen and in the web interface.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.5 Codes: errors, warnings and notices",
+    "heading": "6.5 Codes: errors, warnings and notices",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.5 Codes: errors, warnings and notices > Errors (charging blocked)\n\n| Code | Hub code | Message | Meaning and action |\n|---|---|---|---|\n| E-01 | #01 | Earth not present | Protective earth is missing. Contact the installer. |\n| E-02 | #02 | Welded contacts | The power relay contacts are welded. Isolate the supply and contact the installer. |\n| E-03 | #03 | CP short-circuit | The control-pilot line is shorted. Try another cable; otherwise contact the installer. |\n| E-04 | #04 | Residual DC current | The internal sensor detected DC leakage. Contact the installer. |\n| E-05 | #05 | Over-temperature | The station is overheating. Move it out of direct sunlight or ask the installer to review the site. |\n| E-06 | #06 | Ambient sensor fault | The temperature sensor is not responding. Contact the installer. |\n| E-07 | #07 | Tamper detected | The housing has been opened while powered. Contact the installer. |\n| E-08 | #08 | Supply voltage out of range | Supply is below 170 V or above 265 V. Check the supply. |\n| E-09 | #09 | Phase loss | One or more phases are missing (three-phase installations). Check breaker, RCD and wiring. |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.5 Codes: errors, warnings and notices > Errors (charging blocked)",
+    "heading": "Errors (charging blocked)",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.5 Codes: errors, warnings and notices > Warnings (charging may continue, reduced, or be blocked)\n\n| Code | Hub code | Message | Meaning and action |\n|---|---|---|---|\n| W-201 | #201 | Initial setup not completed | Perform first-use setup. |\n| W-202 | #202 | Blocked by grid operator | The dry-contact input or a grid signal has blocked charging. Contact your grid operator. |\n| W-203 | #203 | High temperature | The station is hot but still charging at reduced current. Shade it or contact the installer. |\n| W-204 | #204 | Hub communication warning | Communication is enabled but not working. Check the Hub's IP and Portal ID. |\n| W-205 | #205 | Overload detected | An overload was reported by the inverter or grid limit. |\n| W-206 | #206 | Overload active | The overload is still present. |\n| W-207 | #207 | Scheduled mode failed — time sync | The clock could not be synchronised. Check Wi-Fi and the time zone. |\n| W-208 | #208 | Current limited by external input | The dry-contact input is active. |\n| W-209 | #209 | Current limited by inverter over-temperature | The inverter reports over-temperature. |\n| W-210 | #210 | Display update failed — broken file | Repeat the update. If it keeps failing, contact the installer. (Display model only.) |\n| W-211 | #211 | Display update failed — communication | Contact the installer. (Display model only.) |\n| W-212 | #212 | Display firmware updating | Wait for the update to finish. Charging is not possible meanwhile. |\n| W-213 | #213 | Wi-Fi signal weak | RSSI is poorer than –80 dBm. Improve coverage. |\n| W-214 | #214 | Clock reset | The internal clock lost power and was reset. Check the time zone. |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.5 Codes: errors, warnings and notices > Warnings (charging may continue, reduced, or be blocked)",
+    "heading": "Warnings (charging may continue, reduced, or be blocked)",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.5 Codes: errors, warnings and notices > Notices (informational)\n\n| Code | Hub code | Message | Meaning and action |\n|---|---|---|---|\n| N-401 | #401 | Solar mode not available | You tried to select Solar mode but Hub communication is disabled. Enable it. |\n| N-402 | #402 | Scheduled mode not configured | Add at least one schedule first. |\n| N-403 | #403 | Vehicle disconnected — cannot start | Connect the vehicle before pressing Start. |\n| N-404 | #404 | Charger error | Resolve the active error first. |\n| N-405 | #405 | Initial setup not completed | Perform first-use setup. |\n| N-406 | #406 | Charging will follow the schedule | The station is in Scheduled mode. Switch to Manual to control charging. |\n| N-407 | #407 | Overload active — cannot start | Wait for the overload to clear. |\n| N-408 | #408 | Display firmware updating — cannot start | Try again after the update. |\n\n---",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.5 Codes: errors, warnings and notices > Notices (informational)",
+    "heading": "Notices (informational)",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.6 Common user errors and how to avoid them\n\nMost service calls are not caused by faults. They are caused by a setting, a habit or a misunderstanding. Check this list before calling your installer.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.6 Common user errors and how to avoid them",
+    "heading": "6.6 Common user errors and how to avoid them",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.6 Common user errors and how to avoid them > 6.6.1 Vehicle and cable mistakes\n\n| Mistake | What you will see | What to do |\n|---|---|---|\n| Plug not pushed in fully at the vehicle or the station | Station shows *Disconnected*; or charging starts then stops | Push both ends until they click. Wait for the socket lock to engage (a soft clunk). |\n| Vehicle's own charging schedule is active | Station shows *Connected* or *Waiting*, but no charging | Check the vehicle's app or screen. Disable its schedule or set it to \"charge now\". |\n| Vehicle's charge limit already reached (for example, 80 %) | Station shows *Charged* early | Raise the limit in the vehicle. |\n| Vehicle is locked or asleep | Charging does not start or the lock does not release | Unlock the vehicle, then try again. |\n| Using the wrong cable type (Mode 2 \"granny\" cable) | Not detected; or error E-03 | The ArcPort needs a **Mode 3** Type 2 cable. |\n| Cable dragged, stepped on or driven over | E-03 or E-04; intermittent detection | Replace the cable. Never use a cable with cracked insulation. |\n| Cable left coiled while charging at high current | Cable gets hot; vehicle reduces current | Fully uncoil the cable when charging above 16 A. |\n| Using an extension lead or adapter | Overheating, error codes, fire risk | **Never** use extension leads, cable reels or unapproved adapters. |\n| Dirty, wet or iced connector | Intermittent detection; E-03 | Let it dry, brush off dirt with a dry brush. Do not use water or sharp tools. |\n| Pulling the cable out while charging | Vehicle shows a fault; connector may be locked | Stop charging first (touchscreen, NordLink or vehicle), then unplug. |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.6 Common user errors and how to avoid them > 6.6.1 Vehicle and cable mistakes",
+    "heading": "6.6.1 Vehicle and cable mistakes",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.6 Common user errors and how to avoid them > 6.6.2 Settings mistakes\n\n| Mistake | Effect | Fix |\n|---|---|---|\n| Maximum current set higher than the supply allows | Main breaker or RCD trips; overheating | Set the maximum current in line with your breaker (Section 3.3). Ask your installer if unsure. |\n| Maximum current set far too low | Charging is slow | Raise it in *Settings → General → Maximum charging current*. |\n| Minimum current set higher than the vehicle accepts | Charging will not start in Solar mode | Set the minimum to 6 A unless your vehicle needs more. |\n| Mode left on *Solar* or *Scheduled* when you wanted to charge now | No charging, or charging starts later | Switch to *Manual* and press **Start**. Notice N-406 means this. |\n| Schedule time zone or clock wrong | Charging starts at the wrong time | Check *Date & Time*. See W-207 and W-214. |\n| Overnight schedule entered wrongly (for example, start 23:00, end 05:00 on \"Mon–Fri\") | Friday night does not charge | Remember the schedule starts on the listed day. Use *Daily* or *Custom*. |\n| Autostart disabled and forgotten | Vehicle plugs in, nothing happens | Press **Start**, or re-enable Autostart. |\n| Display lock enabled and forgotten | Touchscreen does not respond to Start | Use NordLink or the web interface, or disable the lock. |\n| *Virtual battery* turned on when a real battery exists | Solar mode behaves unpredictably | Turn it off in Hub settings. |\n| Wrong *Charger position* (grid side vs. inverter output) | Solar mode misreads surplus | Set the position that matches the wiring (Section 5.5.6). |\n| IP whitelist enabled without adding the Hub | W-204; Hub loses control | Add the Hub's address to the whitelist. |\n| Wi-Fi password changed on the router | Station drops offline | Re-enter the password in the Network menu. |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.6 Common user errors and how to avoid them > 6.6.2 Settings mistakes",
+    "heading": "6.6.2 Settings mistakes",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.6 Common user errors and how to avoid them > 6.6.3 Network and app mistakes\n\n- **Choosing a 5 GHz network.** The ArcPort supports 2.4 GHz only.\n- **Phone not in Bluetooth range.** Stay within a few metres and avoid metal obstructions.\n- **Old pairing on the phone.** If NordLink cannot connect, remove the station from your phone's Bluetooth list and pair again.\n- **Pairing mode timed out.** Hub pairing mode lasts two minutes. Start it again if it runs out.\n- **Different networks.** The Hub and ArcPort must be on the same network and subnet. Guest networks are a common cause of this problem.\n- **Router isolation.** Turn off \"AP isolation\" or \"client isolation\" on the router.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.6 Common user errors and how to avoid them > 6.6.3 Network and app mistakes",
+    "heading": "6.6.3 Network and app mistakes",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.6 Common user errors and how to avoid them > 6.6.4 Password and access mistakes\n\n- **Leaving the default password in place.** Change it during first-use setup.\n- **Losing the password and the internal label.** Photograph the label at installation and keep the photo somewhere safe. Recovery needs an installer (Section 5.8).\n- **Sharing the admin login widely.** Give family members NordLink access only if they need it; consider keeping the display lock on.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.6 Common user errors and how to avoid them > 6.6.4 Password and access mistakes",
+    "heading": "6.6.4 Password and access mistakes",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.6 Common user errors and how to avoid them > 6.6.5 Physical and environmental mistakes\n\n| Mistake | Risk | Correct practice |\n|---|---|---|\n| Leaving the socket cover open | Water, insects and dirt get in | Close the cover after each use. |\n| Hanging the cable on the station | Strain damages the socket | Use a separate cable holder. |\n| Covering the station (blanket, box, bags) | Overheating | Keep the unit uncovered with clear space around it (Section 3.2). |\n| Pressure washing the station | Water ingress (rated IP54, not jet-proof) | Wipe with a damp cloth only. |\n| Using solvents or abrasives to clean | Damages housing and display | Soft damp cloth, mild soap. |\n| Storing items (tools, chemicals, fuel) near the station | Fire risk | Keep the area clear and ventilated. |\n| Opening the unit | Electric shock; voids warranty | Only a qualified installer may open the unit. |\n| Ignoring a tripping RCD and resetting it repeatedly | Fire or shock risk | Stop using the station and call an electrician. |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.6 Common user errors and how to avoid them > 6.6.5 Physical and environmental mistakes",
+    "heading": "6.6.5 Physical and environmental mistakes",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.6 Common user errors and how to avoid them > 6.6.6 Quick self-check before calling support\n\n1. Is the plug fully in at both ends, and does the station show *Connected*?\n2. Is the vehicle awake, unlocked and set to charge now?\n3. Is the station in the right mode (Manual for \"charge now\")?\n4. Is there a code on the display, in NordLink or on the Hub? Look it up in Section 6.5.\n5. Does the station have power (display or ring lit)?\n6. Does another cable or vehicle behave the same way?\n7. Has anything changed recently (router, password, settings, firmware, new vehicle)?",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.6 Common user errors and how to avoid them > 6.6.6 Quick self-check before calling support",
+    "heading": "6.6.6 Quick self-check before calling support",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.7 Overheating and thermal management\n\nThe ArcPort Home 22 monitors its own temperature continuously and protects itself in three stages. Most overheating situations are caused by the installation environment or the way the station is used, and can be fixed without replacing anything.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.7 Overheating and thermal management",
+    "heading": "6.7 Overheating and thermal management",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.7 Overheating and thermal management > 6.7.1 How the station protects itself\n\n| Stage | Internal temperature | What the station does | What you see |\n|---|---|---|---|\n| Normal | Below 70 °C | Full current available | Normal operation |\n| **Derating** | 70 °C and above | Reduces charging current in steps to keep the temperature under control | Warning **W-203**, slower charging, ring may show amber/orange (default) |\n| **Stop** | 75 °C (board) or 85 °C (terminals) | Charging stops | Error **E-05**, ring flashes red |\n| **Recovery** | Below 65 °C | Charging can resume | E-05 clears automatically; restart may be needed |\n\n> ℹ️ Derating is normal protective behaviour, not a fault. A vehicle charging more slowly on a very hot day is the station doing its job.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.7 Overheating and thermal management > 6.7.1 How the station protects itself",
+    "heading": "6.7.1 How the station protects itself",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.7 Overheating and thermal management > 6.7.2 Warm versus too hot\n\n| Touch test (outside only, after charging) | Meaning |\n|---|---|\n| Housing slightly warm | Normal at high current |\n| Housing warm over the whole surface, comfortable to hold your hand on | Normal at 32 A in hot weather |\n| Housing too hot to hold your hand on for 5 seconds | **Stop charging and investigate** |\n| Hot spot near the cable gland or lower part | Possible loose terminal; call an electrician |\n| Smell of burning, melted plastic or discolouration | **Stop immediately. Isolate the supply at the breaker. Do not use the station.** Call an electrician |\n\n> ⚠️ Never open the station to check for heat. Mains voltage is present inside.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.7 Overheating and thermal management > 6.7.2 Warm versus too hot",
+    "heading": "6.7.2 Warm versus too hot",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.7 Overheating and thermal management > 6.7.3 Common causes of overheating\n\n| Cause | Why it matters | What to do |\n|---|---|---|\n| Direct sunlight, especially on dark surfaces or south-facing walls | Adds heat on top of the heat from charging | Fit a shade or a canopy; move the station to a shaded wall |\n| High ambient temperature (above about 35 °C) | Less margin for self-heating | Lower the maximum charging current (for example, 24 A) during heatwaves; charge in the evening or at night |\n| Charging at 32 A for many hours | Continuous full load is the most demanding case | Reduce the current; most vehicles do not need 32 A overnight |\n| Enclosed or covered location (cabinet, box, tight niche) | Heat cannot escape | Allow at least 200 mm at the sides and 300 mm below; do not enclose |\n| Mounted above a heat source (boiler flue, heat pump exhaust, dryer vent) | Hot air flows over the housing | Relocate or add a shield |\n| Loose or corroded terminal inside | Extra resistance creates local heat | Have an electrician re-torque and inspect the terminals |\n| Undersized or overly long supply cable | Voltage drop and heat in the cable | Have the cable checked against Section 3.3 |\n| Poor cable or connector at the vehicle end | Heat at the connector | Inspect for discolouration; replace damaged cables |\n| Coiled charging cable at high current | Cable overheats | Uncoil completely |\n| Dirty or blocked housing surface | Reduces cooling | Clean with a damp cloth |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.7 Overheating and thermal management > 6.7.3 Common causes of overheating",
+    "heading": "6.7.3 Common causes of overheating",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.7 Overheating and thermal management > 6.7.4 What you can do straight away\n\n1. **Stop charging** if the housing is too hot to touch or you smell burning.\n2. **Let the station cool** for at least 30 minutes.\n3. **Reduce the maximum current** (for example, to 16 A or 24 A) in *Settings → General*.\n4. **Move charging to cooler times** with Scheduled mode (for example, 22:00–06:00).\n5. **Shade the station** from the sun.\n6. **Check clearances** and remove anything covering the unit.\n7. **Inspect the cable and plug** for heat marks or deformation.\n8. If W-203 or E-05 keeps returning at moderate temperatures, call an electrician. Do not ignore it.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.7 Overheating and thermal management > 6.7.4 What you can do straight away",
+    "heading": "6.7.4 What you can do straight away",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.7 Overheating and thermal management > 6.7.5 Recommended maximum current by ambient temperature\n\nThese are guidance values for a station in shade on a well-ventilated wall. Direct sun reduces them.\n\n| Ambient temperature | Recommended maximum continuous current |\n|---|---|\n| Below 30 °C | 32 A |\n| 30–35 °C | 32 A, expect occasional derating |\n| 35–40 °C | 24–28 A |\n| 40–45 °C | 20–24 A |\n| 45–50 °C | 16 A |\n| Above 50 °C | Outside the operating range. Do not charge. |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.7 Overheating and thermal management > 6.7.5 Recommended maximum current by ambient temperature",
+    "heading": "6.7.5 Recommended maximum current by ambient temperature",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.7 Overheating and thermal management > 6.7.6 Other things that overheat, and what they feel like\n\n| Component | Typical sign | Action |\n|---|---|---|\n| Charging cable | Plug warm or hot, soft or discoloured | Stop; replace cable |\n| Vehicle inlet | Vehicle displays a temperature warning | Reduce current; have the inlet inspected |\n| Distribution board breaker or RCD | Warm or humming; discoloured | Call an electrician immediately |\n| Supply cable | Warm along its length | Cable too small or damaged; call an electrician |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.7 Overheating and thermal management > 6.7.6 Other things that overheat, and what they feel like",
+    "heading": "6.7.6 Other things that overheat, and what they feel like",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.7 Overheating and thermal management > 6.7.7 Preventing overheating — checklist\n\n- [ ] Station mounted in shade or fitted with a sun shield\n- [ ] At least 200 mm clear at the sides and 300 mm below\n- [ ] Nothing covering or stored against the station\n- [ ] Maximum current matched to supply and climate\n- [ ] Supply cable correctly sized (6 mm² or larger for long runs)\n- [ ] Terminals re-checked at the annual inspection\n- [ ] Charging cable uncoiled and undamaged\n- [ ] Heatwave plan: lower current or night charging\n\n---\n\n# 7. Technical Specification\n\n| **ArcPort Home 22** | |\n|---|---|\n| Supply voltage range | 170–265 V AC (per phase), 50/60 Hz |\n| Rated charging current | 32 A per phase |\n| Nominal power | 22 kW (3-phase) / 7.4 kW (1-phase) |\n| Configurable current | 6–32 A |\n| Standby consumption | 3.5 W (display on), 1.8 W (display off) |\n| Connector | IEC 62196-2 Type 2 socket, with cover |\n| Charging mode | Mode 3 |\n\n| **General** | |\n|---|---|\n| Disconnecting means | External breaker, max 40 A |\n| Residual-current protection | Built-in 6 mA DC detection; external RCD required |\n| Default energy price | 0.25 per kWh (adjustable) |\n| Control | Touchscreen, web interface, Hub, NordLink (Bluetooth), NordLink Remote and NordCloud |\n| Display | 4.3-inch colour touchscreen (display model only) |\n| Light ring | 48 configurable effects |\n| Communication | Wi-Fi 802.11 b/g/n (2.4 GHz), Bluetooth LE 5.0, MQTT, Modbus TCP |\n| Operating temperature | –25 °C to +50 °C |\n| Storage temperature | –40 °C to +80 °C |\n| Humidity | up to 95 %, non-condensing |\n| Altitude | up to 2,000 m |\n| Dry-contact input | 1 × potential-free, 5 V sense |\n\n| **Enclosure** | |\n|---|---|\n| Colour | Nordic grey (RAL 7037) with signal-teal accents |\n| Material | UV-stabilised polycarbonate |\n| Power terminals | 4–10 mm² (AWG 12–8) |\n| Protection class | IP54, IK08 |\n| Ventilation | Not required |\n| Weight | 4.2 kg |\n| Dimensions (H × W × D) | 392 × 288 × 156 mm |\n\n| **Standards** | |\n|---|---|\n| Safety | IEC 61851-1, IEC 61851-22, IEC 62955 (DC detection) |\n| EMC | EN 301 489, IEC 61851-21-2 |\n| Radio | EN 300 328 |\n| Detection | Welded contact, missing earth, shorted CP, phase loss |\n| Marking | CE, UKCA |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.7 Overheating and thermal management > 6.7.7 Preventing overheating — checklist",
+    "heading": "6.7.7 Preventing overheating — checklist",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 7.1 Dimensions\n\n```\n                  288 mm\n        ┌──────────────────────────┐\n        │   ┌──────────────────┐   │\n        │   │   4.3\" display   │   │\n        │   └──────────────────┘   │\n        │        ╭──────────╮      │   392 mm\n        │        │  Socket  │      │\n        │        │  + Halo  │      │\n        │        ╰──────────╯      │\n        │      ARCPORT HOME 22     │\n        └─────────────┬────────────┘\n                      ▼  cable gland\n\n Mounting holes: 4 × Ø6.2 mm, 240 mm × 330 mm spacing\n Depth: 156 mm\n```\n\n---\n\n# 8. Appendix",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "7.1 Dimensions",
+    "heading": "7.1 Dimensions",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 8.1 Grid-operator load control (dry-contact input)\n\nIn some countries, grid operators require the ability to reduce the charging power of home chargers to help maintain grid stability. The ArcPort provides a **dry-contact input** for this purpose. When the contact is closed, the maximum charging current is limited to a configurable value (default **6 A**). The warning **W-208** is displayed while the limit is active.\n\nThis function requires firmware 3.0 or later.\n\n**Wiring**\n\n```\n   Receiver / relay contact (potential-free)\n          ┌───────/ ───────┐\n          │      S1        │\n          │                │\n     ─────┴────────────────┴─────\n      DI-1                 DI-GND      ← ArcPort dry-contact terminals\n\n   Logic:  S1 open   → no additional limit\n           S1 closed → limit applied (W-208)\n```\n\nUse the second cable gland for the control cable. Keep the control wiring physically separate from mains conductors.\n\n> 🔧 Consult the local grid-operator requirements before enabling this function. Some operators require certified receivers.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "8.1 Grid-operator load control (dry-contact input)",
+    "heading": "8.1 Grid-operator load control (dry-contact input)",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 8.2 Modbus TCP integration\n\nAs an alternative to MQTT, the ArcPort can communicate with the Hub using Modbus TCP.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "8.2 Modbus TCP integration",
+    "heading": "8.2 Modbus TCP integration",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 8.2 Modbus TCP integration > On the Hub\n\n1. Go to **Settings → Integrations → Modbus TCP Server** and enable it.\n2. If your ArcPort has not yet been connected to this Hub **and** the Hub runs OS 2.4 or later, go to **Settings → Integrations → Modbus Devices → Discovered devices** and activate the ArcPort.\n\nFor ArcPorts that were connected before the Hub was updated to OS 2.4, this step is not needed.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "8.2 Modbus TCP integration > On the Hub",
+    "heading": "On the Hub",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 8.2 Modbus TCP integration > On the ArcPort\n\n1. In **General → Hub**, set **Communication type** to *Modbus TCP*.\n2. Use **Discover** to fill in the IP address and Portal ID, or enter them manually.\n3. Click **Check** to test the connection and **Save** to apply.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "8.2 Modbus TCP integration > On the ArcPort",
+    "heading": "On the ArcPort",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 8.2 Modbus TCP integration > IP whitelist\n\nFor security it is strongly advisable to enable the **IP address whitelist** and add only those devices that need to communicate with the ArcPort. Some grid operators require it.\n\n- **Enable IP address whitelist** — switches the function on or off\n- **Add IP to whitelist** — adds a trusted address\n\n> ⚠️ If you enable the whitelist, remember to add the Hub's address. Otherwise it will no longer be able to communicate with the ArcPort.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "8.2 Modbus TCP integration > IP whitelist",
+    "heading": "IP whitelist",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 8.2 Modbus TCP integration > Selected registers\n\n| Register | Name | Access | Description |\n|---|---|---|---|\n| 4001 | Charging state | R | 0 = disconnected, 1 = connected, 2 = waiting, 3 = charging, 4 = charged, 5 = fault |\n| 4002 | Active power (W) | R | Total power, all phases |\n| 4005 | Session energy (Wh) | R | Energy in the current session |\n| 4101 | Mode | R/W | 0 = Manual, 1 = Solar, 2 = Scheduled |\n| 4102 | Set current (A) | R/W | Target current in Manual mode |\n| 4103 | Start/Stop | R/W | 1 = start, 0 = stop |\n| 4210 | Auto CP calibration | R/W | 1 = automatic (default), 0 = manual |\n\nThe full register list can be downloaded from the product page.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "8.2 Modbus TCP integration > Selected registers",
+    "heading": "Selected registers",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 8.3 Web interface reference\n\nAfter first-use setup, log in to the web interface at the station's IP address. Click **Settings** for further options. Six tabs are available.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "8.3 Web interface reference",
+    "heading": "8.3 Web interface reference",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 8.3 Web interface reference > 8.3.1 The main page\n\nFrom top to bottom:\n\n- **Charging mode switch** — Manual, Solar or Scheduled\n- **Charging current slider** — adjust the current\n- **Start/Stop button** — in Manual mode\n- **Session statistics and animated energy-flow overview**",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "8.3 Web interface reference > 8.3.1 The main page",
+    "heading": "8.3.1 The main page",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 8.3 Web interface reference > 8.3.2 Network tab\n\n**Wi-Fi**\n\n- *Wi-Fi mode:* toggles between Access Point and Station.\n  - *Access point:* SSID, password, IP address and netmask are configurable.\n  - *Station:* switch to Station, click **Scan** or **Add**, tick your network and click **Apply**, enter the password and click **Next**, set a manual IP if needed, and click **Save**. A signal-strength indicator appears at the top of the page.\n- *Scan period:* with only one network, set it to 0 to avoid unnecessary scanning. With several networks, keep the default (60 s). This affects background scanning only.\n- *RSSI threshold:* a minimum signal level applied to background scanning.\n\n**Bluetooth**\n\n- *State:* enable or disable Bluetooth. Press **Save** to apply.\n- *Unpair all devices:* removes all paired phones. The station restarts, and you must also remove the pairing in your phone's Bluetooth menu.\n\nThe default pairing code is 000000 on older units; newer units have a unique code on the internal label.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "8.3 Web interface reference > 8.3.2 Network tab",
+    "heading": "8.3.2 Network tab",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 8.3 Web interface reference > 8.3.3 General tab\n\nContains: **Charger**, **Hub**, **Modbus TCP server**, **Display**, **Date & time** and **Others**. The options match those in Section 5.5.6. In addition:\n\n- **Display** — active/idle backlight (%), active timeout (s), lock charger display, hide Wi-Fi credentials\n- **Others** — energy price per kWh and device name (the name is also updated on the Hub, in NordLink and in NordCloud)",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "8.3 Web interface reference > 8.3.3 General tab",
+    "heading": "8.3.3 General tab",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 8.3 Web interface reference > 8.3.4 Scheduler tab\n\nCreate, edit and delete schedules. Schedules are only active when the station is in Scheduled mode. The currently active schedule is highlighted in green. Use **Import** and **Export** to move schedules as `.json` files.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "8.3 Web interface reference > 8.3.4 Scheduler tab",
+    "heading": "8.3.4 Scheduler tab",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 8.3 Web interface reference > 8.3.5 Light Ring tab\n\nCustomise the ring. Click **Save** after any change. Light-ring settings can be imported and exported as `.json`.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "8.3 Web interface reference > 8.3.5 Light Ring tab",
+    "heading": "8.3.5 Light Ring tab",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 8.3 Web interface reference > 8.3.6 Access tab\n\nChange the user name and password. Passwords need at least 8 characters, with upper-case, lower-case and special characters.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "8.3 Web interface reference > 8.3.6 Access tab",
+    "heading": "8.3.6 Access tab",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 8.3 Web interface reference > 8.3.7 Backup & FW tab\n\n- *FW update:* upload an `.arcfw` file and click **Update**.\n- *Backup:* export or import all settings as a `.json` file.\n- *Reset to factory defaults.*",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "8.3 Web interface reference > 8.3.7 Backup & FW tab",
+    "heading": "8.3.7 Backup & FW tab",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 8.4 Light ring status reference\n\nThe following are the factory-default light scenes.\n\n| State | Colour | Pattern | Meaning |\n|---|---|---|---|\n| Disconnected | Yellow | Static, 25 % | No vehicle connected |\n| Connected | Blue | Breathe | Vehicle connected, not charging |\n| Waiting to start | Cyan | Breathe | Ready; waiting for a command or schedule |\n| Waiting for sun | Amber | Breathe | Solar mode, waiting for surplus |\n| Battery low | Orange | Blink | Hub reports battery below start threshold |\n| Charging (manual) | Green | Colour wipe | Charging in Manual or Scheduled mode |\n| Charging (solar) | Bright green | Colour wipe reverse | Charging from solar surplus |\n| Charged | White | Static | Vehicle full |\n| Fault | Red | Blink | An error is active |\n| Partial reset | Green | Rapid blink | Password reset in progress |\n| Full reset | Blue | Rapid blink | Factory reset in progress |\n\n---\n\n# 9. Warranty, Support and Disposal",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "8.4 Light ring status reference",
+    "heading": "8.4 Light ring status reference",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 9.1 Limited warranty\n\nNordvane Energy warrants the ArcPort Home 22 against defects in materials and workmanship for **36 months** from the date of purchase by the original owner, provided the unit has been installed by a qualified person and used in accordance with this manual.\n\n**The warranty does not cover:**\n\n- Damage caused by incorrect installation, incorrect electrical protection, or a faulty supply\n- Lightning, surge or flood damage\n- Unauthorised opening, modification or repair\n- Damage to charging cables, vehicles or third-party equipment\n- Normal wear of the socket cover and seals\n- Settings changed through unsupported interfaces such as direct Modbus register writes\n\nKeep your proof of purchase and installation record. The installer's name, date and measurement results will be requested when making a claim.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "9.1 Limited warranty",
+    "heading": "9.1 Limited warranty",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 9.2 Getting support\n\n1. Check this manual, including Section 6.\n2. Visit **support.nordvane.example** for tutorials, firmware and the register list.\n3. Contact your installer or the reseller you bought from.\n4. If necessary, your reseller will escalate the case to Nordvane Technical Support.\n\nPlease have the **model, serial number, firmware version, error code** and a short description of the problem ready.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "9.2 Getting support",
+    "heading": "9.2 Getting support",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 9.3 Disposal\n\nThis product contains electronic components and must not be thrown away with household waste. Take it to a collection point for electrical and electronic equipment, or return it to your reseller. Remove all personal data first by performing a full factory reset.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "9.3 Disposal",
+    "heading": "9.3 Disposal",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 9.4 Regulatory information\n\nThe ArcPort Home 22 complies with the relevant requirements of the radio-equipment, low-voltage and EMC directives applicable in the regions where it is sold. The declaration of conformity can be downloaded from the product page.\n\n---\n\n# 10. Glossary\n\n| Term | Meaning |\n|---|---|\n| **AC** | Alternating current. |\n| **AP / Access point** | A Wi-Fi network created by the station itself. |\n| **CP (control pilot)** | A signal line that lets the station and vehicle communicate. |\n| **DEF button** | A recessed reset button inside the unit. |\n| **EVSE** | Electric vehicle supply equipment; the technical name for a charging station. |\n| **Halo ring** | The programmable LED ring around the socket. |\n| **Hub** | The Nexus Hub energy gateway. |\n| **MQTT** | A lightweight messaging protocol used between the station and the Hub. |\n| **Modbus TCP** | An industrial communication protocol, offered as an alternative to MQTT. |\n| **PE** | Protective earth. |\n| **RCD** | Residual-current device; a safety switch that trips on leakage current. |\n| **RSSI** | Received signal strength indicator; a measure of Wi-Fi signal quality. |\n| **SoC** | State of charge of a battery, in percent. |\n| **Surplus** | Solar production minus household consumption. |\n| **Type 2** | The standard European AC charging connector (IEC 62196-2). |\n\n---\n\n# 11. Revision History\n\n| Rev | Date | Changes |\n|---|---|---|\n| 1 | March 2024 | First release |\n| 2 | July 2024 | Added Scheduled mode details and NordLink Remote |\n| 3 | November 2024 | Added IP whitelist and Modbus TCP register table |\n| 4 | April 2025 | Added dry-contact input (Appendix 8.1) |\n| 5 | September 2025 | Added phase-loss and supply-voltage error codes |\n| 6 | March 2026 | Added MQTT pairing with Nexus Hub; Modbus TCP moved to appendix |\n| 7 | October 2026 | Automatic CP calibration; expanded FAQ; added light ring reference and maintenance schedule |\n| 8 | October 2026 | Added Part II: Technical Service Manual (Sections 12–22) |\n| 9 | October 2026 | Added Section 6.6 (user errors), 6.7 (overheating) and 17.11 (overheating service diagnosis) |\n\n---\n\n---\n---\n\n# PART II — TECHNICAL SERVICE MANUAL\n\n> 🔧 **Audience:** Part II is written for qualified electricians and Nordvane-certified service technicians. It contains procedures that involve live mains voltage. Do not attempt these procedures unless you are trained and authorised to do so. Part I (Sections 1–11) remains the reference for normal operation.\n\n> ℹ️ All part numbers, voltages, register values and thresholds in this document are for the fictional ArcPort Home 22.\n\n---\n\n# 12. Service Requirements, Tools and Safe Working",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "9.4 Regulatory information",
+    "heading": "9.4 Regulatory information",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 12.1 Technician qualifications\n\nA technician working on the ArcPort Home 22 must:\n\n- Hold a valid electrical qualification recognised in the country of work\n- Be trained to perform live-fault diagnostics and to apply safe isolation procedures\n- Have completed the Nordvane ArcPort service course (certificate NV-SVC-AP2) before replacing any internal part under warranty\n- Have read Sections 1, 3 and 5 of this manual",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "12.1 Technician qualifications",
+    "heading": "12.1 Technician qualifications",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 12.2 Required tools and test equipment\n\n| Item | Specification | Used for |\n|---|---|---|\n| Multimeter | CAT III 600 V, true-RMS, ≥ 10 MΩ input | Voltage, resistance, continuity |\n| Two-pole voltage tester | Class 3, with proving unit | Proving dead |\n| Installation tester (MFT) | Compliant with IEC 61557 | Earth-loop impedance, RCD, insulation, polarity |\n| EVSE test adapter | Type 2, with CP/PP simulation (states A–F, fault injection) | Simulating a vehicle |\n| Oscilloscope | ≥ 20 MHz, 2 channels, 10:1 probes | Observing CP waveform |\n| Clamp meter | AC/DC, true-RMS, 40 A range | Measuring charging current |\n| Torx driver set | T10, T20 (security), T25 | Opening and servicing |\n| Torque screwdriver | 0.5–5 Nm | Tightening terminals and screws |\n| Insulated hand tools | VDE 1000 V rated | Work near live parts |\n| Laptop with Wi-Fi | Chrome/Edge/Firefox | Web interface and log export |\n| Smartphone with NordLink | v4.1 or later | Bluetooth service access |\n| ESD wrist strap | With ground lead | Handling circuit boards |\n| Thermal camera (optional) | ≥ 160 × 120 | Finding hot terminals |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "12.2 Required tools and test equipment",
+    "heading": "12.2 Required tools and test equipment",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 12.3 Personal protective equipment\n\n- Insulated gloves rated for the working voltage when working on any exposed live part\n- Safety glasses or face shield when performing live measurements\n- Non-conductive footwear",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "12.3 Personal protective equipment",
+    "heading": "12.3 Personal protective equipment",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 12.4 Safe isolation procedure\n\nAlways follow this sequence before touching any part inside the housing, except where a procedure expressly says the unit must be powered.\n\n1. Make sure the vehicle is unplugged and the Type 2 socket is empty.\n2. Switch off the charging-circuit breaker and RCD in the distribution board.\n3. Apply a lock-out/tag-out device and a warning tag.\n4. Using a two-pole voltage tester, **prove the tester on a known live source**.\n5. Test between L1–N, L2–N, L3–N, L1–L2, L2–L3, L1–L3 and each conductor to PE at the station's terminals.\n6. **Prove the tester again** on the known live source.\n7. Wait **at least 60 seconds** for internal capacitors to discharge before touching the board.\n\n> ⚠️ If a procedure requires power with the cover removed (for example, DEF button or live voltage measurement), touch only the points listed. The red-marked area on the label inside the unit indicates high-voltage parts. Never touch the main relay, current sensors, mains terminals or transformer while the unit is powered.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "12.4 Safe isolation procedure",
+    "heading": "12.4 Safe isolation procedure",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 12.5 Working practices\n\n- Use ferrules on all stranded conductors.\n- Replace any seal or gasket that is damaged, hardened or flattened.\n- Take photographs of the wiring before disconnecting anything.\n- Record the serial number, firmware version, active codes and all measured values on the service record (Section 22).\n- After any repair, run the commissioning test (Section 19) before returning the station to the customer.\n\n---\n\n# 13. Internal Architecture and Test Points",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "12.5 Working practices",
+    "heading": "12.5 Working practices",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 13.1 Block diagram\n\n```\n                       ┌──────────────────────────────────────────────────┐\n  Mains L1 L2 L3 N PE  │                 ARCPORT HOME 22                  │\n  ───────────────────▶ │  ┌───────────┐   ┌─────────┐   ┌──────────────┐  │  Type 2\n                       │  │ Terminal  │──▶│ Contactor│──▶│ Current/     │──┼─▶ socket\n                       │  │ block     │   │ K1 (4P) │   │ DC-leak CTs │  │   L1-L3,N,PE\n                       │  └─────┬─────┘   └────▲────┘   └──────┬───────┘  │\n                       │        │              │ coil drive    │          │\n                       │  ┌─────▼─────┐   ┌────┴───────────────▼───────┐  │\n                       │  │ PSU       │──▶│  MAIN CONTROLLER (MCU)     │  │\n                       │  │ 230V→12V/ │   │  - CP generator/monitor    │◀─┼─ CP, PP\n                       │  │ 5V/3.3V   │   │  - Relay supervision       │  │\n                       │  └───────────┘   │  - Metering                │  │\n                       │                  │  - Fault logic             │  │\n                       │                  └───┬────────┬────────┬──────┘  │\n                       │                      │        │        │         │\n                       │               ┌──────▼──┐ ┌───▼────┐ ┌─▼──────┐  │\n                       │               │ Wi-Fi/BT│ │ Display│ │ LED    │  │\n                       │               │ module  │ │ board  │ │ driver │  │\n                       │               └─────────┘ └────────┘ └────────┘  │\n                       │   Dry-contact input (DI-1 / DI-GND)              │\n                       └──────────────────────────────────────────────────┘\n```",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "13.1 Block diagram",
+    "heading": "13.1 Block diagram",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 13.2 Main board layout\n\n| Ref | Item | Notes |\n|---|---|---|\n| **TB1** | Mains terminal block (L1, L2, L3, N, PE) | 4–10 mm², torque 2.0 Nm |\n| **K1** | 4-pole power contactor | Coil 12 V DC; auxiliary feedback contact |\n| **CT1–CT3** | Current transformers (one per phase) | Used for metering and overload |\n| **RDC1** | DC residual-current sensor (6 mA) | Trips E-04 |\n| **F1** | Control-circuit fuse | T 500 mA / 250 V, 5 × 20 mm |\n| **F2** | Contactor-coil fuse | T 1 A / 250 V, 5 × 20 mm |\n| **SPD1** | On-board varistor (MOV) | Replace if discoloured |\n| **J2** | Display board connector (ribbon, 20-pin) | Display model only |\n| **J3** | LED ring connector | 4-pin |\n| **J4** | Dry-contact input | DI-1, DI-GND |\n| **J5** | Type 2 socket harness | CP, PP, lock motor |\n| **SW1** | DEF button | Reset (see 5.8) |\n| **TP1–TP8** | Test points (see 13.3) | |\n| **LED1–LED4** | Service LEDs (see 13.4) | |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "13.2 Main board layout",
+    "heading": "13.2 Main board layout",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 13.3 Test points\n\n> ⚠️ Test points may be live relative to PE. Use a CAT III probe with a safe tip, and only when instructed.\n\n| Test point | Signal | Expected value |\n|---|---|---|\n| TP1 | +12 V rail | 11.4–12.6 V DC vs. TP2 |\n| TP2 | 0 V reference | Reference only |\n| TP3 | +5 V rail | 4.85–5.15 V DC vs. TP2 |\n| TP4 | +3.3 V rail | 3.20–3.40 V DC vs. TP2 |\n| TP5 | Contactor coil drive | 0 V idle; ≈ 11.5 V when energised |\n| TP6 | CP (control pilot), post-buffer | See Section 18.1 |\n| TP7 | PP (proximity pilot) sense | See Section 18.2 |\n| TP8 | Contactor aux feedback | 3.3 V = contacts open; 0 V = contacts closed |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "13.3 Test points",
+    "heading": "13.3 Test points",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 13.4 Service LEDs\n\n| LED | Colour | Meaning |\n|---|---|---|\n| LED1 | Green | Steady = MCU running; flashing 1 Hz = normal heartbeat |\n| LED2 | Blue | Bluetooth active |\n| LED3 | Yellow | Wi-Fi: steady = connected; flashing = connecting; off = disabled |\n| LED4 | Red | Steady = active error; flashing = warning present |\n\n---\n\n# 14. Diagnostic Method and Data Sources",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "13.4 Service LEDs",
+    "heading": "13.4 Service LEDs",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 14.1 General approach\n\nFollow the same sequence for every fault. It avoids unnecessary part replacement and unsafe live work.\n\n1. **Collect:** ask the user what happened, when, with which vehicle and cable, and whether it is intermittent.\n2. **Read:** record the active code(s), the firmware version, and export the diagnostic log (Section 14.2).\n3. **Reproduce:** try with a known-good vehicle or test adapter and a known-good cable.\n4. **Isolate:** decide whether the fault is in the supply, the station, the cable or the vehicle.\n5. **Measure:** perform the checks listed for that code (Section 15 or 16).\n6. **Repair:** apply the corrective action.\n7. **Verify:** clear the code, retest, then complete the commissioning test (Section 19).\n8. **Record:** complete the service record.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "14.1 General approach",
+    "heading": "14.1 General approach",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 14.2 Exporting the diagnostic log\n\n**Web interface**\n\n1. Log in as admin.\n2. Open **Backup & FW → Diagnostics**.\n3. Click **Export log**. A file named `ARCP-<serial>-<date>.nvlog` is downloaded.\n\n**NordLink**\n\n1. Connect to the station.\n2. Open **Settings → ⋮ → Product info → Service → Export diagnostics**.\n3. Share the file to your email or cloud storage.\n\nThe log holds the last **500 events** and the last **72 hours** of 1-minute averages for voltage, current, temperature and Wi-Fi signal. See Section 21 for event codes.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "14.2 Exporting the diagnostic log",
+    "heading": "14.2 Exporting the diagnostic log",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 14.3 Information to collect before contacting Nordvane support\n\n- Serial number and model\n- Firmware version\n- Supply type (1-phase or 3-phase, TN-S, TN-C-S, TT)\n- Active codes and the time they first appeared\n- Vehicle make, model and year, and the charging cable used\n- The exported `.nvlog` file\n- Measured values from the relevant procedure in Section 15 or 16\n- Photographs of the installation (with the cover removed)",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "14.3 Information to collect before contacting Nordvane support",
+    "heading": "14.3 Information to collect before contacting Nordvane support",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 14.4 Decision flow: is the fault in the station, cable, vehicle or supply?\n\n```\n              Charging fails or code appears\n                          │\n          Test with known-good cable + test adapter\n                          │\n         ┌────────────────┴────────────────┐\n     Works                              Still fails\n        │                                  │\n  Fault is in the cable                    ▼\n  or the vehicle                  Check supply voltage at TB1\n  (test other vehicle)                     │\n                              ┌────────────┴────────────┐\n                         Out of range                In range\n                              │                         │\n                       Supply/installation       Read code, use Section 15/16\n                       problem (Section 17.7)    for the specific procedure\n```\n\n---\n\n# 15. Error Code Repair Procedures\n\nEach procedure follows the same format: **What the code means → Typical causes → Checks (in order) → Corrective action → Escalation.**\n\nUnless stated otherwise, isolate the supply (12.4) before opening the unit.\n\n---",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "14.4 Decision flow: is the fault in the station, cable, vehicle or supply?",
+    "heading": "14.4 Decision flow: is the fault in the station, cable, vehicle or supply?",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 15.1 E-01 — Earth not present\n\n**What it means.** The station cannot confirm a valid protective-earth (PE) connection. Charging is blocked.\n\n**How it is detected.** The MCU measures the impedance between the PE terminal and an internal reference at each plug-in event and every 60 seconds during charging.\n\n**Typical causes**\n\n- PE conductor not connected, loose or broken\n- High earth-loop impedance (poor earth electrode, corroded connection)\n- Open PEN on a TN-C-S supply\n- Damaged PE terminal or cracked solder joint on the board\n- Mains supply wired with swapped N and PE\n\n**Checks**\n\n1. Visually inspect the PE conductor and ferrule at TB1. Re-torque to 2.0 Nm.\n2. With the supply isolated, measure **continuity from the PE terminal at TB1 back to the main earth bar**. Expected: **< 0.5 Ω** (compensate for lead resistance).\n3. Restore power. With the cover on, measure **earth-loop impedance (Zs)** at the station. Expected: **< 1.0 Ω** for a TN supply with a 40 A type B device, or as required by local regulations.\n4. For TT supplies, measure the earth-electrode resistance. Expected: **< 100 Ω** (and low enough to satisfy the RCD disconnection requirements in your region).\n5. Measure L–PE voltage at TB1. Expected: **≈ 230 V**. N–PE should be **< 2 V**. If N–PE is much higher, there is a neutral or earth fault upstream.\n6. If measurements are good but the code persists, remove power and check the PE harness to the main board for cracked terminals.\n\n**Corrective action**\n\n- Repair or replace the PE connection; re-torque.\n- Correct earth-electrode or bonding problems in the installation. This is the installer's responsibility.\n- If the PE terminal block is damaged, replace the terminal block assembly (Section 20.5).\n- If all external measurements are good and the fault is repeatable, replace the main board (Section 20.6).\n\n**Escalate to Nordvane** if E-01 appears with an earth-loop impedance below 0.5 Ω and verified continuity.\n\n---",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "15.1 E-01 — Earth not present",
+    "heading": "15.1 E-01 — Earth not present",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 15.2 E-02 — Welded contacts\n\n**What it means.** After a stop command, the contactor feedback still shows the contacts closed, or voltage is present at the socket output when it should not be.\n\n> ⚠️ **Safety:** a welded contactor means the socket may remain live even when the station reports \"not charging\". Treat the output as live until proven otherwise.\n\n**Typical causes**\n\n- Contactor contacts welded by a high inrush or short-circuit\n- Contactor driven when vehicle sends overcurrent\n- Mechanical wear (very high cycle count)\n- Faulty contactor auxiliary contact or feedback wiring\n- Control-board failure holding the coil energised\n\n**Checks**\n\n1. Isolate the supply and **prove dead** (12.4). Do not touch the socket pins; assume they may be live until the supply is isolated.\n2. With the supply isolated, measure **continuity across each pole of K1** (input to output). Expected for a healthy, de-energised contactor: **open circuit (OL)**. Any continuity indicates welded contacts.\n3. Restore power with the vehicle unplugged. Measure **TP5**. Expected: **0 V**. If TP5 shows ≈ 11.5 V while idle, the MCU or driver is holding the coil on (go to step 6).\n4. Measure **TP8**. Expected with contacts open: **3.3 V**. If TP8 = 0 V but continuity (step 2) was open, the aux feedback is faulty.\n5. Check the log for `EVT 0x21 RELAY_STICK` events and the cycle counter (`relay_cycles`). The contactor is rated for 100,000 cycles.\n6. Check fuse **F2** (contactor coil). Replace with T 1 A / 250 V if blown and investigate the cause.\n\n**Corrective action**\n\n| Finding | Action |\n|---|---|\n| Welded contact poles | Replace contactor K1 (Section 20.3) |\n| Cycle count > 100,000 | Replace K1 |\n| TP5 high at idle | Replace the main board (20.6) |\n| Aux feedback fault | Replace K1 or the aux harness |\n| Short-circuit event in log | Inspect the socket, the cable and vehicle inlet for damage; investigate the cause before returning to service |\n\n> ⚠️ **Never** clear E-02 and return a station to service without replacing the confirmed welded contactor. The error is latched and requires a service reset (Section 15.10).\n\n---",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "15.2 E-02 — Welded contacts",
+    "heading": "15.2 E-02 — Welded contacts",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 15.3 E-03 — CP short-circuit\n\n**What it means.** The control-pilot line is shorted to ground or to another conductor, or the CP waveform is outside the safe window.\n\n**Typical causes**\n\n- Damaged charging cable or vehicle inlet\n- Water or contamination in the socket\n- Bent or damaged CP pin in the socket\n- Damaged harness (pinched during assembly)\n- Failed CP driver on the board\n\n**Checks**\n\n1. Unplug the cable. Does E-03 clear within 10 seconds? If yes, the cable, adapter or vehicle is at fault. Try a known-good cable and test adapter.\n2. Visually inspect the socket pins, the shutter and the seal. Dry the socket if wet; clean carefully using a dry brush.\n3. Isolate the supply. Disconnect **J5**. Measure resistance between the **CP** and **PE** pins on the socket side. Expected: **open circuit** (> 1 MΩ). If low, the socket or harness is shorted.\n4. With J5 reconnected and the supply restored, measure CP at **TP6** with an empty socket. Expected: **+12 V DC** (state A). A reading near 0 V indicates a short or a failed driver.\n5. If the socket harness is fine and TP6 is low with J5 disconnected, the CP driver on the board has failed.\n\n**Corrective action**\n\n- Replace a damaged cable.\n- Replace the socket and harness assembly (Section 20.4) if the pin or harness is faulty.\n- Replace the main board (20.6) if the driver has failed.\n\n---",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "15.3 E-03 — CP short-circuit",
+    "heading": "15.3 E-03 — CP short-circuit",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 15.4 E-04 — Residual DC current\n\n**What it means.** The internal DC residual-current detector (RDC1) measured DC leakage above **6 mA** for longer than 10 s.\n\n> ℹ️ E-04 is **separate from** the external RCD. If the external RCD trips instead, go to Section 17.4.\n\n**Typical causes**\n\n- Insulation fault in the cable or vehicle (DC leakage from the on-board charger)\n- Moisture in the socket or on the board\n- Fault in a vehicle on-board charger\n- Fault in the sensor or its wiring\n- Electrical noise from nearby equipment\n\n**Checks**\n\n1. Unplug the vehicle. Does E-04 clear (after a power cycle)? If yes, the cable or vehicle is the likely cause. Try another vehicle.\n2. Test the charging cable for insulation: with the cable disconnected from both ends, measure insulation resistance at **500 V DC** between each conductor and PE. Expected: **> 1 MΩ**.\n3. With the cable removed, power-cycle the station. If E-04 reappears with an empty socket, inspect for moisture, condensation or contamination on the board and the socket.\n4. Check the RDC1 sensor wiring and connector for damage.\n5. Test with the **EVSE test adapter** at 16 A. Inject a 6 mA DC leakage. The station should trip with E-04 within 10 seconds. If it does not, the sensor is faulty.\n\n**Corrective action**\n\n- Replace a cable with low insulation resistance.\n- Dry the unit and fix the cause of moisture (gland, seals, mounting orientation).\n- Replace the main board (20.6) if RDC1 is faulty.\n- Advise the user to have the vehicle's on-board charger checked if the problem follows the vehicle.\n\n**Reset.** E-04 requires removing the vehicle and a power cycle (or Clear errors from NordLink) to reset.\n\n---",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "15.4 E-04 — Residual DC current",
+    "heading": "15.4 E-04 — Residual DC current",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 15.5 E-05 — Over-temperature\n\n**What it means.** An internal temperature sensor exceeded **85 °C** (terminal block) or **75 °C** (board). Charging stops until it falls below **65 °C**.\n\n> ℹ️ Warning W-203 appears first, when the temperature passes **70 °C**; the station derates the current before stopping.\n\n**Typical causes**\n\n- Direct sunlight in hot climates\n- Loose or corroded terminal (high contact resistance heats the block)\n- Undersized supply cable\n- Long periods at 32 A in high ambient temperature\n- Blocked airflow or a mounting position over a heat source\n- Faulty temperature sensor\n\n**Checks**\n\n1. Compare the ambient temperature with the log's 1-minute temperature data (`T_board`, `T_term`, `T_amb`).\n2. Isolate and open the unit. **Inspect terminals for discolouration, melting or burn marks.**\n3. Re-torque all mains terminals to **2.0 Nm** (see 12.4 for safe isolation).\n4. Use a thermal camera under load (with the cover removed only if you can keep clear of live parts; otherwise use the cover-on view at the gland). A terminal > 20 °C hotter than the others indicates a poor connection.\n5. Check cable cross-section against current and length (Section 3.3).\n6. Check that the sensor reading is plausible: with the unit cold (> 2 hours idle), `T_board` and `T_amb` should be within **±5 °C**. A bigger difference indicates a sensor fault.\n\n**Corrective action**\n\n| Finding | Action |\n|---|---|\n| Sun-exposed | Fit a shade; move the unit; set maximum current lower |\n| Loose terminal | Re-terminate with a new ferrule; replace the terminal block if damaged |\n| Undersized cable | Upgrade the supply cable |\n| Heat-damaged terminal block | Replace (20.5) and inspect the board |\n| Sensor out of range | Replace the main board (20.6) |\n\n**Reduce the heat** as a workaround: set **Maximum charging current** to 24 A until the root cause is fixed.\n\n---",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "15.5 E-05 — Over-temperature",
+    "heading": "15.5 E-05 — Over-temperature",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 15.6 E-06 — Ambient sensor fault\n\n**What it means.** The external ambient temperature sensor does not respond or reads outside −45 °C to +105 °C.\n\n**Checks**\n\n1. Power-cycle the station. Does E-06 return within 60 seconds?\n2. Isolate the supply and inspect the sensor connector **J6** and its short harness.\n3. Measure sensor resistance at J6: expected **10 kΩ ± 5 % at 25 °C** (NTC). Open circuit or short circuit means a failed sensor.\n\n**Corrective action**\n\n- Reseat or replace the sensor harness.\n- Replace the main board (20.6) if the sensor input is faulty.\n\n> ℹ️ Without the ambient sensor, the station cannot derate correctly. Do not bypass.\n\n---",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "15.6 E-06 — Ambient sensor fault",
+    "heading": "15.6 E-06 — Ambient sensor fault",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 15.7 E-07 — Tamper detected\n\n**What it means.** The cover-open switch triggered while the station was powered.\n\n**Checks**\n\n1. Ask the user whether the cover was opened and by whom.\n2. Check the log for `EVT 0x3A TAMPER_OPEN` and the timestamp.\n3. Inspect the housing and seal for signs of unauthorised access.\n4. Check the tamper switch (SW2) for correct seating and wear.\n\n**Corrective action**\n\n- If the opening was legitimate (for example, authorised service), refit the cover correctly, ensure the switch is pressed, and clear the error with a service reset (15.10).\n- If unauthorised, inspect all wiring and the board. Document findings for the owner. Reset only after checks.\n- Replace the switch or the board if it is mechanically faulty.\n\n---",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "15.7 E-07 — Tamper detected",
+    "heading": "15.7 E-07 — Tamper detected",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 15.8 E-08 — Supply voltage out of range\n\n**What it means.** One or more phase voltages were below **170 V** or above **265 V** for more than 5 s.\n\n**Checks**\n\n1. Measure L–N voltage at TB1 for each phase, **under load** if possible.\n2. Compare to the log (`V_L1`, `V_L2`, `V_L3`).\n3. Check upstream: main fuse, connections at the meter, neutral integrity.\n\n| Finding | Meaning |\n|---|---|\n| Low on all phases under load | Voltage drop in the supply; check cable cross-section and length |\n| High on one phase and low on another | Lost or poor neutral; **stop and call the utility** |\n| Voltage swings with large loads | Weak supply or loose connection upstream |\n| Consistently high (> 255 V) | Contact the grid operator |\n\n**Corrective action**\n\n- Correct the installation problem or ask the utility to adjust the supply.\n- Lower the maximum charging current if the voltage drops under load.\n- If measured voltage is normal and the code persists, replace the main board (20.6).\n\n> ⚠️ Lost-neutral conditions can raise one phase to nearly 400 V. Do not reset the station until the cause is found and repaired.\n\n---",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "15.8 E-08 — Supply voltage out of range",
+    "heading": "15.8 E-08 — Supply voltage out of range",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 15.9 E-09 — Phase loss\n\n**What it means.** One or more phases of a three-phase installation are missing while the station is set to three-phase operation.\n\n**Checks**\n\n1. Measure L1–N, L2–N and L3–N at TB1. All should be ≈ 230 V.\n2. Check the upstream breaker and RCD: a tripped pole, a loose terminal or a blown fuse can remove a phase.\n3. Check phase wiring at TB1.\n4. If measured voltages are correct but E-09 persists, check log events `EVT 0x41 PHASE_L2_LOST`, etc., then check CT wiring.\n\n**Corrective action**\n\n- Repair the supply.\n- If the installation is supplied by one phase only, set **Phase configuration** to *Single-phase* in the web interface (General → Charger). Failing to do so causes E-09.\n- Replace the main board if voltages are fine and the code persists.\n\n---",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "15.9 E-09 — Phase loss",
+    "heading": "15.9 E-09 — Phase loss",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 15.10 Service reset (clearing latched errors)\n\nSome errors latch and cannot be cleared by the user: **E-02, E-07 and E-08 (lost-neutral events)**. A service reset records the technician and reason in the log.\n\n1. Make sure the cause has been repaired.\n2. Log in to the web interface as **admin**, open **Backup & FW → Diagnostics → Service reset**.\n3. Enter the **service code** provided by Nordvane or your authorised distributor. The code is valid for 24 hours and is tied to the serial number.\n4. Click **Clear latched errors**. The station reboots.\n5. Run the commissioning test (Section 19).\n\n---\n\n# 16. Warning and Notice Procedures\n\nWarnings do not always stop charging, but they point at problems that should be understood.\n\n| Code | Priority | Recommended first action |\n|---|---|---|\n| W-201 | Low | Complete first-use setup |\n| W-202 | Info | Verify dry-contact input status (16.2) |\n| W-203 | Medium | See 15.5 — treat as a pre-warning for E-05 |\n| W-204 | Medium | See 16.3 |\n| W-205 / W-206 | Medium | See 16.4 |\n| W-207 | Medium | See 16.5 |\n| W-208 | Info | Expected when load-control input is active (16.2) |\n| W-209 | Low | Inverter-side; check inverter cooling |\n| W-210 / W-211 / W-212 | Medium | See 16.6 |\n| W-213 | Low | See 16.7 |\n| W-214 | Low | See 16.8 |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "15.10 Service reset (clearing latched errors)",
+    "heading": "15.10 Service reset (clearing latched errors)",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 16.1 W-201 — Initial setup not completed\n\nRun first-use setup (Section 5.1 or 5.2). If the wizard keeps returning to the beginning after Save, perform a full reset (5.8), re-run setup, and check that the firmware is current.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "16.1 W-201 — Initial setup not completed",
+    "heading": "16.1 W-201 — Initial setup not completed",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 16.2 W-202 and W-208 — Grid-operator block / external current limit\n\n**Purpose.** The station reacts to the dry-contact input at J4 (DI-1 and DI-GND).\n\n**Checks**\n\n1. In the web interface, open **General → Charger → Load-control input** and check whether the input is *Enabled* and the logic polarity.\n2. With the supply isolated, measure the contact at J4. Expected: **open circuit** when no limit is requested; **< 100 Ω** when closed.\n3. Disconnect the external wiring and fit a link or leave open to test the station's response.\n4. If W-208 appears without a signal, look for a damaged control cable, moisture in the gland, or interference from nearby mains wiring.\n5. If the grid operator is actually sending the signal, no repair is needed. W-202 and W-208 clear when the signal ends.\n\n**Corrective action.** Re-route or replace the control cable; use screened cable and keep 100 mm or more away from mains conductors.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "16.2 W-202 and W-208 — Grid-operator block / external current limit",
+    "heading": "16.2 W-202 and W-208 — Grid-operator block / external current limit",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 16.3 W-204 — Hub communication warning\n\n**Procedure**\n\n1. Check that the Hub is on and online.\n2. In the ArcPort web interface, open **General → Hub** and press **Check**.\n3. Compare the stored IP address and Portal ID with the values shown on the Hub.\n4. Ping the Hub from a laptop on the same network. If it fails, fix the network.\n5. If the Hub's IP address changed, assign a fixed DHCP lease and press **Discover**.\n6. Check the Hub's paired-devices list. If the ArcPort is missing, re-pair (Section 5.3).\n7. If using Modbus TCP, confirm the whitelist includes the Hub's address and that the Modbus server is enabled on the Hub.\n8. Check Wi-Fi signal (< –75 dBm causes dropouts).\n\nIf all of this is correct and W-204 persists, export the log and look for `EVT 0x52 MQTT_AUTH_FAIL` (token invalid: unpair and re-pair) or `EVT 0x53 MQTT_TLS_FAIL` (time not synchronised or certificate problem: check date/time on both devices).",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "16.3 W-204 — Hub communication warning",
+    "heading": "16.3 W-204 — Hub communication warning",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 16.4 W-205 and W-206 — Overload detected / active\n\n**What happens.** When an overload is reported, the station drops to minimum current, waits about 5 seconds and, if the overload remains, stops charging. A repeated overload reduces maximum current by 10 %.\n\n**Checks**\n\n1. Identify the source: inverter overload, grid import limit, or main breaker limit.\n2. Check the Hub for a *Grid import limit* or *Inverter overload* alarm.\n3. Examine household loads that coincide with charging (ovens, heat pumps, water heaters).\n4. Review the log for `EVT 0x61 OVERLOAD_SET` and `EVT 0x62 OVERLOAD_CLR` to see the time pattern.\n\n**Corrective action**\n\n- Lower the station's maximum charging current.\n- Increase the supply capacity or the inverter size.\n- Use load management with the Hub so that other large loads pause during charging.\n- To restore full current after repeated overloads, reset the reduction in **General → Charger → Reset current limit**.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "16.4 W-205 and W-206 — Overload detected / active",
+    "heading": "16.4 W-205 and W-206 — Overload detected / active",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 16.5 W-207 — Scheduled mode failed (time sync)\n\n1. Check that the station has internet or a Hub providing time. The station gets time from the Hub, then NTP.\n2. Verify date, time zone and region (Settings → General → Date & Time).\n3. For stations without internet, set the clock manually. After a power outage, the clock may reset (W-214).\n4. Check the log for `EVT 0x70 TIME_SYNC_FAIL`.\n5. Make sure your firewall allows outbound UDP port 123.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "16.5 W-207 — Scheduled mode failed (time sync)",
+    "heading": "16.5 W-207 — Scheduled mode failed (time sync)",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 16.6 W-210, W-211, W-212 — Display firmware\n\n**W-212** is normal during a display update; do not remove power. It normally ends within 3 minutes.\n\n**W-210** (broken file): re-download the firmware package, verify its checksum and repeat the update.\n\n**W-211** (communication): isolate the supply and check the display ribbon cable at **J2**. Reseat it carefully, lifting the latch fully before removing the cable. Replace the ribbon if it shows damage. If the fault remains, replace the display board (Section 20.2).",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "16.6 W-210, W-211, W-212 — Display firmware",
+    "heading": "16.6 W-210, W-211, W-212 — Display firmware",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 16.7 W-213 — Wi-Fi signal weak\n\n1. Check the Wi-Fi status screen for RSSI (aim for better than –70 dBm).\n2. Move the router, add an access point or fit an external antenna kit (NV-ANT-01).\n3. Avoid 2.4 GHz channels with heavy interference; set the router to channel 1, 6 or 11.\n4. Don't mount the station behind metal sheets or in a closed metal box.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "16.7 W-213 — Wi-Fi signal weak",
+    "heading": "16.7 W-213 — Wi-Fi signal weak",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 16.8 W-214 — Clock reset\n\nThe internal backup cell has lost charge or the unit was disconnected for a long time. The clock should recover on the next time sync. If W-214 appears after every power cycle, the backup cell (CR1220) needs replacing (Section 20.7).",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "16.8 W-214 — Clock reset",
+    "heading": "16.8 W-214 — Clock reset",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 16.9 Notices (N-401 to N-408)\n\nNotices do not indicate faults. They are the station's response to a command that cannot be carried out. See the table in Section 6.5. Technicians should check these causes when a user reports \"the button does nothing\":\n\n| Notice | Most common root cause |\n|---|---|\n| N-401 | Hub not paired, or communication disabled |\n| N-402 | No enabled schedule |\n| N-403 | Vehicle not detected: check CP (Section 18.1) |\n| N-404 | An error is active |\n| N-407 | Overload active (16.4) |\n| N-408 | Display firmware update in progress |\n\n---\n\n# 17. Symptom-Based Troubleshooting\n\nUse this section when there is no code or several possible causes.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "16.9 Notices (N-401 to N-408)",
+    "heading": "16.9 Notices (N-401 to N-408)",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 17.1 Station has no power (display off, ring off, all LEDs off)\n\n| Step | Check | Expected | If not |\n|---|---|---|---|\n| 1 | Upstream breaker and RCD | ON | Reset once; if it trips again, see 17.4 |\n| 2 | Voltage at TB1 (L1–N) | 207–253 V | Repair supply |\n| 3 | Fuse F1 | Continuity | Replace with T 500 mA, investigate cause |\n| 4 | TP1 (+12 V) | 11.4–12.6 V | Replace PSU / board |\n| 5 | TP3 (+5 V) and TP4 (+3.3 V) | In tolerance | Replace the board |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "17.1 Station has no power (display off, ring off, all LEDs off)",
+    "heading": "17.1 Station has no power (display off, ring off, all LEDs off)",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 17.2 Vehicle connected but station shows \"Disconnected\"\n\n1. Try another cable and vehicle.\n2. Look for dirt or damage in the socket.\n3. Measure CP at TP6 with the vehicle connected. Expected: **+9 V** peak (state B). If it stays at +12 V, the vehicle or cable is not pulling the CP down; check the cable's CP wire and the vehicle inlet.\n4. Verify Auto-CP calibration (Section 6.1). If still wrong, re-enable manual calibration and run it.\n5. Measure PP resistance (Section 18.2). A wrong value changes the cable current limit.\n6. If CP is correct and the station still does not recognise the state, replace the main board.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "17.2 Vehicle connected but station shows \"Disconnected\"",
+    "heading": "17.2 Vehicle connected but station shows \"Disconnected\"",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 17.3 Vehicle detected but charging does not start\n\n| Check | Where | Notes |\n|---|---|---|\n| Mode and Start state | Overview | Manual needs Start; Solar needs surplus; Scheduled needs an active schedule |\n| Autostart | General | Disabled means Start is needed |\n| N-codes | Overview | N-403…N-408 point to causes |\n| Vehicle charging limit | In the vehicle | Many vehicles have their own schedule or limit |\n| CP state | TP6 | Expect +6 V with PWM when the vehicle is ready (state C) |\n| Contactor | Listen for a click; TP5 ≈ 11.5 V | No click and TP5 high: check coil fuse F2 and K1 |\n\nIf CP shows state C and TP5 is energised but there is no output voltage at the socket, K1 has failed open. Replace K1 (Section 20.3).",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "17.3 Vehicle detected but charging does not start",
+    "heading": "17.3 Vehicle detected but charging does not start",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 17.4 External RCD trips\n\n> ⚠️ Do not repeatedly reset a tripping RCD. Find the cause first.\n\n| Observation | Probable cause | Action |\n|---|---|---|\n| Trips immediately when the supply is switched on, no vehicle | Moisture, damaged cable insulation, wiring fault | Isolate; measure insulation resistance of the supply cable and the station at 500 V DC. Expect > 1 MΩ. |\n| Trips when a vehicle is plugged in | Vehicle or cable leakage | Test with another vehicle/cable |\n| Trips after a delay while charging | Leakage in vehicle, cumulative leakage, or wrong RCD type | Check RCD type. Type A RCDs can be blinded by DC leakage; use type B or an RCD with 6 mA DC detection |\n| Trips only in rain | Water ingress | Check gland, seal and mounting |\n| Trips when another large load starts | Combined leakage on the same RCD | Put the station on a dedicated RCD |\n\n**Measure** the leakage current with a clamp-type leakage meter on L+N together, with the vehicle charging. A reading over 15 mA (for a 30 mA RCD) suggests a problem.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "17.4 External RCD trips",
+    "heading": "17.4 External RCD trips",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 17.5 Charging is slower than expected\n\n1. Read the actual current with a clamp meter on each phase.\n2. Compare it with: the configured maximum, the cable limit (PP resistor), the vehicle's limit, Hub-imposed limits (W-205/W-208/W-209) and thermal derating (W-203).\n3. Check the supply voltage under load (a low voltage reduces the power).\n4. Check that the vehicle is using all three phases. Some vehicles are single-phase only (7.4 kW max).\n5. Check the vehicle's own charging limit and battery temperature (cold batteries charge more slowly).\n\n| Measured vs. expected | Likely cause |\n|---|---|\n| Matches vehicle on-board charger limit | Normal |\n| Lower than the cable limit | Station limit or Hub limit |\n| One phase low | Poor terminal or phase imbalance |\n| Falls over time | Thermal derating (W-203) |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "17.5 Charging is slower than expected",
+    "heading": "17.5 Charging is slower than expected",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 17.6 Charging starts and stops repeatedly\n\n- **Solar mode:** enable *Allow battery/grid power* and *Smooth-start hold*, and raise the stop delay.\n- **Manual/Scheduled:** run CP calibration (Section 6.1). Replace the cable if the CP waveform shows noise (Section 18.1).\n- **Wi-Fi/Hub related:** check W-204.\n- **Chattering contactor:** low supply voltage can make the contactor drop out. Measure at TB1 under load.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "17.6 Charging starts and stops repeatedly",
+    "heading": "17.6 Charging starts and stops repeatedly",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 17.7 Supply problems that appear as station faults\n\n- Voltage drop of more than 5 % at full load: upgrade the cable.\n- Neutral-to-earth voltage above 5 V under load: check neutral integrity.\n- Noisy supply (harmonics/spikes) from inverters or large motors: add filtering or separate circuits.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "17.7 Supply problems that appear as station faults",
+    "heading": "17.7 Supply problems that appear as station faults",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 17.8 Display problems\n\n| Symptom | Check |\n|---|---|\n| Blank display, ring works | Ribbon cable at J2; backlight; display update status |\n| Display flickers | Ribbon cable; PSU ripple at TP1 (< 100 mV p-p) |\n| Touch unresponsive | Display lock setting; calibrate touch (Settings → Touch); clean glass |\n| Wrong language or time | Settings → Language; time zone |\n| Ghost touches in rain | Enable \"Rain mode\" in Display settings |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "17.8 Display problems",
+    "heading": "17.8 Display problems",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 17.9 Light ring problems\n\n| Symptom | Check |\n|---|---|\n| Ring dark | Brightness limit set to 0; J3 connector; LED driver supply |\n| Wrong colours | Light-ring scenes; import default scenes |\n| Random flicker | J3 connector and ground; check TP1 ripple |\n| Only part of ring lights | Damaged LED strip; replace ring (20.8) |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "17.9 Light ring problems",
+    "heading": "17.9 Light ring problems",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 17.10 Bluetooth and NordLink problems\n\n1. Verify Bluetooth is enabled (web: Network → Bluetooth).\n2. Remove old pairings on the phone; use *Unpair all devices* and pair again.\n3. Check pairing code (000000 or the internal label).\n4. Stay within 5 m with no metal between phone and station.\n5. Update NordLink and the phone's OS.\n\n---",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "17.10 Bluetooth and NordLink problems",
+    "heading": "17.10 Bluetooth and NordLink problems",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 17.11 Overheating — detailed service diagnosis\n\nUse this procedure for W-203, E-05, or a customer complaint of \"hot station\", \"slow charging in summer\" or \"burning smell\". It complements Section 15.5.\n\n> ⚠️ **If there are signs of burning, melted plastic, smoke or arcing:** isolate the supply at the distribution board immediately, apply lock-out, and do not re-energise until the cause is found and any damaged parts are replaced.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "17.11 Overheating — detailed service diagnosis",
+    "heading": "17.11 Overheating — detailed service diagnosis",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 17.11 Overheating — detailed service diagnosis > 17.11.1 Gather evidence\n\n1. Export the diagnostic log (Section 14.2). Look at `T_board`, `T_term`, `T_amb`, current and voltage for the 72 hours before the event.\n2. Note the time of day, the charging current and the weather. Does the pattern follow sun exposure or only high current?\n3. Ask when the problem started and whether anything changed (new vehicle, higher current, new cable, season).\n4. Inspect the site: sun exposure, clearances, nearby heat sources, cable routing.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "17.11 Overheating — detailed service diagnosis > 17.11.1 Gather evidence",
+    "heading": "17.11.1 Gather evidence",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 17.11 Overheating — detailed service diagnosis > 17.11.2 Classify the problem\n\n| Log pattern | Probable class | Go to |\n|---|---|---|\n| `T_board` and `T_term` rise with `T_amb`, even at low current | Environmental | 17.11.3 |\n| `T_term` rises much faster than `T_board` under load | High-resistance connection | 17.11.4 |\n| `T_board` high with idle current | Electronics / PSU / sensor | 17.11.5 |\n| One phase's terminal hotter than others | Phase connection or imbalance | 17.11.4 |\n| Sensor reading disagrees with ambient after cooling | Faulty sensor | 17.11.6 |\n| Temperature normal, but the cable or plug is hot | Cable / vehicle inlet | 17.11.7 |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "17.11 Overheating — detailed service diagnosis > 17.11.2 Classify the problem",
+    "heading": "17.11.2 Classify the problem",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 17.11 Overheating — detailed service diagnosis > 17.11.3 Environmental overheating\n\n1. Measure the ambient temperature at the station and the housing surface temperature (infrared thermometer) in the sun and in the shade.\n2. Compare with the derating guidance in Section 6.7.5.\n3. Check clearances (200 mm sides, 300 mm below) and any enclosure.\n4. Look for reflected heat (glass, metal cladding), flues or exhausts.\n\n**Actions:** fit a sun shield (leave a 30 mm air gap behind it), relocate if needed, reduce the maximum current, and add a night-time schedule. Document the changes.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "17.11 Overheating — detailed service diagnosis > 17.11.3 Environmental overheating",
+    "heading": "17.11.3 Environmental overheating",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 17.11 Overheating — detailed service diagnosis > 17.11.4 High-resistance connection (hot terminals)\n\n> ⚠️ A hot terminal is a fire risk. Treat it as urgent.\n\n1. Under load (32 A if possible), scan the **gland area and the lower front housing** with a thermal camera without opening the unit. A hot spot near the terminals confirms a problem.\n2. Isolate and prove dead (Section 12.4). Open the unit.\n3. Inspect TB1 for **discolouration, melted insulation, brown or black marks, pitting** or a smell of burning.\n4. Check ferrules: crimps should be tight, undamaged and the correct size. Stranded conductors without ferrules often loosen.\n5. Check that the conductor is fully inserted and that no insulation is trapped under the clamp.\n6. Re-torque every terminal to **2.0 Nm** and pull-test each conductor.\n7. Measure voltage drop across each terminal under load: it should be **< 20 mV** at 32 A. A reading of 50 mV or more suggests a bad contact.\n\n| Finding | Action |\n|---|---|\n| Loose but undamaged | Re-terminate with a new ferrule, re-torque, re-test |\n| Discoloured metal or insulation | Replace the terminal block (20.5) and the conductor end; inspect the board |\n| Melted plastic nearby | Replace the terminal block and check adjacent parts; inspect the main board for heat damage |\n| Board marks or burnt tracks | Replace the main board (20.6) |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "17.11 Overheating — detailed service diagnosis > 17.11.4 High-resistance connection (hot terminals)",
+    "heading": "17.11.4 High-resistance connection (hot terminals)",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 17.11 Overheating — detailed service diagnosis > 17.11.5 Internal electronics running hot\n\n1. With the vehicle unplugged, record `T_board` at idle. It should be within **ambient + 8 °C**.\n2. Measure the PSU rails at TP1, TP3 and TP4 and ripple at TP1 (< 100 mV peak-to-peak).\n3. Check the contactor coil drive (TP5) at idle. It should be 0 V. If the coil is energised without a vehicle, the coil heats the area and the contactor may fail early (see 15.2).\n4. Look for dust, insects, water marks or corrosion on the board.\n\n| Finding | Action |\n|---|---|\n| Idle temperature high, rails normal | Replace the main board |\n| Rails out of tolerance or high ripple | Replace the main board |\n| Coil energised at idle | Replace the main board; check K1 |\n| Water or corrosion | Find the entry route (gland, seal, socket), dry and clean, replace affected parts |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "17.11 Overheating — detailed service diagnosis > 17.11.5 Internal electronics running hot",
+    "heading": "17.11.5 Internal electronics running hot",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 17.11 Overheating — detailed service diagnosis > 17.11.6 Temperature sensor check\n\n1. Leave the unit unpowered for at least **2 hours** so that all parts reach ambient temperature.\n2. Power the station and read `T_board`, `T_term` and `T_amb` immediately.\n3. Compare each with a reference thermometer. Differences of **more than 5 °C** indicate a sensor fault.\n4. For the ambient sensor, measure resistance at J6 (10 kΩ ± 5 % at 25 °C). Also see E-06 (15.6).\n\nIf a sensor reads too high, replace the board. If it reads too low, **do not leave the station in service**: the protection would act too late. Replace the board immediately.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "17.11 Overheating — detailed service diagnosis > 17.11.6 Temperature sensor check",
+    "heading": "17.11.6 Temperature sensor check",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 17.11 Overheating — detailed service diagnosis > 17.11.7 Hot cable or plug\n\n1. Compare the temperature of the plug at the station and at the vehicle after 30 minutes of charging.\n2. Check the PP resistor value of the cable (Section 18.2) and the cable's rating against the charging current.\n3. Look for burned or discoloured pins, deformed plastic, loose contacts or damaged strain relief.\n4. Replace the cable if its temperature rises more than **25 °C above ambient** at its rated current, or if any damage is visible.\n5. If the vehicle inlet is hot, reduce the current and advise the user to have the vehicle checked.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "17.11 Overheating — detailed service diagnosis > 17.11.7 Hot cable or plug",
+    "heading": "17.11.7 Hot cable or plug",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 17.11 Overheating — detailed service diagnosis > 17.11.8 After the repair: verification\n\n1. Run a **2-hour soak test** at the customer's normal maximum current, with the cover on.\n2. Log `T_board` and `T_term`. Expected stable values are in Section 18.5.\n3. Re-scan with the thermal camera. No terminal or surface should be more than **35 °C above ambient**.\n4. Confirm that W-203 and E-05 no longer appear.\n5. Record the results in the service record.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "17.11 Overheating — detailed service diagnosis > 17.11.8 After the repair: verification",
+    "heading": "17.11.8 After the repair: verification",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 17.11 Overheating — detailed service diagnosis > 17.11.9 Advice to leave with the customer\n\n- Keep the station shaded, uncovered and clear.\n- Lower the maximum current in very hot weather.\n- Never use extension leads.\n- If the station ever smells of burning, switch off the breaker and call an electrician.\n- Have the terminals checked at the next periodic inspection.\n\n---\n\n# 18. Reference Measurements and Expected Values",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "17.11 Overheating — detailed service diagnosis > 17.11.9 Advice to leave with the customer",
+    "heading": "17.11.9 Advice to leave with the customer",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 18.1 Control pilot (CP) states and waveform\n\nCP is a ±12 V, 1 kHz signal. The positive-peak voltage tells the station the vehicle state; the duty cycle tells the vehicle the available current.\n\n| State | Meaning | CP positive peak | PWM |\n|---|---|---|---|\n| A | No vehicle | +12 V (DC, no PWM) | None |\n| B | Vehicle connected, not ready | +9 V ± 1 V | Yes, when enabled |\n| C | Vehicle ready, charging | +6 V ± 1 V | Yes |\n| D | Ventilation required | +3 V ± 1 V | Not supported — station will fault |\n| E | Error / short to earth | 0 V | None |\n| F | Station unavailable | −12 V | None |\n\nThe negative peak should be **−12 V ± 0.8 V** in states B and C. A negative peak close to 0 V indicates the vehicle's diode is missing or a cable fault.\n\n**Duty cycle to current**\n\n| Duty cycle | Available current |\n|---|---|\n| 10 % | 6 A |\n| 16.7 % | 10 A |\n| 26.7 % | 16 A |\n| 40 % | 24 A |\n| 53.3 % | 32 A |\n\nFormula: *I (A) = duty (%) × 0.6* for duty between 10 % and 85 %.\n\n**Waveform quality.** Rise and fall times should be < 3 µs. Ringing or noise of more than ±0.5 V on the plateau points to a defective cable or interference.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "18.1 Control pilot (CP) states and waveform",
+    "heading": "18.1 Control pilot (CP) states and waveform",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 18.2 Proximity pilot (PP) cable coding\n\nThe PP resistor in the cable plug tells the station what current the cable can carry.\n\n| PP resistance | Cable rating |\n|---|---|\n| 1.5 kΩ ± 3 % | 13 A |\n| 680 Ω ± 3 % | 20 A |\n| 220 Ω ± 3 % | 32 A |\n| 100 Ω ± 3 % | 63 A |\n\nMeasure at the cable's plug (PP to PE) with the cable disconnected. Replace a cable if the reading is far from these values.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "18.2 Proximity pilot (PP) cable coding",
+    "heading": "18.2 Proximity pilot (PP) cable coding",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 18.3 Supply and insulation values\n\n| Test | Expected |\n|---|---|\n| Supply voltage L–N | 207–253 V (nominal 230 V) |\n| Supply voltage L–L | 360–440 V (nominal 400 V) |\n| N–PE voltage | < 2 V unloaded; < 5 V under load |\n| Earth-loop impedance Zs | < 1.0 Ω (TN), see local rules |\n| Insulation resistance, supply cable (500 V DC) | > 1 MΩ |\n| Insulation resistance, station (disconnected supply, between all live conductors and PE, 500 V DC) | > 1 MΩ |\n| Protective-earth continuity | < 0.5 Ω |\n| External RCD trip time at 1 × IΔn | < 300 ms |\n| External RCD trip time at 5 × IΔn | < 40 ms |\n\n> ⚠️ Disconnect the station's mains terminals before performing a 500 V insulation test on the supply cable. Do not apply a 500 V test across the station electronics.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "18.3 Supply and insulation values",
+    "heading": "18.3 Supply and insulation values",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 18.4 Terminal torque values\n\n| Connection | Torque |\n|---|---|\n| Mains terminals TB1 | 2.0 Nm |\n| Dry-contact terminals J4 | 0.4 Nm |\n| Backing-plate screws | 1.0–1.2 Nm |\n| Cable gland nut | 3.0 Nm |\n| Wall-mount screws | Firm; do not overtighten |\n| Display board screws | 0.4 Nm |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "18.4 Terminal torque values",
+    "heading": "18.4 Terminal torque values",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 18.5 Internal sensor reference\n\n| Parameter | Normal range |\n|---|---|\n| Board temperature at idle | Ambient + 3 to 8 °C |\n| Board temperature at 32 A, 3-phase | Ambient + 15 to 30 °C |\n| Terminal temperature at 32 A | Ambient + 20 to 35 °C |\n| Derating start (W-203) | 70 °C |\n| Stop (E-05) | 75 °C board / 85 °C terminals |\n| Resume | 65 °C |\n| Current measurement accuracy | ± 1.5 % |\n| Power calibration factor (default) | 1.00 |\n\n---\n\n# 19. Commissioning and Periodic Inspection Test Procedure\n\nPerform this test after installation, after any repair, and during periodic inspections (every 24 months or as required locally).",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "18.5 Internal sensor reference",
+    "heading": "18.5 Internal sensor reference",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 19.1 Dead tests (supply isolated)\n\n| # | Test | Acceptable result | Result |\n|---|---|---|---|\n| 1 | Visual inspection: housing, seals, gland, cable, socket | No damage | ☐ |\n| 2 | Terminal torque check | 2.0 Nm | ☐ |\n| 3 | PE continuity (R2) | < 0.5 Ω | ☐ |\n| 4 | Insulation resistance, supply cable, 500 V DC | > 1 MΩ | ☐ |\n| 5 | Polarity / phase sequence (3-phase) | L1-L2-L3 correct | ☐ |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "19.1 Dead tests (supply isolated)",
+    "heading": "19.1 Dead tests (supply isolated)",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 19.2 Live tests (supply on)\n\n| # | Test | Acceptable result | Result |\n|---|---|---|---|\n| 6 | Supply voltage L–N (each phase) | 207–253 V | ☐ |\n| 7 | N–PE voltage | < 2 V | ☐ |\n| 8 | Earth-loop impedance Zs | < 1.0 Ω or per local rules | ☐ |\n| 9 | External RCD test at 1 × IΔn | Trips < 300 ms | ☐ |\n| 10 | External RCD test at 5 × IΔn | Trips < 40 ms | ☐ |\n| 11 | Service LEDs | LED1 flashing, no red | ☐ |\n| 12 | Test points TP1/TP3/TP4 | In tolerance | ☐ |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "19.2 Live tests (supply on)",
+    "heading": "19.2 Live tests (supply on)",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 19.3 Functional tests with EVSE test adapter\n\n| # | Test | Acceptable result | Result |\n|---|---|---|---|\n| 13 | State A (no vehicle) | CP +12 V; ring \"Disconnected\" | ☐ |\n| 14 | State B (connected) | CP +9 V; ring \"Connected\" | ☐ |\n| 15 | State C (charging) at 16 A | Contactor closes; output voltage present; current within ±1.5 % | ☐ |\n| 16 | State C at 32 A | As above | ☐ |\n| 17 | Stop command | Current drops, contactor opens after ~2 s | ☐ |\n| 18 | State E (CP shorted to PE) | Contactor opens; E-03 | ☐ |\n| 19 | Ground fault (open PE test, if the adapter supports it) | E-01; no output | ☐ |\n| 20 | 6 mA DC leakage injection | E-04 within 10 s | ☐ |\n| 21 | Cover-open (power on, then open cover) | E-07 | ☐ |\n| 22 | Dry-contact input closed | Current limited; W-208 | ☐ |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "19.3 Functional tests with EVSE test adapter",
+    "heading": "19.3 Functional tests with EVSE test adapter",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 19.4 Functional tests with a real vehicle\n\n| # | Test | Acceptable result | Result |\n|---|---|---|---|\n| 23 | Plug in and start in Manual | Charging begins; correct current | ☐ |\n| 24 | Stop and unplug | Clean stop; ring returns to disconnected | ☐ |\n| 25 | Scheduled mode (short test schedule) | Starts and stops at the correct times | ☐ |\n| 26 | Solar mode (if Hub fitted) | Starts with surplus; stops without | ☐ |\n| 27 | NordLink: connect and control | Works | ☐ |\n| 28 | NordCloud: view and control | Works | ☐ |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "19.4 Functional tests with a real vehicle",
+    "heading": "19.4 Functional tests with a real vehicle",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 19.5 Handover\n\n- Set the final **maximum charging current** and **phase configuration**.\n- Change the default web password.\n- Record the Wi-Fi password and pairing code (or give them to the customer).\n- Show the customer how to read the ring and the touchscreen.\n- Provide the test sheet to the customer and keep a copy.\n\n---\n\n# 20. Component Replacement Procedures\n\n> ⚠️ Isolate and prove dead (Section 12.4) before every procedure. Wear an ESD strap when handling boards. Photograph connections before disconnecting. Fit new seals whenever a seal is disturbed.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "19.5 Handover",
+    "heading": "19.5 Handover",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 20.1 Spare parts list\n\n| Part no. | Description | Used in |\n|---|---|---|\n| NV-AP22-SP01 | Main control board (with firmware) | 20.6 |\n| NV-AP22-SP02 | Display board with touch panel | 20.2 |\n| NV-AP22-SP03 | Contactor K1, 4-pole, 40 A | 20.3 |\n| NV-AP22-SP04 | Type 2 socket with harness (J5) | 20.4 |\n| NV-AP22-SP05 | Terminal block TB1 assembly | 20.5 |\n| NV-AP22-SP06 | Halo LED ring with harness | 20.8 |\n| NV-AP22-SP07 | Backing-plate seal kit | All |\n| NV-AP22-SP08 | Gland kit (25 mm) | Gland |\n| NV-AP22-SP09 | Fuse kit (F1, F2) | 20.9 |\n| NV-AP22-SP10 | Backup cell CR1220 | 20.7 |\n| NV-ANT-01 | External Wi-Fi antenna kit | 16.7 |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "20.1 Spare parts list",
+    "heading": "20.1 Spare parts list",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 20.2 Display board\n\n1. Isolate and remove the backing plate.\n2. Lift the latch on **J2** and carefully pull out the ribbon.\n3. Remove the 4 screws (0.4 Nm) holding the display board.\n4. Fit the new board, reconnect the ribbon (latch down) and tighten the screws.\n5. Restore power. The display should light up and may self-update (W-212). Wait until it completes.\n6. Run tests 13–17 in Section 19.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "20.2 Display board",
+    "heading": "20.2 Display board",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 20.3 Contactor K1\n\n1. Isolate and prove dead. Photograph all wiring.\n2. Label and disconnect the 4 input conductors and 4 output conductors.\n3. Disconnect the coil connector and the aux-contact connector.\n4. Release the DIN clip or screws and remove K1.\n5. Fit the new contactor. Reconnect input and output in the **same order as photographed**.\n6. Torque power connections to **2.0 Nm**.\n7. Record the replacement in the log (**Diagnostics → Service reset → Log service event: contactor replaced**) so the cycle counter resets.\n8. Perform a service reset if E-02 was latched (15.10).\n9. Run the full commissioning test (Section 19).",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "20.3 Contactor K1",
+    "heading": "20.3 Contactor K1",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 20.4 Type 2 socket and harness\n\n1. Isolate and remove the backing plate.\n2. Disconnect **J5**, and the L1–L3, N, PE power leads from the socket terminals (note positions).\n3. Unscrew the socket retaining screws from the front housing (security Torx T20).\n4. Remove the old socket and inspect the housing seal.\n5. Fit the new socket with a new gasket; torque the screws to 1.0 Nm.\n6. Reconnect the harness and power leads. Make sure the socket lock motor connector is seated.\n7. Test the lock: plug in the test adapter, then start charging. The lock should engage. Stop charging and the lock should release.\n8. Run tests 13–22 in Section 19.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "20.4 Type 2 socket and harness",
+    "heading": "20.4 Type 2 socket and harness",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 20.5 Terminal block TB1\n\n1. Isolate and prove dead. Photograph the conductors and their positions.\n2. Release all supply conductors and the internal links.\n3. Remove the 2 mounting screws and the terminal block.\n4. Fit the new block, reconnect the internal links, then the supply conductors with **new ferrules**.\n5. Torque to **2.0 Nm** and pull-test each conductor.\n6. Run Section 19 dead and live tests.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "20.5 Terminal block TB1",
+    "heading": "20.5 Terminal block TB1",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 20.6 Main control board\n\n> ⚠️ This is the most complex replacement. Always confirm that the fault is not in the supply, cable, vehicle or one of the cheaper parts first.\n\n1. **Back up the settings** (web: Backup & FW → Backup; or NordLink: ⋮ → Save settings).\n2. Export the diagnostic log (Section 14.2).\n3. Isolate and prove dead. Photograph the board and every connector.\n4. Disconnect all connectors: **J2** (display), **J3** (ring), **J4** (dry-contact), **J5** (socket), **J6** (ambient sensor), the contactor connectors, and the CT harnesses.\n5. Disconnect the mains conductors from the board terminals (if the board carries power terminals on your revision).\n6. Remove the board mounting screws.\n7. Fit the new board, using ESD precautions.\n8. Reconnect everything and torque the terminals.\n9. Restore power. The new board will start in first-use setup mode. Run first-use setup (Section 5.1 or 5.2).\n10. **Restore settings** from the backup (Backup & FW → Restore).\n11. Re-pair with the Hub if required.\n12. Copy the station's serial number to the new board: **Diagnostics → Service → Write serial** (requires a service code).\n13. Run the full commissioning test (Section 19).",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "20.6 Main control board",
+    "heading": "20.6 Main control board",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 20.7 Backup cell\n\n1. Isolate and remove the backing plate.\n2. Gently lift the CR1220 cell from its holder using a plastic spudger.\n3. Fit a new cell, positive side up.\n4. Restore power and set the date and time.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "20.7 Backup cell",
+    "heading": "20.7 Backup cell",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 20.8 Halo LED ring\n\n1. Isolate; remove the backing plate and the front cover (8 security Torx screws).\n2. Disconnect **J3**.\n3. Lift the ring out of the front moulding.\n4. Fit the new ring, with the connector in the same position.\n5. Reassemble with a new front seal. Torque the screws to 1.0 Nm.\n6. Test every scene with *Try this scene*.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "20.8 Halo LED ring",
+    "heading": "20.8 Halo LED ring",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 20.9 Fuses F1 and F2\n\n1. Isolate and prove dead.\n2. Pull out the fuse with an insulated tool.\n3. **Only replace with the stated rating** — F1: T 500 mA / 250 V; F2: T 1 A / 250 V.\n4. If the fuse blows again, do not replace it a second time: look for a short circuit in the corresponding circuit (F1: board or PSU; F2: contactor coil or driver).",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "20.9 Fuses F1 and F2",
+    "heading": "20.9 Fuses F1 and F2",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 20.10 Closing up after any repair\n\n- [ ] All connectors seated and latched\n- [ ] No tools or debris left inside\n- [ ] All terminals torqued\n- [ ] Seals clean, undamaged and correctly located\n- [ ] Gland tight (3.0 Nm)\n- [ ] Backing plate screws at 1.0–1.2 Nm in a cross pattern\n- [ ] Commissioning tests passed (Section 19)\n\n---\n\n# 21. Diagnostic Log and Event Code Reference\n\nThe diagnostic log (`.nvlog`) stores timestamped events in the format:\n\n```\n2026-10-02T14:31:07Z  EVT 0x21  RELAY_STICK   L=ERR  v=1  a=0  ctx=K1\n```\n\nFields: timestamp (UTC), event ID, name, level (INFO / WARN / ERR), values, and context.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "20.10 Closing up after any repair",
+    "heading": "20.10 Closing up after any repair",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 21.1 Event codes\n\n| Event ID | Name | Level | Linked codes | Meaning |\n|---|---|---|---|---|\n| 0x01 | BOOT | INFO | – | Station started; includes reset reason |\n| 0x02 | WDT_RESET | ERR | – | Watchdog reset. Repeated events suggest a board or PSU fault |\n| 0x03 | BROWNOUT | WARN | E-08 | Supply dipped below the brown-out level |\n| 0x10 | CP_STATE_CHG | INFO | – | CP state changed (A–F) |\n| 0x11 | CP_SHORT | ERR | E-03 | CP short detected |\n| 0x12 | CP_DIODE_FAIL | WARN | – | Negative CP peak out of range (vehicle diode or cable problem) |\n| 0x13 | PP_INVALID | WARN | – | PP resistance outside table in 18.2 |\n| 0x20 | RELAY_CLOSE | INFO | – | K1 closed |\n| 0x21 | RELAY_STICK | ERR | E-02 | K1 did not open on command |\n| 0x22 | RELAY_NO_CLOSE | ERR | – | K1 did not close on command (check F2, coil) |\n| 0x23 | RELAY_CYCLES | INFO | – | Contactor cycle count milestone |\n| 0x30 | PE_LOST | ERR | E-01 | Earth monitoring failed |\n| 0x31 | RDC_TRIP | ERR | E-04 | DC residual current above 6 mA |\n| 0x32 | OVERTEMP_WARN | WARN | W-203 | Derating started |\n| 0x33 | OVERTEMP_TRIP | ERR | E-05 | Over-temperature stop |\n| 0x34 | AMB_SENS_FAIL | ERR | E-06 | Ambient sensor fault |\n| 0x3A | TAMPER_OPEN | ERR | E-07 | Cover opened while powered |\n| 0x40 | V_RANGE | ERR | E-08 | Voltage out of range |\n| 0x41 | PHASE_LOST | ERR | E-09 | Phase loss (context shows phase) |\n| 0x50 | MQTT_CONNECT | INFO | – | Connected to the Hub |\n| 0x51 | MQTT_LOST | WARN | W-204 | Connection to the Hub lost |\n| 0x52 | MQTT_AUTH_FAIL | WARN | W-204 | Authentication refused — re-pair |\n| 0x53 | MQTT_TLS_FAIL | WARN | W-204 | TLS failure (check clock) |\n| 0x54 | MODBUS_CLIENT_REJ | INFO | – | Client rejected by whitelist |\n| 0x60 | LOADCTRL_ON | INFO | W-208 | Dry-contact input active |\n| 0x61 | OVERLOAD_SET | WARN | W-205/206 | Overload started |\n| 0x62 | OVERLOAD_CLR | INFO | – | Overload ended |\n| 0x63 | CURRENT_DERATE | WARN | – | Maximum current reduced by 10 % |\n| 0x70 | TIME_SYNC_FAIL | WARN | W-207 | Time could not be synchronised |\n| 0x71 | CLOCK_RESET | WARN | W-214 | Clock reset |\n| 0x80 | FW_UPDATE_START | INFO | – | Firmware update started |\n| 0x81 | FW_UPDATE_OK | INFO | – | Update completed |\n| 0x82 | FW_UPDATE_FAIL | ERR | – | Update failed (reason in context) |\n| 0x90 | SERVICE_RESET | INFO | – | Latched errors cleared by a technician |\n| 0x91 | SERVICE_EVENT | INFO | – | Service note entered (for example, part replaced) |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "21.1 Event codes",
+    "heading": "21.1 Event codes",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 21.2 Reading patterns in the log\n\n| Pattern | Interpretation |\n|---|---|\n| `WDT_RESET` several times a day | Unstable supply, PSU fault or board failure |\n| `BROWNOUT` shortly before `WDT_RESET` | Supply problem |\n| `CP_STATE_CHG` toggling B↔C every few seconds | Cable, calibration or vehicle problem |\n| `RELAY_CLOSE` count rising rapidly | Frequent start/stop (Solar mode settings, vehicle behaviour) |\n| `OVERTEMP_WARN` always at the same time of day | Sun exposure |\n| `MQTT_LOST` followed by `MQTT_CONNECT` repeatedly | Weak Wi-Fi or router problem |\n| `TAMPER_OPEN` with no service record | Unauthorised access |\n\n---\n\n# 22. Service Record Templates",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "21.2 Reading patterns in the log",
+    "heading": "21.2 Reading patterns in the log",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 22.1 Service call record\n\n```\nSERVICE CALL RECORD — ArcPort Home 22\n-----------------------------------------------------------\nDate: ____________   Technician: ______________________\nCompany: ________________________   Cert. no.: __________\n\nCustomer / site: __________________________________________\nStation serial no.: _________________   Model: ☐ AP22  ☐ AP22-NS\nFirmware version: ____________   NordLink version: ________\nInstallation date: ____________   Supply: ☐ 1-ph  ☐ 3-ph\nEarthing system: ☐ TN-S  ☐ TN-C-S  ☐ TT\n\nREPORTED PROBLEM\n__________________________________________________________\n__________________________________________________________\n\nCODES FOUND:  ☐ E-__  ☐ W-___  ☐ N-___\nFirst seen: ____________   Log exported: ☐ Yes  ☐ No\n\nTESTS CARRIED OUT (Section 14/15/16 reference)\nSupply voltage L1: ____ V  L2: ____ V  L3: ____ V\nN–PE voltage: ____ V      Zs: ____ Ω\nInsulation resistance: ____ MΩ     PE continuity: ____ Ω\nCP state / voltage: ____________    PP resistance: ____ Ω\nOther: ____________________________________________________\n\nCAUSE FOUND\n__________________________________________________________\n\nACTION TAKEN / PARTS REPLACED (part no. / serial)\n__________________________________________________________\n__________________________________________________________\n\nCOMMISSIONING TEST (Section 19) PASSED:  ☐ Yes  ☐ No\nService reset performed: ☐ Yes  ☐ No   Code ref: _________\n\nCustomer informed of: ☐ cause  ☐ advice  ☐ further work\n\nSigned (technician): ________________   Date: ___________\nSigned (customer): __________________   Date: ___________\n```",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "22.1 Service call record",
+    "heading": "22.1 Service call record",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 22.2 Warranty return checklist\n\nBefore returning a defective station or part under warranty, confirm:\n\n- [ ] Original proof of purchase attached\n- [ ] Installation certificate or installer details attached\n- [ ] Completed service call record attached\n- [ ] Diagnostic log (`.nvlog`) attached\n- [ ] Photographs of the installation and the fault attached\n- [ ] Settings backup taken and personal data removed with a full factory reset (if the unit is still operable)\n- [ ] Returns authorisation number (RMA) obtained from Nordvane\n- [ ] Packed in the original packaging with the socket cover closed",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "22.2 Warranty return checklist",
+    "heading": "22.2 Warranty return checklist",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 22.3 Quick reference — error codes at a glance\n\n| Code | First thing to check | Most common fix |\n|---|---|---|\n| E-01 | PE continuity at TB1 | Repair earth connection |\n| E-02 | Continuity across K1 (isolated) | Replace contactor |\n| E-03 | Try another cable; inspect socket | Replace cable / socket |\n| E-04 | Try another vehicle/cable; insulation test | Replace cable; dry unit |\n| E-05 | Sun exposure; terminal torque | Shade; re-terminate |\n| E-06 | Sensor connector J6 | Reseat / replace |\n| E-07 | Cover seating, switch SW2 | Refit cover; service reset |\n| E-08 | Voltage at TB1 under load | Fix supply |\n| E-09 | Voltage on all phases | Fix supply or set 1-phase |\n| W-203 | Temperature log | Shade; reduce current |\n| W-204 | Hub IP / Portal ID | Re-pair |\n| W-205/206 | Inverter / grid limit | Lower current; load management |\n| W-207 | Date/time/internet | Fix time sync |\n| W-208 | Dry-contact state | Expected if operator signal |\n\n---\n\n*© 2026 Nordvane Energy (fictional). All rights reserved. Specifications are subject to change without notice. Always use the latest version of this manual.*",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "22.3 Quick reference — error codes at a glance",
+    "heading": "22.3 Quick reference — error codes at a glance",
+    "model": "ArcPort Home 22",
+    "revision": null
+  }
+]

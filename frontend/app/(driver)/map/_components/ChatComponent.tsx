@@ -40,7 +40,7 @@ export default function ChatComponent() {
     try {
       const { data } = await sendChatMessage({
         variables: {
-          audience: AgentAudience.Operator,
+          audience: AgentAudience.Driver,
           userId: selectedUser.id,
           messages: next.map((message) => ({
             role: message.role === "user" ? ChatRole.User : ChatRole.Assistant,
@@ -104,17 +104,17 @@ export default function ChatComponent() {
       <div className="flex gap-2">
         <button
           type="button"
-          onClick={() => void send("First question")}
-          className="h-10 w-56 px-4 flex items-center justify-center bg-white rounded-xl border border-gray-200 shadow-md hover:bg-gray-50 active:scale-95 transition"
+          onClick={() => void send("Where did I last charge my car?")}
+          className="h-15 w-56 px-4 flex items-center justify-center bg-white rounded-xl border border-gray-200 shadow-md hover:bg-gray-50 active:scale-95 transition"
         >
-          First question
+          Where did I last charge my car?
         </button>
         <button
           type="button"
-          onClick={() => void send("Second question")}
-          className="h-10 w-56 px-4 flex items-center justify-center bg-white rounded-xl border border-gray-200 shadow-md hover:bg-gray-50 active:scale-95 transition"
+          onClick={() => void send("Find the most powerful charger in Munich")}
+          className="h-15 w-56 px-4 flex items-center justify-center bg-white rounded-xl border border-gray-200 shadow-md hover:bg-gray-50 active:scale-95 transition"
         >
-          Second question
+          Find the most powerful charger in Munich?
         </button>
       </div>
       <hr />

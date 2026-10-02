@@ -1,5 +1,6 @@
 import { ObjectId, type Db, type Document } from "mongodb";
 import type { ChargingStationDoc } from "../../src/db/repositories/chargingStations";
+import { summarizeTelemetry } from "../../src/db/repositories/telemetry";
 
 type IncidentOverview = {
   total: number;
@@ -105,25 +106,70 @@ export async function summarizeStationIncidents(
 }
 
 export async function getSelectedChargerDetails(db: Db, stationId: string) {
-  return db.collection<ChargingStationDoc>("chargingStations").findOne(
-    { _id: _parseObjectId(stationId) },
-    {
-      maxTimeMS: 5000,
-      projection: {
-        stationCode: 1,
-        name: 1,
-        operator: 1,
-        location: 1,
-        address: 1,
-        timezone: 1,
-        characteristics: 1,
-        chargingPoints: 1,
-        pricing: 1,
-        availability: 1,
-        updatedAt: 1,
-      },
+  const collection = db.collection<ChargingStationDoc>("chargingStations");
+  const options = {
+    maxTimeMS: 5000,
+    projection: {
+      stationCode: 1,
+      name: 1,
+      operator: 1,
+      location: 1,
+      address: 1,
+      timezone: 1,
+      characteristics: 1,
+      chargingPoints: 1,
+      pricing: 1,
+      availability: 1,
+      updatedAt: 1,
     },
-  );
+  };
+
+  if (/^[a-fA-F0-9]{24}$/.test(stationId)) {
+    return collection.findOne({ _id: _parseObjectId(stationId) }, options);
+  }
+
+  const query = stationId.trim();
+  if (!query) return null;
+
+  const findMatches = (filter: Document) =>
+    collection.find(filter, options).limit(10).toArray();
+
+  let matches: ChargingStationDoc[];
+  if (query.includes(",")) {
+    const parts = query
+      .split(",")
+      .map((part) => part.trim())
+      .filter(Boolean);
+    matches = parts.length > 0 ? await findMatches(_addressQuery(parts)) : [];
+    if (matches.length === 0) matches = await findMatches(_exactQuery(query));
+  } else {
+    matches = await findMatches(_exactQuery(query));
+    if (matches.length === 0) matches = await findMatches(_addressQuery([query]));
+  }
+
+  if (matches.length === 0) return null;
+  if (matches.length === 1) return matches[0];
+  return matches;
+}
+
+export type SkimTelemetryInput = {
+  sessionId?: string;
+  chargingPointId?: string;
+  stationId?: string;
+  from: string;
+  to: string;
+  limit?: number;
+};
+
+export async function skimTelemetry(db: Db, input: SkimTelemetryInput) {
+  return summarizeTelemetry(db, {
+    sessionId: input.sessionId,
+    chargingPointId: input.chargingPointId,
+    stationId: input.stationId,
+    from: new Date(input.from),
+    to: new Date(input.to),
+    limit: input.limit,
+  });
 }
 
 export type ChargingActivityRankInput = {

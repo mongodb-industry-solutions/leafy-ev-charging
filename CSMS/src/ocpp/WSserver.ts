@@ -234,7 +234,7 @@ async function handleOcppMessage(
   }
 
   try {
-    const updatedSession = await applyTransactionEvent(db, event);
+    const updatedSession = await applyTransactionEvent(db, { ...event, raw: payload });
 
     if (!updatedSession) {
       socket.send(

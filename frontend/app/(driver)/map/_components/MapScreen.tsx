@@ -221,6 +221,14 @@ export function MapScreen() {
       text-slate-600 shadow backdrop-blur-xl"
         />
 
+        <MongoSpotlight
+          id="ocpp-protocol"
+          label="OCPP protocol"
+          className="cursor-pointer rounded-full border border-white/70
+      bg-white/85 px-4 py-2 text-xs font-medium leading-none
+      text-slate-600 shadow backdrop-blur-xl"
+        />
+
         <div className="relative">
           <div
             id="agent-chat-panel"

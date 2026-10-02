@@ -44,8 +44,8 @@ export function SessionMiniMap({ lat, lng, sessionId }: SessionMiniMapProps) {
         style={{ height: "100%", width: "100%" }}
       >
         <TileLayer
-          url={TILE_URL}
-          attribution={TILE_ATTRIBUTION}
+          attribution='&copy; OpenStreetMap contributors &copy; CARTO'
+          url={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY}`}
           subdomains="abcd"
           maxZoom={19}
         />

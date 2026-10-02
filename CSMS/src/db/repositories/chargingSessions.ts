@@ -1,6 +1,7 @@
 import type { Db } from "mongodb";
 import { ObjectId } from "mongodb";
 import type { ConnectorType } from "../../types/connectorType";
+import { insertTelemetrySample } from "./telemetry";
 
 type ConnectorUsedDoc = {
   type?: ConnectorType | null;
@@ -111,6 +112,7 @@ export type ApplyTransactionEventInput = {
   eventType: "Started" | "Updated" | "Ended";
   timestamp: Date;
   meterRegisterKwh: number;
+  raw?: unknown;
 };
 
 const ALWAYS_VISIBLE_SESSION_STATUSES: ChargingSessionDoc["status"][] = [
@@ -156,12 +158,12 @@ function buildVisibleSessionsClause(): Record<string, unknown> {
   };
 }
 
-function buildFilter(input: SessionsQueryInput): Record<string, unknown> {
-  const userObjectId = new ObjectId(input.userId);
+// Return sessions for the current user OR completed/canceled sessions for the shared history user
+export function buildSharedHistoryMatch(userId: string): Record<string, unknown> {
+  const userObjectId = new ObjectId(userId);
   const sharedObjectId = new ObjectId(SHARED_HISTORY_USER_ID);
 
-  // Return sessions for the current user OR completed/canceled sessions for the shared history user
-  const baseClause = input.userId === SHARED_HISTORY_USER_ID
+  return userId === SHARED_HISTORY_USER_ID
     ? { userId: userObjectId }
     : {
         $or: [
@@ -172,6 +174,10 @@ function buildFilter(input: SessionsQueryInput): Record<string, unknown> {
           }
         ]
       };
+}
+
+function buildFilter(input: SessionsQueryInput): Record<string, unknown> {
+  const baseClause = buildSharedHistoryMatch(input.userId);
 
   const clauses: Record<string, unknown>[] = [
     baseClause,
@@ -487,11 +493,42 @@ export async function applyTransactionEvent(
     set.status = "COMPLETED";
     set["charging.endedAt"] = event.timestamp;
   }
+  const previousRegisterKwh =
+    session.charging.meterStopKwh ?? session.charging.meterStartKwh ?? null;
+  const energyKwhDelta =
+    previousRegisterKwh == null
+      ? 0
+      : Math.max(event.meterRegisterKwh - previousRegisterKwh, 0);
+
   console.log(`Applied transaction event for session ${sessionId.toHexString()}`);
-  return sessions.findOneAndUpdate(
+  const updatedSession = await sessions.findOneAndUpdate(
     { _id: sessionId, status: "ACTIVE" },
     { $set: set },
     { returnDocument: "after" }
   );
-  
+
+  if (updatedSession) {
+    try {
+      await insertTelemetrySample(database, {
+        timestamp: event.timestamp,
+        meta: {
+          chargingPointId: updatedSession.chargingPointId,
+          stationId: updatedSession.stationId,
+          sessionId: updatedSession._id,
+          transactionId: event.transactionId
+        },
+        eventType: event.eventType,
+        energyKwh: event.meterRegisterKwh,
+        energyKwhDelta,
+        raw: event.raw
+      });
+    } catch (error) {
+      console.error(
+        `Failed to persist telemetry for session ${sessionId.toHexString()}`,
+        error
+      );
+    }
+  }
+
+  return updatedSession;
 }

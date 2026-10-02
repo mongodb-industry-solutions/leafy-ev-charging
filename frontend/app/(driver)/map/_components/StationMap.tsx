@@ -13,6 +13,7 @@ import { LocationPin } from "./LocationPin";
 import { ReserveModal } from "./ReserveModal";
 import type { ChargingStationFiltersInput } from "@/graphql/generated/graphql";
 
+
 const MARIENPLATZ: [number, number] = [48.1374, 11.5755];
 const DEFAULT_ZOOM = 16;
 const MAP_MAX_ZOOM = 19;
@@ -278,17 +279,13 @@ export function StationMap({
       >
         {mapReady && (
           <>
-            {/* <TileLayer
+            <TileLayer
               attribution='&copy; OpenStreetMap contributors &copy; CARTO'
-              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+              url={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY}`}
               subdomains="abcd"
               maxZoom={MAP_MAX_ZOOM}
-            /> */}
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-              maxZoom={MAP_MAX_ZOOM}
             />
+
             <MapFocusController
               focusLocation={locationPin}
               focusRequestId={focusRequestId}

@@ -55,7 +55,7 @@ export const MONGO_SPOTLIGHTS = {
     title: "Finding stations on the map",
     capability: "Geospatial · Aggregation",
     summary:
-      "Stations are stored as GeoJSON points and indexed with a 2dsphere index, so MongoDB answers \"what's in this map viewport?\" natively. At low zoom the same collection is clustered server-side with a single aggregation, so drivers get a fast, trusted answer before committing to a charger.",
+      'Stations are stored as GeoJSON points and indexed with a 2dsphere index, so MongoDB answers "what\'s in this map viewport?" natively. At low zoom the same collection is clustered server-side with a single aggregation, so drivers get a fast, trusted answer before committing to a charger.',
     snippets: [
       {
         label: "$geoWithin query",
@@ -85,7 +85,7 @@ const match = {
 //   connectors:   { $elemMatch: { type: { $in: [...] } } }
 //   power:        { $gte: minPowerKw }
 //   price:        { $lte: maxPriceCents }
-db.chargingStations.find(match);`
+db.chargingStations.find(match);`,
       },
       {
         label: "2dsphere index",
@@ -94,7 +94,7 @@ db.chargingStations.find(match);`
         code: `await db.collection("chargingStations").createIndex(
   { location: "2dsphere" },
   { name: "location_2dsphere" }
-);`
+);`,
       },
       {
         label: "Server-side clustering",
@@ -135,18 +135,18 @@ db.chargingStations.find(match);`
       location: { lat: "$avgLat", lng: "$avgLng" }
     }
   }
-]);`
-      }
+]);`,
+      },
     ],
     docsUrl: "https://www.mongodb.com/docs/manual/geospatial-queries/",
-    docsLabel: "MongoDB geospatial queries"
+    docsLabel: "MongoDB geospatial queries",
   },
 
   "map-facets": {
     title: "Building the filter controls",
     capability: "Aggregation · $facet",
     summary:
-      "The connector types, power range, price range, and \"available now\" count that drive the filters are all computed in a single pass over the stations with $facet — one round trip to the database instead of four separate queries.",
+      'The connector types, power range, price range, and "available now" count that drive the filters are all computed in a single pass over the stations with $facet — one round trip to the database instead of four separate queries.',
     snippets: [
       {
         label: "$facet aggregation",
@@ -195,12 +195,12 @@ db.chargingStations.find(match);`
       ]
     }
   }
-]);`
-      }
+]);`,
+      },
     ],
     docsUrl:
       "https://www.mongodb.com/docs/manual/reference/operator/aggregation/facet/",
-    docsLabel: "$facet aggregation stage"
+    docsLabel: "$facet aggregation stage",
   },
 
   "map-reserve": {
@@ -229,12 +229,12 @@ db.chargingStations.find(match);`
       { "elem.chargingPointId": chargingPointId, "elem.availableNow": true }
     ]
   }
-);`
-      }
+);`,
+      },
     ],
     docsUrl:
       "https://www.mongodb.com/docs/manual/reference/operator/update/positional-filtered/",
-    docsLabel: "Filtered positional operator"
+    docsLabel: "Filtered positional operator",
   },
 
   "session-document": {
@@ -264,7 +264,7 @@ db.chargingStations.find(match);`
   cost: CostDoc;
   createdAt: Date;
   updatedAt: Date;
-};`
+};`,
       },
       {
         label: "Example document",
@@ -295,12 +295,12 @@ db.chargingStations.find(match);`
   "pricingSnapshot": { "currency": "EUR", "priceCentsPerKwh": 55 },
   "cost": { "totalCents": 1085, "energyCents": 1085, "idleCents": 0 },
   "feedback": { "rating": 5, "comment": "Easy start and the bay was clean." }
-}`
-      }
+}`,
+      },
     ],
     docsUrl:
       "https://www.mongodb.com/docs/manual/data-modeling/design-patterns/data-representation/extended-reference/",
-    docsLabel: "Extended reference pattern"
+    docsLabel: "Extended reference pattern",
   },
 
   "session-changestream": {
@@ -334,7 +334,7 @@ with sessions.watch(
     full_document="updateLookup",
 ) as stream:
     for change in stream:
-        await self._process_change(change)`
+        await self._process_change(change)`,
       },
       {
         label: "Telemetry insert",
@@ -355,7 +355,7 @@ with sessions.watch(
     "voltageV": 800,
     "currentA": 148,
     "temperatureC": 38.7,
-})`
+})`,
       },
       {
         label: "Time-series collection",
@@ -369,11 +369,11 @@ with sessions.watch(
     granularity: "seconds"
   },
   expireAfterSeconds: 1209600 // 14 days
-});`
-      }
+});`,
+      },
     ],
     docsUrl: "https://www.mongodb.com/docs/manual/changeStreams/",
-    docsLabel: "MongoDB Change Streams"
+    docsLabel: "MongoDB Change Streams",
   },
 
   "dashboard-analytics": {
@@ -395,7 +395,7 @@ db.chargingSessions.aggregate(pipeline, {
     mode: "secondary",
     tags: [{ nodeType: "ANALYTICS" }]
   }
-});`
+});`,
       },
       {
         label: "Telemetry · time series",
@@ -415,7 +415,7 @@ db.chargingSessions.aggregate(pipeline, {
     }
   },
   { $sort: { _id: 1 } }
-]);`
+]);`,
       },
       {
         label: "Sessions · $facet",
@@ -463,12 +463,98 @@ db.chargingSessions.aggregate(pipeline, {
       ]
     }
   }
-]);`
-      }
+]);`,
+      },
     ],
     docsUrl:
       "https://www.mongodb.com/solutions/use-cases/analytics/real-time-analytics",
-    docsLabel: "Real-time analytics on MongoDB"
+    docsLabel: "Real-time analytics on MongoDB",
+  },
+
+  "ocpp-protocol": {
+    title: "Speaking OCPP with chargers",
+    capability: "OCPP 2.0.1 · WebSocket",
+    summary:
+      "The chargers are running in a simulator, behaving as real chargers would, they dial the CSMS on a WebSocket at and speak OCPP 2.1. Every session event you see in the UI arrived as one of these frames and was persisted into the same MongoDB documents the app reads.",
+    snippets: [
+      {
+        label: "Frame anatomy",
+        language: "json",
+        caption:
+          "OCPP 2.0.1 has exactly three frame types. A Call carries an action + payload; the reply is a CallResult or a CallError.",
+        code: `// Call (type 2) — simulator -> CSMS, sent on connect:
+[2, _id, "BootNotification", {
+  "chargingStation": { "model": "LeafyCharge Simulator", "vendorName": "LeafyCharge" },
+  "reason": "PowerUp"
+}]
+
+// CallResult (type 3) — CSMS -> simulator:
+[3, _id, { "currentTime": Date, "interval": 30, "status": "Accepted" }]
+
+// CallError (type 4) — e.g. a malformed payload:
+[4, _id, "FormationViolation", "Payload for TransactionEvent is invalid", {}]`,
+      },
+      {
+        label: "TransactionEvent",
+        language: "json",
+        caption:
+          "Every ~2s while charging, the simulator reports the meter. transactionId is the MongoDB session _id, so the frame lands on the exact session document.",
+        code: `[2, _id, "TransactionEvent", {
+  "eventType": "Updated",
+  "timestamp": Date,
+  "triggerReason": "MeterValuePeriodic",
+  "seqNo": 42,
+  "offline": false,
+  "transactionInfo": {
+    "transactionId": _id,
+    "chargingState": "Charging"
+  },
+  "evse": { "id": 1, "connectorId": 1 },
+  "meterValue": [
+    {
+      "timestamp": Date,
+      "sampledValue": [
+        { "value": number, "measurand": "Energy.Active.Import.Register" },
+        { "value": number, "measurand": "Power.Active.Import", "unitOfMeasure": { "unit": "W" } },
+        { "value": number, "measurand": "Voltage", "unitOfMeasure": { "unit": "V" } },
+        { "value": number, "measurand": "Current.Import", "unitOfMeasure": { "unit": "A" } }
+      ]
+    }
+  ]
+}]`,
+      },
+      {
+        label: "Message catalog",
+        language: "json",
+        caption:
+          "Every action that flows between CSMS and simulator in this demo, and what happens on receipt.",
+        code: `
+ Message Lifecycle: Simulator ↔ CSMS
+
+1. Session Setup
+• BootNotification (Simulator → CSMS)
+  Creates the initial session.
+
+• RequestStartTransaction (CSMS → Simulator)
+  Starts the telemetry loop
+
+2. Active Operation & Monitoring
+• TransactionEvent (Simulator → CSMS)
+  Updates live meter, energy, cost, and status.
+
+• NotifyEvent (Simulator → CSMS)
+  Flags critical conditions
+
+• StatusNotification / MeterValues (Simulator → CSMS)
+  Background telemetry stream.
+
+3. Teardown
+• RequestStopTransaction (CSMS → Simulator)
+  Terminates the active session due to a remote stop request or an reached energy limit.`,
+      },
+    ],
+    docsUrl: "https://openchargealliance.org/protocols/open-charge-point-protocol/#ExploreOCPP2.1",
+    docsLabel: "Open Charge Alliance — OCPP 2.1",
   },
 
   overview: {
@@ -489,13 +575,12 @@ db.chargingSessions   // rich lifecycle documents  -> bookings & billing
 db.telemetry          // time-series (14d TTL)      -> live power & analytics
 db.incidents          // faults & user reports      -> operations
 db.vehicles           // driver EV specs
-db.users              // drivers & operators`
-      }
+db.users              // drivers & operators`,
+      },
     ],
-    docsUrl:
-      "https://www.mongodb.com/solutions/customer-case-studies/enbw",
-    docsLabel: "EnBW customer story"
-  }
+    docsUrl: "https://www.mongodb.com/solutions/customer-case-studies/enbw",
+    docsLabel: "EnBW customer story",
+  },
 } satisfies Record<string, MongoSpotlightEntry>;
 
 export type MongoSpotlightId = keyof typeof MONGO_SPOTLIGHTS;

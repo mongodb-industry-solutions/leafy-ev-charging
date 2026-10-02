@@ -89,6 +89,41 @@ export type ChargingStationDoc = {
   updatedAt?: Date;
 };
 
+export type StationAddressFilter = {
+  street?: string;
+  city?: string;
+  country?: string;
+  postalCode?: string;
+};
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+export function buildAddressMatch(
+  address: StationAddressFilter
+): Record<string, unknown> {
+  const match: Record<string, unknown> = {};
+  const fields = ["street", "city", "country", "postalCode"] as const;
+
+  for (const field of fields) {
+    const raw = address[field];
+    if (raw === undefined) {
+      continue;
+    }
+    const value = raw.trim();
+    if (!value) {
+      continue;
+    }
+    match[`address.${field}`] = {
+      $regex: `^${escapeRegExp(value)}$`,
+      $options: "i"
+    };
+  }
+
+  return match;
+}
+
 export async function findChargingStationById(
   database: Db,
   stationId: ObjectId

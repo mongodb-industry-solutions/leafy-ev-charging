@@ -11,7 +11,8 @@
         "BACKEND_CORS_ORIGIN",
         "SIMULATOR_URL",
         "SESSION_TELEMETRY_INTERVAL_SECONDS",
-        "CHANGE_STREAM_RETRY_SECONDS"
+        "CHANGE_STREAM_RETRY_SECONDS",
+        "NEXT_PUBLIC_CARTO_API_KEY"
       ]
     },
     "build": {

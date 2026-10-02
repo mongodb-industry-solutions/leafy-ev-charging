@@ -1,14 +1,22 @@
 import { tool } from "@langchain/core/tools";
 import type { Db } from "mongodb";
 import {
-  findStationsInArea,
+  findChargingStationsInArea,
   findChargingStation,
   getSelectedChargerDetails,
   getMyChargingHistory,
+  type LocationSearch,
   type StationSearchCriteria,
 } from "./tools";
 
 const idSchema = { type: "string", pattern: "^[a-fA-F0-9]{24}$" } as const;
+const stationIdentifierSchema = {
+  type: "string",
+  minLength: 1,
+  maxLength: 120,
+  description:
+    "Station ObjectId, exact name/operator/station code, or address (comma-separated parts).",
+} as const;
 type HistoryInput = {
   mode: "current" | "recent" | "spending";
   from: string;
@@ -18,12 +26,15 @@ type HistoryInput = {
 export function createConsumerTools(db: Db, authenticatedUserId: string) {
   return [
     tool(
-      async (area: Parameters<typeof findStationsInArea>[1]) =>
-        JSON.stringify(await findStationsInArea(db, area)),
+      async (location: LocationSearch) =>
+        JSON.stringify(await findChargingStationsInArea(db, location)),
       {
-        name: "findStationsInArea",
+        name: "findChargingStationsInArea",
         description:
-          "Find nearby station IDs. Pass these IDs to findChargingStation.",
+          "Find candidate station IDs by area. Provide either coordinates " +
+          "(longitude, latitude, radiusMeters) or an address (city, and " +
+          "optionally street, postalCode, country); coordinates win when " +
+          "both are given. Pass the returned IDs to findChargingStation.",
         schema: {
           type: "object",
           additionalProperties: false,
@@ -35,8 +46,11 @@ export function createConsumerTools(db: Db, authenticatedUserId: string) {
               exclusiveMinimum: 0,
               maximum: 100000,
             },
+            street: { type: "string", minLength: 1, maxLength: 200 },
+            city: { type: "string", minLength: 1, maxLength: 120 },
+            country: { type: "string", minLength: 1, maxLength: 120 },
+            postalCode: { type: "string", minLength: 1, maxLength: 20 },
           },
-          required: ["longitude", "latitude", "radiusMeters"],
         },
       },
     ),
@@ -46,7 +60,8 @@ export function createConsumerTools(db: Db, authenticatedUserId: string) {
       {
         name: "findChargingStation",
         description:
-          "Filter and rank station IDs. Currency is required for price sorting/filtering.",
+          "Filter and rank stations network-wide (omit stationIds) or among " +
+          "explicit station IDs. Currency is required for price sorting/filtering.",
         schema: {
           type: "object",
           additionalProperties: false,
@@ -84,7 +99,7 @@ export function createConsumerTools(db: Db, authenticatedUserId: string) {
             },
             limit: { type: "integer", minimum: 1, maximum: 10, default: 3 },
           },
-          required: ["stationIds", "sortBy"],
+          required: ["sortBy"],
         },
       },
     ),
@@ -94,10 +109,11 @@ export function createConsumerTools(db: Db, authenticatedUserId: string) {
       {
         name: "getSelectedChargerDetails",
         description:
-          "Get a station's connectors, pricing, availability and amenities; null if absent.",
+          "Get a station's connectors, pricing, availability and amenities by station ID, exact name/operator, or address. " +
+          "Returns the matching stations, or null if none.",
         schema: {
           type: "object",
-          properties: { stationId: idSchema },
+          properties: { stationId: stationIdentifierSchema },
           required: ["stationId"],
           additionalProperties: false,
         },

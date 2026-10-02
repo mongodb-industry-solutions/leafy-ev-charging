@@ -3,10 +3,20 @@ import type { Db } from "mongodb";
 import {
   getSelectedChargerDetails,
   rankChargingActivity,
+  skimTelemetry,
   summarizeIncidents,
   summarizeStationIncidents,
-  type ChargingActivityRankInput
+  type ChargingActivityRankInput,
+  type SkimTelemetryInput
 } from "./tools";
+
+const stationIdentifierSchema = {
+  type: "string",
+  minLength: 1,
+  maxLength: 120,
+  description:
+    "Station ObjectId, exact name/operator/station code, or address (comma-separated parts).",
+} as const;
 
 export function createOperatorTools(db: Db) {
   return [
@@ -44,25 +54,68 @@ export function createOperatorTools(db: Db) {
       }
     ),
     tool(
-      async ({ stationId }: { stationId: string }) => {
-        const station = await getSelectedChargerDetails(db, stationId);
-        return JSON.stringify(station);
-      },
+          async ({ stationId }: { stationId: string }) =>
+            JSON.stringify(await getSelectedChargerDetails(db, stationId)),
+          {
+            name: "getSelectedChargerDetails",
+            description:
+              "Get a station's connectors, pricing, availability and amenities by station ID, exact name/operator, or address. " +
+              "Returns the matching stations, or null if none.",
+            schema: {
+              type: "object",
+              properties: { stationId: stationIdentifierSchema },
+              required: ["stationId"],
+              additionalProperties: false,
+            },
+          },
+        ),
+    tool(
+      async (input: SkimTelemetryInput) =>
+        JSON.stringify(await skimTelemetry(db, input)),
       {
-        name: "getSelectedChargerDetails",
+        name: "skimTelemetry",
         description:
-          "Get a charging station's details, pricing, availability, connectors, and amenities by its MongoDB station ID.",
+          "Summarize charging telemetry for a session, charging point, or station over a time window. " +
+          "Returns aggregate power/voltage/current stats, delivered energy, and the most recent samples. " +
+          "Provide at least one of sessionId, chargingPointId, or stationId, plus from and to.",
         schema: {
           type: "object",
           additionalProperties: false,
           properties: {
+            sessionId: {
+              type: "string",
+              pattern: "^[a-fA-F0-9]{24}$",
+              description: "MongoDB ObjectId of the charging session."
+            },
+            chargingPointId: {
+              type: "string",
+              pattern: "^[a-fA-F0-9]{24}$",
+              description: "MongoDB ObjectId of the charging point."
+            },
             stationId: {
               type: "string",
               pattern: "^[a-fA-F0-9]{24}$",
               description: "MongoDB ObjectId of the charging station."
+            },
+            from: {
+              type: "string",
+              format: "date-time",
+              description: "Inclusive start of the window, with timezone."
+            },
+            to: {
+              type: "string",
+              format: "date-time",
+              description: "Exclusive end of the window, with timezone."
+            },
+            limit: {
+              type: "integer",
+              minimum: 1,
+              maximum: 500,
+              default: 100,
+              description: "Maximum number of recent samples to return."
             }
           },
-          required: ["stationId"]
+          required: ["from", "to"]
         }
       }
     ),

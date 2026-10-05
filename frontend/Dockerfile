@@ -23,6 +23,8 @@ RUN npm run codegen -w frontend && npm run build -w frontend
 FROM node:24-bookworm-slim AS runner
 
 WORKDIR /app
+ARG NEXT_PUBLIC_CARTO_API_KEY
+ENV NEXT_PUBLIC_CARTO_API_KEY=$NEXT_PUBLIC_CARTO_API_KEY
 
 ENV NODE_ENV=production
 # Kanopy routes ingress traffic to port 8080.

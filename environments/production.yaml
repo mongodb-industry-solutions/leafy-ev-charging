@@ -8,6 +8,17 @@ env:
   NODE_ENV: production
   APP_ENV: production
 
+# Secret env vars for the main container (frontend). Each entry maps
+# ENV_VAR_NAME: SECRET_NAME, where SECRET_NAME is the Kanopy ksec-backed
+# Kubernetes Secret name to read from. The rendered secretKeyRef uses
+# key = ENV_VAR_NAME, so NEXT_PUBLIC_CARTO_API_KEY is read from key
+# NEXT_PUBLIC_CARTO_API_KEY in the secret named "leafy-ev-charging".
+# The "leafy-ev-charging" secret is the production secret managed in the
+# Kanopy/ksec system (not in this values file) and is the same secret
+# referenced below by secretKeyRef.name for MONGODB_URI; rotate/debug it there.
+envSecrets:
+  NEXT_PUBLIC_CARTO_API_KEY: leafy-ev-charging
+
 # Main container (frontend) resources.
 resources:
   limits:

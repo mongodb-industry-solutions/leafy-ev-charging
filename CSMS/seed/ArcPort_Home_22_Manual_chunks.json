@@ -1,6 +1,6 @@
 [
   {
-    "text": "ArcPort Home 22 > Table of Contents\n\n1. Safety Instructions\n2. Description and Features\n   - 2.1 Description\n   - 2.2 Features\n   - 2.3 Operating modes\n   - 2.4 What's in the box\n   - 2.5 Product overview and connections\n3. Installation\n   - 3.1 Before you begin\n   - 3.2 Site and mounting requirements\n   - 3.3 Electrical requirements\n   - 3.4 Step-by-step installation\n   - 3.5 Wiring diagrams\n   - 3.6 Post-installation checklist\n4. System Examples\n5. Setup, Configuration and Operation\n   - 5.1 First-use setup via NordLink (Bluetooth)\n   - 5.2 First-use setup via Wi-Fi access point\n   - 5.3 Pairing with a Nexus Hub\n   - 5.4 Nexus Hub setup and options\n   - 5.5 NordLink app reference\n   - 5.6 Touchscreen reference\n   - 5.7 Firmware updates\n   - 5.8 Reset and password recovery\n   - 5.9 Maintenance and cleaning\n6. Troubleshooting\n   - 6.1 Vehicle detection and signal calibration\n   - 6.2 Hub pairing problems\n   - 6.3 Wi-Fi problems\n   - 6.4 Frequently asked questions\n   - 6.5 Codes: errors, warnings and notices\n   - 6.6 Common user errors and how to avoid them\n   - 6.7 Overheating and thermal management\n7. Technical Specification\n   - 7.1 Dimensions\n8. Appendix\n   - 8.1 Grid-operator load control (dry-contact input)\n   - 8.2 Modbus TCP integration\n   - 8.3 Web interface reference\n   - 8.4 Light ring status reference\n9. Warranty, Support and Disposal\n10. Glossary\n11. Revision History\n\n**Part II — Technical Service Manual**\n\n12. Service Requirements, Tools and Safe Working\n13. Internal Architecture and Test Points\n14. Diagnostic Method and Data Sources\n15. Error Code Repair Procedures (E-01 to E-09)\n16. Warning and Notice Procedures (W-201 to W-214, N-401 to N-408)\n17. Symptom-Based Troubleshooting (incl. 17.11 Overheating diagnosis)\n18. Reference Measurements and Expected Values\n19. Commissioning and Periodic Inspection Test Procedure\n20. Component Replacement Procedures\n21. Diagnostic Log and Event Code Reference\n22. Service Record Templates\n\n---\n\n# 1. Safety Instructions\n\nRead all safety instructions before installing or using the ArcPort Home 22. Failure to follow them can result in fire, electric shock, serious injury or damage to equipment.\n\n**Qualified personnel only.** Installation, adjustment and internal servicing must be carried out by a licensed electrician or equivalent qualified person. Do not perform any servicing other than that described in this manual unless you are qualified to do so.\n\n**Follow local rules.** All electrical work must comply with the wiring regulations of the country of installation and with the instructions in this manual. Where this manual and local regulations differ, local regulations take priority.\n\n**Intended use.** The ArcPort Home 22 is designed for charging road electric vehicles that use an IEC 62196 Type 2 connector. Use it only for that purpose and only within the specified operating parameters.",
+    "text": "ArcPort Home 22 > Table of Contents\n\n1. Safety Instructions\n2. Description and Features\n   - 2.1 Description\n   - 2.2 Features\n   - 2.3 Operating modes\n   - 2.4 What's in the box\n   - 2.5 Product overview and connections\n3. Installation\n   - 3.1 Before you begin\n   - 3.2 Site and mounting requirements\n   - 3.3 Electrical requirements\n   - 3.4 Step-by-step installation\n   - 3.5 Wiring diagrams\n   - 3.6 Post-installation checklist\n4. System Examples\n5. Setup, Configuration and Operation\n   - 5.1 First-use setup via NordLink (Bluetooth)\n   - 5.2 First-use setup via Wi-Fi access point\n   - 5.3 Pairing with a Nexus Hub\n   - 5.4 Nexus Hub setup and options\n   - 5.5 NordLink app reference\n   - 5.6 Touchscreen reference\n   - 5.7 Firmware updates\n   - 5.8 Reset and password recovery\n   - 5.9 Maintenance and cleaning\n6. Troubleshooting\n   - 6.1 Vehicle detection and signal calibration\n   - 6.2 Hub pairing problems\n   - 6.3 Wi-Fi problems\n   - 6.4 Frequently asked questions\n   - 6.5 Codes: errors, warnings and notices\n   - 6.6 Common user errors and how to avoid them\n   - 6.7 Overheating and thermal management\n   - 6.8 Symbolic code map\n   - 6.9 Overheating quick reference (E_OVERHEAT_WARN, E_OVERHEAT_TRIP)\n   - 6.10 Other common issues with the charging point\n7. Technical Specification\n   - 7.1 Dimensions\n8. Appendix\n   - 8.1 Grid-operator load control (dry-contact input)\n   - 8.2 Modbus TCP integration\n   - 8.3 Web interface reference\n   - 8.4 Light ring status reference\n9. Warranty, Support and Disposal\n10. Glossary\n11. Revision History\n\n**Part II — Technical Service Manual**\n\n12. Service Requirements, Tools and Safe Working\n13. Internal Architecture and Test Points\n14. Diagnostic Method and Data Sources\n15. Error Code Repair Procedures (E-01 to E-09)\n16. Warning and Notice Procedures (W-201 to W-214, N-401 to N-408)\n17. Symptom-Based Troubleshooting (incl. 17.11 Overheating diagnosis)\n18. Reference Measurements and Expected Values\n19. Commissioning and Periodic Inspection Test Procedure\n20. Component Replacement Procedures\n21. Diagnostic Log and Event Code Reference\n22. Service Record Templates\n\n---\n\n# 1. Safety Instructions\n\nRead all safety instructions before installing or using the ArcPort Home 22. Failure to follow them can result in fire, electric shock, serious injury or damage to equipment.\n\n**Qualified personnel only.** Installation, adjustment and internal servicing must be carried out by a licensed electrician or equivalent qualified person. Do not perform any servicing other than that described in this manual unless you are qualified to do so.\n\n**Follow local rules.** All electrical work must comply with the wiring regulations of the country of installation and with the instructions in this manual. Where this manual and local regulations differ, local regulations take priority.\n\n**Intended use.** The ArcPort Home 22 is designed for charging road electric vehicles that use an IEC 62196 Type 2 connector. Use it only for that purpose and only within the specified operating parameters.",
     "source": "ArcPort_Home_22_Manual.md",
     "section": "Table of Contents",
     "heading": "Table of Contents",
@@ -728,10 +728,186 @@
     "revision": null
   },
   {
-    "text": "ArcPort Home 22 > 6.7 Overheating and thermal management > 6.7.7 Preventing overheating — checklist\n\n- [ ] Station mounted in shade or fitted with a sun shield\n- [ ] At least 200 mm clear at the sides and 300 mm below\n- [ ] Nothing covering or stored against the station\n- [ ] Maximum current matched to supply and climate\n- [ ] Supply cable correctly sized (6 mm² or larger for long runs)\n- [ ] Terminals re-checked at the annual inspection\n- [ ] Charging cable uncoiled and undamaged\n- [ ] Heatwave plan: lower current or night charging\n\n---\n\n# 7. Technical Specification\n\n| **ArcPort Home 22** | |\n|---|---|\n| Supply voltage range | 170–265 V AC (per phase), 50/60 Hz |\n| Rated charging current | 32 A per phase |\n| Nominal power | 22 kW (3-phase) / 7.4 kW (1-phase) |\n| Configurable current | 6–32 A |\n| Standby consumption | 3.5 W (display on), 1.8 W (display off) |\n| Connector | IEC 62196-2 Type 2 socket, with cover |\n| Charging mode | Mode 3 |\n\n| **General** | |\n|---|---|\n| Disconnecting means | External breaker, max 40 A |\n| Residual-current protection | Built-in 6 mA DC detection; external RCD required |\n| Default energy price | 0.25 per kWh (adjustable) |\n| Control | Touchscreen, web interface, Hub, NordLink (Bluetooth), NordLink Remote and NordCloud |\n| Display | 4.3-inch colour touchscreen (display model only) |\n| Light ring | 48 configurable effects |\n| Communication | Wi-Fi 802.11 b/g/n (2.4 GHz), Bluetooth LE 5.0, MQTT, Modbus TCP |\n| Operating temperature | –25 °C to +50 °C |\n| Storage temperature | –40 °C to +80 °C |\n| Humidity | up to 95 %, non-condensing |\n| Altitude | up to 2,000 m |\n| Dry-contact input | 1 × potential-free, 5 V sense |\n\n| **Enclosure** | |\n|---|---|\n| Colour | Nordic grey (RAL 7037) with signal-teal accents |\n| Material | UV-stabilised polycarbonate |\n| Power terminals | 4–10 mm² (AWG 12–8) |\n| Protection class | IP54, IK08 |\n| Ventilation | Not required |\n| Weight | 4.2 kg |\n| Dimensions (H × W × D) | 392 × 288 × 156 mm |\n\n| **Standards** | |\n|---|---|\n| Safety | IEC 61851-1, IEC 61851-22, IEC 62955 (DC detection) |\n| EMC | EN 301 489, IEC 61851-21-2 |\n| Radio | EN 300 328 |\n| Detection | Welded contact, missing earth, shorted CP, phase loss |\n| Marking | CE, UKCA |",
+    "text": "ArcPort Home 22 > 6.7 Overheating and thermal management > 6.7.7 Preventing overheating — checklist\n\n- [ ] Station mounted in shade or fitted with a sun shield\n- [ ] At least 200 mm clear at the sides and 300 mm below\n- [ ] Nothing covering or stored against the station\n- [ ] Maximum current matched to supply and climate\n- [ ] Supply cable correctly sized (6 mm² or larger for long runs)\n- [ ] Terminals re-checked at the annual inspection\n- [ ] Charging cable uncoiled and undamaged\n- [ ] Heatwave plan: lower current or night charging\n\n---",
     "source": "ArcPort_Home_22_Manual.md",
     "section": "6.7 Overheating and thermal management > 6.7.7 Preventing overheating — checklist",
     "heading": "6.7.7 Preventing overheating — checklist",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.8 Symbolic code map\n\nEvery code the station shows has a short **symbolic name**. The symbolic name is the stable identifier used in the diagnostic log, in the NordCloud API and in support tools; the display code (for example **W-203**) is what you see on the screen. Use whichever you have.\n\n| Symbolic code | Display code | Log event | Meaning |\n|---|---|---|---|\n| `E_OVERHEAT_WARN` | W-203 | 0x32 OVERTEMP_WARN | Station is hot and is reducing current |\n| `E_OVERHEAT_TRIP` | E-05 | 0x33 OVERTEMP_TRIP | Station is too hot and has stopped charging |\n| `E_AMBIENT_SENSOR_FAULT` | E-06 | 0x34 AMB_SENS_FAIL | Temperature sensor not responding |\n| `E_TERMINAL_HOT` | (log-derived, no display code) | `T_term` vs `T_board` | Mains terminals running much hotter than the board |\n| `E_EARTH_MISSING` | E-01 | 0x30 PE_LOST | Protective earth not detected |\n| `E_CONTACTOR_WELDED` | E-02 | 0x21 RELAY_STICK | Contactor will not open |\n| `E_CP_SHORT` | E-03 | 0x11 CP_SHORT | Control-pilot line shorted |\n| `E_DC_LEAKAGE` | E-04 | 0x31 RDC_TRIP | DC leakage above 6 mA |\n| `E_TAMPER` | E-07 | 0x3A TAMPER_OPEN | Cover opened while powered |\n| `E_VOLTAGE_RANGE` | E-08 | 0x40 V_RANGE | Supply voltage out of range |\n| `E_PHASE_LOSS` | E-09 | 0x41 PHASE_LOST | A phase is missing |\n| `E_HUB_COMM_LOST` | W-204 | 0x51 MQTT_LOST | Communication with the Hub failed |\n| `E_OVERLOAD` | W-205 / W-206 | 0x61 OVERLOAD_SET | Overload reported by inverter or grid limit |\n| `E_TIME_SYNC` | W-207 | 0x70 TIME_SYNC_FAIL | Clock not synchronised |\n| `E_LOAD_CONTROL_ACTIVE` | W-208 | 0x60 LOADCTRL_ON | Grid-operator limit active |\n| `E_WIFI_WEAK` | W-213 | – | Wi-Fi signal poor |\n| `E_NO_VEHICLE_DETECTED` | N-403 | 0x10 CP_STATE_CHG | Vehicle not recognised |\n| `E_CP_UNSTABLE` | (no display code) | 0x10 toggling B↔C | Start/stop cycling, unstable CP |\n| `E_RCD_TRIP_EXTERNAL` | (no display code) | – | The house RCD tripped, not the station |\n| `E_SLOW_CHARGE` | (no display code) | – | Charging slower than expected |\n| `E_PLUG_LOCKED` | (no display code) | – | Plug will not release from the socket |\n\n> ℹ️ \"No display code\" means the station does not raise a code of its own for that condition. The symbolic name is used so that these common complaints can still be searched and tracked.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.8 Symbolic code map",
+    "heading": "6.8 Symbolic code map",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.9 Overheating — `E_OVERHEAT_WARN`, `E_OVERHEAT_TRIP` and related issues\n\nThis section is a focused, quick-reference version of the overheating guidance in Sections 6.7 and 17.11. Search terms: *overheating, thermal warning, station hot, slow in summer, derating, burning smell*.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.9 Overheating — `E_OVERHEAT_WARN`, `E_OVERHEAT_TRIP` and related issues",
+    "heading": "6.9 Overheating — `E_OVERHEAT_WARN`, `E_OVERHEAT_TRIP` and related issues",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.9 Overheating — `E_OVERHEAT_WARN`, `E_OVERHEAT_TRIP` and related issues > 6.9.1 `E_OVERHEAT_WARN` (W-203) — thermal warning\n\n**What it means.** The internal temperature has passed **70 °C**. The station is protecting itself by reducing the charging current in steps. Charging continues, more slowly.\n\n**What you will see**\n\n- Warning **W-203** in NordLink, on the touchscreen and on the Hub\n- Charging power lower than the set current\n- Halo ring in the *Fault/Warning* scene (amber by default)\n- Event `0x32 OVERTEMP_WARN` in the log\n\n**Most likely causes (in order of how often they occur)**\n\n1. Direct sun on the station, especially in the afternoon\n2. Hot weather (above 35 °C) with charging at 32 A\n3. Station enclosed, covered, or mounted over a heat source\n4. Loose terminal or undersized cable adding heat inside the unit\n5. Faulty temperature sensor (reads too high)\n\n**What the user should do**\n\n1. Do not stop charging unless the unit is too hot to touch or smells of burning. Derating is the protection working.\n2. Lower **Maximum charging current** to 16–24 A (*Settings → General*).\n3. Move charging to the cool part of the day (Scheduled mode, for example 22:00–06:00).\n4. Shade the station and clear anything covering it.\n5. If W-203 appears again in mild weather or at low current, ask an electrician to inspect the terminals.\n\n**What the installer should do.** Check the log for `T_board`, `T_term` and `T_amb`. If `T_term` climbs much faster than `T_board`, treat it as `E_TERMINAL_HOT` (6.9.3). Otherwise follow Section 17.11.3.\n\n**Escalate** if W-203 is accompanied by discolouration, a burning smell or any deformation of the housing.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.9 Overheating — `E_OVERHEAT_WARN`, `E_OVERHEAT_TRIP` and related issues > 6.9.1 `E_OVERHEAT_WARN` (W-203) — thermal warning",
+    "heading": "6.9.1 `E_OVERHEAT_WARN` (W-203) — thermal warning",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.9 Overheating — `E_OVERHEAT_WARN`, `E_OVERHEAT_TRIP` and related issues > 6.9.2 `E_OVERHEAT_TRIP` (E-05) — over-temperature stop\n\n**What it means.** The board has reached **75 °C**, or the terminals **85 °C**. Charging has stopped to prevent damage. It restarts once the station cools below **65 °C**.\n\n**What you will see**\n\n- Error **E-05**, charging stopped, red flashing ring\n- Event `0x33 OVERTEMP_TRIP`\n- Usually preceded by W-203 in the log\n\n**What to do**\n\n1. Stop using the station for at least 30 minutes.\n2. Check that the housing is not covered and is not in direct sun.\n3. Reduce the maximum current and restart.\n4. If E-05 returns within a day at normal ambient temperature, **call an electrician**. A repeat trip means the cause is not the weather.\n\n**Never** bypass or disable thermal protection, and never cover the unit with a heat reflector that traps air against the housing.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.9 Overheating — `E_OVERHEAT_WARN`, `E_OVERHEAT_TRIP` and related issues > 6.9.2 `E_OVERHEAT_TRIP` (E-05) — over-temperature stop",
+    "heading": "6.9.2 `E_OVERHEAT_TRIP` (E-05) — over-temperature stop",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.9 Overheating — `E_OVERHEAT_WARN`, `E_OVERHEAT_TRIP` and related issues > 6.9.3 `E_TERMINAL_HOT` — hot mains terminals\n\n**What it means.** The terminals inside the unit are running much hotter than the electronics. The usual cause is a **loose or poorly crimped conductor**, which has higher electrical resistance and heats under load.\n\n**Signs**\n\n- `T_term` more than 15 °C above `T_board` at high current\n- Hot patch near the cable gland or the lower part of the housing\n- W-203 or E-05 on cool days\n- Discolouration of the housing near the gland (in severe cases)\n\n> ⚠️ This is a **fire risk**. Treat it as urgent. Stop charging, isolate the supply, and have a licensed electrician inspect, re-terminate with new ferrules, and re-torque to 2.0 Nm. See 17.11.4.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.9 Overheating — `E_OVERHEAT_WARN`, `E_OVERHEAT_TRIP` and related issues > 6.9.3 `E_TERMINAL_HOT` — hot mains terminals",
+    "heading": "6.9.3 `E_TERMINAL_HOT` — hot mains terminals",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.9 Overheating — `E_OVERHEAT_WARN`, `E_OVERHEAT_TRIP` and related issues > 6.9.4 `E_AMBIENT_SENSOR_FAULT` (E-06) — temperature sensor problem\n\nIf the station shows a temperature that does not match reality (for example 70 °C in the cold morning), or E-06 appears, the sensor or its connector is faulty. Because thermal protection relies on this sensor, **do not leave the station in service** with a suspected sensor fault. See 15.6 and 17.11.6.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.9 Overheating — `E_OVERHEAT_WARN`, `E_OVERHEAT_TRIP` and related issues > 6.9.4 `E_AMBIENT_SENSOR_FAULT` (E-06) — temperature sensor problem",
+    "heading": "6.9.4 `E_AMBIENT_SENSOR_FAULT` (E-06) — temperature sensor problem",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.9 Overheating — `E_OVERHEAT_WARN`, `E_OVERHEAT_TRIP` and related issues > 6.9.5 Overheating decision table\n\n| Observation | Probable symbolic code | Quick action |\n|---|---|---|\n| Slow charging on a hot sunny afternoon, W-203 | `E_OVERHEAT_WARN` | Shade; lower current; night charging |\n| Charging stops on hot days, E-05, restarts later | `E_OVERHEAT_TRIP` | Same, plus check clearances |\n| Overheating at 16 A on a mild day | `E_TERMINAL_HOT` | Electrician: check terminals |\n| Wrong temperature reading, E-06 | `E_AMBIENT_SENSOR_FAULT` | Electrician: replace sensor/board |\n| Cable or plug hot, station normal | Cable problem | Replace cable; uncoil while charging |\n| Burning smell, melted plastic | Urgent fault | Switch off at breaker; call electrician |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.9 Overheating — `E_OVERHEAT_WARN`, `E_OVERHEAT_TRIP` and related issues > 6.9.5 Overheating decision table",
+    "heading": "6.9.5 Overheating decision table",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.9 Overheating — `E_OVERHEAT_WARN`, `E_OVERHEAT_TRIP` and related issues > 6.9.6 Seasonal guidance\n\n| Season / condition | Recommendation |\n|---|---|\n| Summer heatwave (> 35 °C) | Maximum 24 A; charge overnight; keep in shade |\n| Mild weather | Normal settings |\n| Winter (< 0 °C) | Overheating unlikely; check for ice in the socket instead |\n| Station facing south with no shade | Fit a shield or relocate before summer |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.9 Overheating — `E_OVERHEAT_WARN`, `E_OVERHEAT_TRIP` and related issues > 6.9.6 Seasonal guidance",
+    "heading": "6.9.6 Seasonal guidance",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.10 Other common issues with the charging point\n\nEach entry gives the symbolic code, how it appears, the likely cause and the fix. Use the symbolic code as a search term.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.10 Other common issues with the charging point",
+    "heading": "6.10 Other common issues with the charging point",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.10 Other common issues with the charging point > 6.10.1 `E_NO_VEHICLE_DETECTED` (N-403) — vehicle not recognised\n\n**Symptoms.** The vehicle is plugged in but the station shows *Disconnected*; pressing Start gives N-403.\n\n**Causes.** Plug not fully seated; dirty or wet socket; damaged cable; wrong cable type; control-pilot (CP) signal drift.\n\n**Fix.** Push both plug ends in until they click. Try another cable. Dry and clean the socket with a dry brush. If the problem persists with a known-good cable, ask an installer to check CP (Sections 6.1, 17.2).",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.10 Other common issues with the charging point > 6.10.1 `E_NO_VEHICLE_DETECTED` (N-403) — vehicle not recognised",
+    "heading": "6.10.1 `E_NO_VEHICLE_DETECTED` (N-403) — vehicle not recognised",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.10 Other common issues with the charging point > 6.10.2 `E_CP_UNSTABLE` — charging starts and stops repeatedly\n\n**Symptoms.** The ring and the vehicle alternate between *Charging* and *Charged* or *Connected*; the contactor clicks repeatedly.\n\n**Causes.** CP calibration drift; worn cable; the vehicle's own charge limit or schedule; in Solar mode, surplus power hovering near the minimum.\n\n**Fix.** Check the vehicle's limits first. In Solar mode enable *Allow battery/grid power* and *Smooth-start hold*. Otherwise run CP calibration (6.1) and try another cable. Section 17.6.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.10 Other common issues with the charging point > 6.10.2 `E_CP_UNSTABLE` — charging starts and stops repeatedly",
+    "heading": "6.10.2 `E_CP_UNSTABLE` — charging starts and stops repeatedly",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.10 Other common issues with the charging point > 6.10.3 `E_SLOW_CHARGE` — charging slower than expected\n\n**Symptoms.** The vehicle charges below the rated power (for example 7 kW on a 22 kW station).\n\n**Common causes (check in this order)**\n\n1. The **vehicle's on-board charger** is limited to 7.4 kW or 11 kW. This is normal.\n2. **Maximum current** set low in the station.\n3. **Thermal derating** (`E_OVERHEAT_WARN`).\n4. **Overload or Hub limit** (`E_OVERLOAD`, `E_LOAD_CONTROL_ACTIVE`).\n5. **Low supply voltage** under load.\n6. **Cold vehicle battery** in winter.\n7. **Single-phase supply** (7.4 kW maximum).\n8. **Cable limit** (13 A or 20 A cable on a 32 A station).\n\nSee Section 17.5 for measurements.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.10 Other common issues with the charging point > 6.10.3 `E_SLOW_CHARGE` — charging slower than expected",
+    "heading": "6.10.3 `E_SLOW_CHARGE` — charging slower than expected",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.10 Other common issues with the charging point > 6.10.4 `E_RCD_TRIP_EXTERNAL` — the house RCD trips\n\n**Symptoms.** The breaker or RCD in the distribution board trips when charging or when the station is switched on. The station itself shows no code.\n\n**Causes.** Leakage in the vehicle or cable; moisture in the socket; a type A RCD blinded by DC leakage; the RCD shared with other equipment.\n\n**Fix.** Do not keep resetting it. Try another cable and vehicle. If the trip follows the station, switch off and call an electrician. Section 17.4.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.10 Other common issues with the charging point > 6.10.4 `E_RCD_TRIP_EXTERNAL` — the house RCD trips",
+    "heading": "6.10.4 `E_RCD_TRIP_EXTERNAL` — the house RCD trips",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.10 Other common issues with the charging point > 6.10.5 `E_PLUG_LOCKED` — plug will not come out\n\n**Symptoms.** The charging plug cannot be removed from the station socket after charging.\n\n**Causes.** The socket lock is still engaged because charging has not been stopped; the vehicle is locked; power was lost during a session; the lock motor is stiff in cold weather.\n\n**Fix, in order**\n\n1. Stop charging on the vehicle, the touchscreen or NordLink.\n2. Unlock the vehicle (key fob or app); many vehicles unlock the plug when the car is unlocked.\n3. In NordLink, open *Overview → ⋮ → Release plug*.\n4. Wait 10 seconds and try again; do not pull hard.\n5. If power has failed, restore power or use the **manual release** (installer only): isolate the supply, open the unit, and turn the lock release screw on the socket assembly a quarter turn.\n6. If the lock is repeatedly stuck, replace the socket assembly (20.4).\n\n> ⚠️ Never force the plug out of a locked socket; this can damage both the cable and the socket.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.10 Other common issues with the charging point > 6.10.5 `E_PLUG_LOCKED` — plug will not come out",
+    "heading": "6.10.5 `E_PLUG_LOCKED` — plug will not come out",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.10 Other common issues with the charging point > 6.10.6 `E_HUB_COMM_LOST` (W-204) — lost contact with the Hub\n\n**Symptoms.** Warning W-204; Solar mode unavailable; station missing from the Hub.\n\n**Causes.** Hub or router restarted and changed IP address; pairing lost; Wi-Fi weak; Hub on a different network; IP whitelist excluding the Hub.\n\n**Fix.** Section 16.3. Quick version: check both devices are on the same network, press **Discover**, then **Pair**.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.10 Other common issues with the charging point > 6.10.6 `E_HUB_COMM_LOST` (W-204) — lost contact with the Hub",
+    "heading": "6.10.6 `E_HUB_COMM_LOST` (W-204) — lost contact with the Hub",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.10 Other common issues with the charging point > 6.10.7 `E_WIFI_WEAK` (W-213) — weak Wi-Fi\n\n**Symptoms.** NordLink or the web interface drops out; Hub warnings; W-213.\n\n**Causes.** Station far from the router; metal garage doors or walls; 2.4 GHz interference.\n\n**Fix.** Aim for better than –70 dBm. Add an access point near the station, change the router channel to 1, 6 or 11, or fit the external antenna kit (NV-ANT-01). Section 16.7.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.10 Other common issues with the charging point > 6.10.7 `E_WIFI_WEAK` (W-213) — weak Wi-Fi",
+    "heading": "6.10.7 `E_WIFI_WEAK` (W-213) — weak Wi-Fi",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.10 Other common issues with the charging point > 6.10.8 `E_TIME_SYNC` (W-207) — schedules not running\n\n**Symptoms.** Scheduled mode will not start; wrong start times; W-207 or W-214.\n\n**Causes.** Clock lost after a power cut; wrong time zone; no internet or Hub for time sync.\n\n**Fix.** Set the correct region and time zone; check connectivity; allow UDP port 123 outbound. Section 16.5.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.10 Other common issues with the charging point > 6.10.8 `E_TIME_SYNC` (W-207) — schedules not running",
+    "heading": "6.10.8 `E_TIME_SYNC` (W-207) — schedules not running",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.10 Other common issues with the charging point > 6.10.9 `E_OVERLOAD` (W-205 / W-206) — power reduced because of overload\n\n**Symptoms.** Charging drops to the minimum or stops when the oven, heat pump or other large loads start.\n\n**Fix.** Lower the maximum charging current, or use Hub load management so other loads pause. Section 16.4.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.10 Other common issues with the charging point > 6.10.9 `E_OVERLOAD` (W-205 / W-206) — power reduced because of overload",
+    "heading": "6.10.9 `E_OVERLOAD` (W-205 / W-206) — power reduced because of overload",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.10 Other common issues with the charging point > 6.10.10 `E_VOLTAGE_RANGE` (E-08) and `E_PHASE_LOSS` (E-09) — supply problems\n\n**Symptoms.** Station stops with E-08 or E-09; other equipment in the building also misbehaves.\n\n**Fix.** These are supply faults, not station faults. Ask an electrician to measure voltages. A suspected lost neutral is dangerous: switch off the supply. Sections 15.8, 15.9.",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.10 Other common issues with the charging point > 6.10.10 `E_VOLTAGE_RANGE` (E-08) and `E_PHASE_LOSS` (E-09) — supply problems",
+    "heading": "6.10.10 `E_VOLTAGE_RANGE` (E-08) and `E_PHASE_LOSS` (E-09) — supply problems",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.10 Other common issues with the charging point > 6.10.11 Display and light ring issues\n\n| Symptom | Likely cause | Fix |\n|---|---|---|\n| Touchscreen does not respond | Display lock on; wet screen | Disable the lock; dry the glass |\n| Blank display, ring works | Display firmware updating (W-212); ribbon cable | Wait; call installer if it persists |\n| Ring dark | Brightness set to 0 | Raise brightness in Light Ring settings |\n| Wrong ring colours | Custom scenes | Import default scenes |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.10 Other common issues with the charging point > 6.10.11 Display and light ring issues",
+    "heading": "6.10.11 Display and light ring issues",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.10 Other common issues with the charging point > 6.10.12 Login and access issues\n\n| Symptom | Likely cause | Fix |\n|---|---|---|\n| Cannot log in to the web interface | Wrong or forgotten password | Use the password on the internal label; or partial reset (5.8) |\n| NordLink asks for a pairing code | New phone or reset | Use 000000 or the code on the internal label |\n| Cannot find the station's IP | DHCP changed it | Check the router, or use NordLink *Network* page |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.10 Other common issues with the charging point > 6.10.12 Login and access issues",
+    "heading": "6.10.12 Login and access issues",
+    "model": "ArcPort Home 22",
+    "revision": null
+  },
+  {
+    "text": "ArcPort Home 22 > 6.10 Other common issues with the charging point > 6.10.13 Quick lookup — symptom to symbolic code\n\n| What the customer says | Look at |\n|---|---|\n| \"It's slow when it's hot\" | `E_OVERHEAT_WARN`, `E_SLOW_CHARGE` |\n| \"It stopped in the middle of the day\" | `E_OVERHEAT_TRIP`, `E_OVERLOAD` |\n| \"It gets very hot to touch\" | `E_TERMINAL_HOT` (urgent) |\n| \"It won't start\" | `E_NO_VEHICLE_DETECTED`, N-406, Autostart setting |\n| \"It keeps starting and stopping\" | `E_CP_UNSTABLE` |\n| \"The house breaker keeps tripping\" | `E_RCD_TRIP_EXTERNAL` |\n| \"I can't get the plug out\" | `E_PLUG_LOCKED` |\n| \"The app lost the charger\" | `E_HUB_COMM_LOST`, `E_WIFI_WEAK` |\n| \"Schedule didn't run\" | `E_TIME_SYNC` |\n\n---\n\n# 7. Technical Specification\n\n| **ArcPort Home 22** | |\n|---|---|\n| Supply voltage range | 170–265 V AC (per phase), 50/60 Hz |\n| Rated charging current | 32 A per phase |\n| Nominal power | 22 kW (3-phase) / 7.4 kW (1-phase) |\n| Configurable current | 6–32 A |\n| Standby consumption | 3.5 W (display on), 1.8 W (display off) |\n| Connector | IEC 62196-2 Type 2 socket, with cover |\n| Charging mode | Mode 3 |\n\n| **General** | |\n|---|---|\n| Disconnecting means | External breaker, max 40 A |\n| Residual-current protection | Built-in 6 mA DC detection; external RCD required |\n| Default energy price | 0.25 per kWh (adjustable) |\n| Control | Touchscreen, web interface, Hub, NordLink (Bluetooth), NordLink Remote and NordCloud |\n| Display | 4.3-inch colour touchscreen (display model only) |\n| Light ring | 48 configurable effects |\n| Communication | Wi-Fi 802.11 b/g/n (2.4 GHz), Bluetooth LE 5.0, MQTT, Modbus TCP |\n| Operating temperature | –25 °C to +50 °C |\n| Storage temperature | –40 °C to +80 °C |\n| Humidity | up to 95 %, non-condensing |\n| Altitude | up to 2,000 m |\n| Dry-contact input | 1 × potential-free, 5 V sense |\n\n| **Enclosure** | |\n|---|---|\n| Colour | Nordic grey (RAL 7037) with signal-teal accents |\n| Material | UV-stabilised polycarbonate |\n| Power terminals | 4–10 mm² (AWG 12–8) |\n| Protection class | IP54, IK08 |\n| Ventilation | Not required |\n| Weight | 4.2 kg |\n| Dimensions (H × W × D) | 392 × 288 × 156 mm |\n\n| **Standards** | |\n|---|---|\n| Safety | IEC 61851-1, IEC 61851-22, IEC 62955 (DC detection) |\n| EMC | EN 301 489, IEC 61851-21-2 |\n| Radio | EN 300 328 |\n| Detection | Welded contact, missing earth, shorted CP, phase loss |\n| Marking | CE, UKCA |",
+    "source": "ArcPort_Home_22_Manual.md",
+    "section": "6.10 Other common issues with the charging point > 6.10.13 Quick lookup — symptom to symbolic code",
+    "heading": "6.10.13 Quick lookup — symptom to symbolic code",
     "model": "ArcPort Home 22",
     "revision": null
   },
@@ -888,7 +1064,7 @@
     "revision": null
   },
   {
-    "text": "ArcPort Home 22 > 9.4 Regulatory information\n\nThe ArcPort Home 22 complies with the relevant requirements of the radio-equipment, low-voltage and EMC directives applicable in the regions where it is sold. The declaration of conformity can be downloaded from the product page.\n\n---\n\n# 10. Glossary\n\n| Term | Meaning |\n|---|---|\n| **AC** | Alternating current. |\n| **AP / Access point** | A Wi-Fi network created by the station itself. |\n| **CP (control pilot)** | A signal line that lets the station and vehicle communicate. |\n| **DEF button** | A recessed reset button inside the unit. |\n| **EVSE** | Electric vehicle supply equipment; the technical name for a charging station. |\n| **Halo ring** | The programmable LED ring around the socket. |\n| **Hub** | The Nexus Hub energy gateway. |\n| **MQTT** | A lightweight messaging protocol used between the station and the Hub. |\n| **Modbus TCP** | An industrial communication protocol, offered as an alternative to MQTT. |\n| **PE** | Protective earth. |\n| **RCD** | Residual-current device; a safety switch that trips on leakage current. |\n| **RSSI** | Received signal strength indicator; a measure of Wi-Fi signal quality. |\n| **SoC** | State of charge of a battery, in percent. |\n| **Surplus** | Solar production minus household consumption. |\n| **Type 2** | The standard European AC charging connector (IEC 62196-2). |\n\n---\n\n# 11. Revision History\n\n| Rev | Date | Changes |\n|---|---|---|\n| 1 | March 2024 | First release |\n| 2 | July 2024 | Added Scheduled mode details and NordLink Remote |\n| 3 | November 2024 | Added IP whitelist and Modbus TCP register table |\n| 4 | April 2025 | Added dry-contact input (Appendix 8.1) |\n| 5 | September 2025 | Added phase-loss and supply-voltage error codes |\n| 6 | March 2026 | Added MQTT pairing with Nexus Hub; Modbus TCP moved to appendix |\n| 7 | October 2026 | Automatic CP calibration; expanded FAQ; added light ring reference and maintenance schedule |\n| 8 | October 2026 | Added Part II: Technical Service Manual (Sections 12–22) |\n| 9 | October 2026 | Added Section 6.6 (user errors), 6.7 (overheating) and 17.11 (overheating service diagnosis) |\n\n---\n\n---\n---\n\n# PART II — TECHNICAL SERVICE MANUAL\n\n> 🔧 **Audience:** Part II is written for qualified electricians and Nordvane-certified service technicians. It contains procedures that involve live mains voltage. Do not attempt these procedures unless you are trained and authorised to do so. Part I (Sections 1–11) remains the reference for normal operation.\n\n> ℹ️ All part numbers, voltages, register values and thresholds in this document are for the fictional ArcPort Home 22.\n\n---\n\n# 12. Service Requirements, Tools and Safe Working",
+    "text": "ArcPort Home 22 > 9.4 Regulatory information\n\nThe ArcPort Home 22 complies with the relevant requirements of the radio-equipment, low-voltage and EMC directives applicable in the regions where it is sold. The declaration of conformity can be downloaded from the product page.\n\n---\n\n# 10. Glossary\n\n| Term | Meaning |\n|---|---|\n| **AC** | Alternating current. |\n| **AP / Access point** | A Wi-Fi network created by the station itself. |\n| **CP (control pilot)** | A signal line that lets the station and vehicle communicate. |\n| **DEF button** | A recessed reset button inside the unit. |\n| **EVSE** | Electric vehicle supply equipment; the technical name for a charging station. |\n| **Halo ring** | The programmable LED ring around the socket. |\n| **Hub** | The Nexus Hub energy gateway. |\n| **MQTT** | A lightweight messaging protocol used between the station and the Hub. |\n| **Modbus TCP** | An industrial communication protocol, offered as an alternative to MQTT. |\n| **PE** | Protective earth. |\n| **RCD** | Residual-current device; a safety switch that trips on leakage current. |\n| **RSSI** | Received signal strength indicator; a measure of Wi-Fi signal quality. |\n| **SoC** | State of charge of a battery, in percent. |\n| **Surplus** | Solar production minus household consumption. |\n| **Type 2** | The standard European AC charging connector (IEC 62196-2). |\n\n---\n\n# 11. Revision History\n\n| Rev | Date | Changes |\n|---|---|---|\n| 1 | March 2024 | First release |\n| 2 | July 2024 | Added Scheduled mode details and NordLink Remote |\n| 3 | November 2024 | Added IP whitelist and Modbus TCP register table |\n| 4 | April 2025 | Added dry-contact input (Appendix 8.1) |\n| 5 | September 2025 | Added phase-loss and supply-voltage error codes |\n| 6 | March 2026 | Added MQTT pairing with Nexus Hub; Modbus TCP moved to appendix |\n| 7 | October 2026 | Automatic CP calibration; expanded FAQ; added light ring reference and maintenance schedule |\n| 8 | October 2026 | Added Part II: Technical Service Manual (Sections 12–22) |\n| 9 | October 2026 | Added Section 6.6 (user errors), 6.7 (overheating) and 17.11 (overheating service diagnosis) |\n| 10 | October 2026 | Added symbolic code map (6.8), overheating quick reference (6.9) and common-issues catalogue (6.10) |\n\n---\n\n---\n---\n\n# PART II — TECHNICAL SERVICE MANUAL\n\n> 🔧 **Audience:** Part II is written for qualified electricians and Nordvane-certified service technicians. It contains procedures that involve live mains voltage. Do not attempt these procedures unless you are trained and authorised to do so. Part I (Sections 1–11) remains the reference for normal operation.\n\n> ℹ️ All part numbers, voltages, register values and thresholds in this document are for the fictional ArcPort Home 22.\n\n---\n\n# 12. Service Requirements, Tools and Safe Working",
     "source": "ArcPort_Home_22_Manual.md",
     "section": "9.4 Regulatory information",
     "heading": "9.4 Regulatory information",

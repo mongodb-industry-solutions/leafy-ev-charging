@@ -1,7 +1,9 @@
 import { GraphQLError } from "graphql";
+import { ObjectId } from "mongodb";
 import type { GraphQLContext } from "../../server/context";
 import type { ConnectorType } from "../../types/connectorType";
 import { findVehiclesByUserId } from "../../db/repositories/vehicles";
+import { findIncidentById } from "../../db/repositories/incidents";
 import { ocppConnections } from "../../ocpp/connectionManager";
 import { activateAgent } from "../../../agent/activate";
 
@@ -84,6 +86,18 @@ export const resolvers = {
       context: GraphQLContext,
     ) => {
       return getChargingStationFacets(context.db);
+    },
+    incidentReview: async (
+      _parent: unknown,
+      args: { incidentId: string },
+      context: GraphQLContext,
+    ) => {
+      if (!ObjectId.isValid(args.incidentId)) {
+        return null;
+      }
+      const incident = await findIncidentById(context.db, args.incidentId);
+      const review = incident?.resolution.review ?? null;
+      return review ? JSON.stringify(review) : null;
     },
     chargingSessions: async (
       _parent: unknown,

@@ -10,7 +10,9 @@ type IncidentOverview = {
     stationId: string;
     type: string;
     severity: string;
+    status: string;
     description: string;
+    resolutionNotes: string | null;
     createdAt: Date;
   }>;
 };
@@ -65,7 +67,9 @@ async function runIncidentSummary(
             stationId: { $toString: "$stationId" },
             type: 1,
             severity: 1,
+            status: 1,
             description: 1,
+            resolutionNotes: { $ifNull: ["$resolution.notes", null] },
             createdAt: 1
           }
         }
@@ -103,6 +107,34 @@ export async function summarizeStationIncidents(
   }
 
   return runIncidentSummary(db, stationId);
+}
+
+const ADDRESS_FIELDS = [
+  "address.street",
+  "address.city",
+  "address.postalCode",
+  "address.country"
+] as const;
+
+function _escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function _exactQuery(value: string): Document {
+  const match = { $regex: `^${_escapeRegExp(value)}$`, $options: "i" };
+  return {
+    $or: [{ name: match }, { operator: match }, { stationCode: match }]
+  };
+}
+
+function _addressQuery(parts: string[]): Document {
+  return {
+    $and: parts.map((part) => ({
+      $or: ADDRESS_FIELDS.map((field) => ({
+        [field]: { $regex: _escapeRegExp(part), $options: "i" }
+      }))
+    }))
+  };
 }
 
 export async function getSelectedChargerDetails(db: Db, stationId: string) {
@@ -278,4 +310,149 @@ export async function rankChargingActivity(
     groupBy: input.groupBy,
     rankings
   };
+}
+
+export type SearchManualsInput = {
+  query: string;
+  codes?: string[];
+  limit?: number;
+};
+
+export type ManualChunkResult = {
+  section: string;
+  heading: string;
+  codes: string[];
+  text: string;
+  score: number | null;
+};
+
+const VOYAGE_EMBEDDINGS_URL = "https://api.voyageai.com/v1/embeddings";
+const MANUAL_COLLECTION = "manualChunks";
+const MANUAL_VECTOR_INDEX = "default";
+const MANUAL_LEXICAL_INDEX = "lexical";
+const DEFAULT_VOYAGE_MODEL = "voyage-3.5";
+
+async function embedManualQuery(
+  query: string,
+  model: string
+): Promise<number[] | null> {
+  const apiKey = process.env.VOYAGE_API_KEY;
+  if (!apiKey) return null;
+
+  try {
+    const response = await fetch(VOYAGE_EMBEDDINGS_URL, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ input: [query], model, input_type: "query" })
+    });
+    if (!response.ok) return null;
+
+    const payload = (await response.json()) as {
+      data?: Array<{ embedding?: number[] }>;
+    };
+    const embedding = payload.data?.[0]?.embedding;
+    return Array.isArray(embedding) ? embedding : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function searchManuals(
+  db: Db,
+  input: SearchManualsInput
+): Promise<{ results: ManualChunkResult[] }> {
+  const query = input.query.trim();
+  if (!query) throw new Error("query is required");
+
+  const limit = input.limit ?? 5;
+  if (!Number.isInteger(limit) || limit < 1 || limit > 20) {
+    throw new Error("limit must be an integer between 1 and 20");
+  }
+
+  const collection = db.collection(MANUAL_COLLECTION);
+
+  let model = process.env.VOYAGE_MODEL ?? DEFAULT_VOYAGE_MODEL;
+  const sample = await collection.findOne(
+    {},
+    { projection: { embeddingModel: 1 } }
+  );
+  if (sample && typeof sample.embeddingModel === "string") {
+    model = sample.embeddingModel;
+  }
+
+  const filter =
+    input.codes && input.codes.length > 0
+      ? { codes: { $in: input.codes } }
+      : undefined;
+
+  const queryVector = await embedManualQuery(query, model);
+  if (queryVector) {
+    try {
+      const results = await collection
+        .aggregate<ManualChunkResult>([
+          {
+            $vectorSearch: {
+              index: MANUAL_VECTOR_INDEX,
+              path: "embedding",
+              queryVector,
+              numCandidates: Math.max(limit * 10, 50),
+              limit,
+              ...(filter ? { filter } : {})
+            }
+          },
+          {
+            $project: {
+              _id: 0,
+              section: 1,
+              heading: 1,
+              codes: 1,
+              text: 1,
+              score: { $meta: "vectorSearchScore" }
+            }
+          }
+        ])
+        .toArray();
+      if (results.length > 0) return { results };
+    } catch {
+      // Atlas Vector Search unavailable; fall back to lexical search.
+    }
+  }
+
+  try {
+    const results = await collection
+      .aggregate<ManualChunkResult>([
+        {
+          $search: {
+            index: MANUAL_LEXICAL_INDEX,
+            compound: {
+              should: [
+                { text: { query, path: ["text", "heading"] } },
+                ...(input.codes ?? []).map((code) => ({
+                  equals: { path: "codes", value: code }
+                }))
+              ],
+              minimumShouldMatch: 1
+            }
+          }
+        },
+        { $limit: limit },
+        {
+          $project: {
+            _id: 0,
+            section: 1,
+            heading: 1,
+            codes: 1,
+            text: 1,
+            score: { $meta: "searchScore" }
+          }
+        }
+      ])
+      .toArray();
+    return { results };
+  } catch {
+    return { results: [] };
+  }
 }

@@ -11,6 +11,7 @@ import {
   findChargingSessionById,
 } from "../db/repositories/chargingSessions";
 import { insertChargingStationIncident } from "../db/repositories/incidents";
+import { reviewIncident } from "../modules/incidents/service";
 import { markChargingPointAvailable } from "../db/repositories/chargingStations";
 
 type OcppCall = [
@@ -189,12 +190,20 @@ async function handleOcppMessage(
         const eventTimestamp =
           typeof item.timestamp === "string" ? new Date(item.timestamp) : null;
 
-        await insertChargingStationIncident(db, {
+        const incident = await insertChargingStationIncident(db, {
           stationId: session.stationId,
           chargingPointId: session.chargingPointId,
           sessionId: session._id,
           severity: "HIGH",
           description: `Overheating detected: techCode=${item.techCode}, actualValue=${item.actualValue}`,
+        });
+
+        // Generate the review in the background; do not block the OCPP ack.
+        void reviewIncident(db, incident._id.toHexString()).catch((error) => {
+          console.error(
+            `Incident review failed for ${incident._id.toHexString()}`,
+            error
+          );
         });
       }
 

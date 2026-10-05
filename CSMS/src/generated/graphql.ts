@@ -369,6 +369,7 @@ export type Query = {
   chargingSessions: SessionConnection;
   chargingStationFacets: ChargingStationFacets;
   chargingStationsInBounds: Array<MapItem>;
+  incidentReview?: Maybe<Scalars['String']['output']>;
   users: Array<User>;
   vehicles: Array<Vehicle>;
 };
@@ -386,6 +387,11 @@ export type QueryChargingStationsInBoundsArgs = {
   bounds: BoundsInput;
   filters?: InputMaybe<ChargingStationFiltersInput>;
   zoom: Scalars['Int']['input'];
+};
+
+
+export type QueryIncidentReviewArgs = {
+  incidentId: Scalars['ID']['input'];
 };
 
 
@@ -945,6 +951,7 @@ export type QueryResolvers<ContextType = GraphQLContext, ParentType extends Reso
   chargingSessions?: Resolver<ResolversTypes['SessionConnection'], ParentType, ContextType, RequireFields<QueryChargingSessionsArgs, 'userId'>>;
   chargingStationFacets?: Resolver<ResolversTypes['ChargingStationFacets'], ParentType, ContextType>;
   chargingStationsInBounds?: Resolver<Array<ResolversTypes['MapItem']>, ParentType, ContextType, RequireFields<QueryChargingStationsInBoundsArgs, 'bounds' | 'zoom'>>;
+  incidentReview?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<QueryIncidentReviewArgs, 'incidentId'>>;
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   vehicles?: Resolver<Array<ResolversTypes['Vehicle']>, ParentType, ContextType, RequireFields<QueryVehiclesArgs, 'userId'>>;
 };

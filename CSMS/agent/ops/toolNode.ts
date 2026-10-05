@@ -3,10 +3,12 @@ import type { Db } from "mongodb";
 import {
   getSelectedChargerDetails,
   rankChargingActivity,
+  searchManuals,
   skimTelemetry,
   summarizeIncidents,
   summarizeStationIncidents,
   type ChargingActivityRankInput,
+  type SearchManualsInput,
   type SkimTelemetryInput
 } from "./tools";
 
@@ -116,6 +118,31 @@ export function createOperatorTools(db: Db) {
             }
           },
           required: ["from", "to"]
+        }
+      }
+    ),
+    tool(
+      async (input: SearchManualsInput) =>
+        JSON.stringify(await searchManuals(db, input)),
+      {
+        name: "searchManuals",
+        description:
+          "Search the equipment manual for sections relevant to a symptom or error code. " +
+          "Returns matching sections with their heading path and codes. Use it to ground root cause and repair steps.",
+        schema: {
+          type: "object",
+          additionalProperties: false,
+          properties: {
+            query: { type: "string", minLength: 1, maxLength: 500 },
+            codes: {
+              type: "array",
+              items: { type: "string" },
+              maxItems: 10,
+              description: "Error/warning/notice codes to match exactly, e.g. E-05."
+            },
+            limit: { type: "integer", minimum: 1, maximum: 20, default: 5 }
+          },
+          required: ["query"]
         }
       }
     ),

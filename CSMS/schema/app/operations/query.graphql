@@ -8,6 +8,7 @@ type Query {
     filters: ChargingStationFiltersInput
   ): [MapItem!]!
   chargingStationFacets: ChargingStationFacets!
+  incidentReview(incidentId: ID!): String
   chargingSessions(
     userId: ID!
     limit: Int

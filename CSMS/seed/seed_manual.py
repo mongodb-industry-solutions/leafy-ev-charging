@@ -37,6 +37,7 @@ import time
 import urllib.error
 import urllib.request
 from pathlib import Path
+import certifi
 
 try:
     from dotenv import load_dotenv
@@ -306,7 +307,7 @@ def main() -> int:
     from pymongo import MongoClient
     from pymongo.errors import OperationFailure
 
-    client = MongoClient(mongodb_uri)
+    client = MongoClient(mongodb_uri, tlsCAFile=certifi.where())
     collection = client[database_name][COLLECTION]
 
     if args.drop:

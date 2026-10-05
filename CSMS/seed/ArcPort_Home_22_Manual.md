@@ -3,7 +3,7 @@
 **Nordvane Energy** · *Power that moves with you*
 
 **Model:** NV-AP22 (with display) · NV-AP22-NS (no display)
-**Document revision:** 9 — October 2026
+**Document revision:** 10 — October 2026
 **Language:** English
 **Firmware covered:** v3.2 and later · **NordLink app:** v4.1 and later · **Nexus Hub:** OS 2.6 and later
 
@@ -46,6 +46,9 @@
    - 6.5 Codes: errors, warnings and notices
    - 6.6 Common user errors and how to avoid them
    - 6.7 Overheating and thermal management
+   - 6.8 Symbolic code map
+   - 6.9 Overheating quick reference (E_OVERHEAT_WARN, E_OVERHEAT_TRIP)
+   - 6.10 Other common issues with the charging point
 7. Technical Specification
    - 7.1 Dimensions
 8. Appendix
@@ -1126,6 +1129,258 @@ These are guidance values for a station in shade on a well-ventilated wall. Dire
 
 ---
 
+## 6.8 Symbolic code map
+
+Every code the station shows has a short **symbolic name**. The symbolic name is the stable identifier used in the diagnostic log, in the NordCloud API and in support tools; the display code (for example **W-203**) is what you see on the screen. Use whichever you have.
+
+| Symbolic code | Display code | Log event | Meaning |
+|---|---|---|---|
+| `E_OVERHEAT_WARN` | W-203 | 0x32 OVERTEMP_WARN | Station is hot and is reducing current |
+| `E_OVERHEAT_TRIP` | E-05 | 0x33 OVERTEMP_TRIP | Station is too hot and has stopped charging |
+| `E_AMBIENT_SENSOR_FAULT` | E-06 | 0x34 AMB_SENS_FAIL | Temperature sensor not responding |
+| `E_TERMINAL_HOT` | (log-derived, no display code) | `T_term` vs `T_board` | Mains terminals running much hotter than the board |
+| `E_EARTH_MISSING` | E-01 | 0x30 PE_LOST | Protective earth not detected |
+| `E_CONTACTOR_WELDED` | E-02 | 0x21 RELAY_STICK | Contactor will not open |
+| `E_CP_SHORT` | E-03 | 0x11 CP_SHORT | Control-pilot line shorted |
+| `E_DC_LEAKAGE` | E-04 | 0x31 RDC_TRIP | DC leakage above 6 mA |
+| `E_TAMPER` | E-07 | 0x3A TAMPER_OPEN | Cover opened while powered |
+| `E_VOLTAGE_RANGE` | E-08 | 0x40 V_RANGE | Supply voltage out of range |
+| `E_PHASE_LOSS` | E-09 | 0x41 PHASE_LOST | A phase is missing |
+| `E_HUB_COMM_LOST` | W-204 | 0x51 MQTT_LOST | Communication with the Hub failed |
+| `E_OVERLOAD` | W-205 / W-206 | 0x61 OVERLOAD_SET | Overload reported by inverter or grid limit |
+| `E_TIME_SYNC` | W-207 | 0x70 TIME_SYNC_FAIL | Clock not synchronised |
+| `E_LOAD_CONTROL_ACTIVE` | W-208 | 0x60 LOADCTRL_ON | Grid-operator limit active |
+| `E_WIFI_WEAK` | W-213 | – | Wi-Fi signal poor |
+| `E_NO_VEHICLE_DETECTED` | N-403 | 0x10 CP_STATE_CHG | Vehicle not recognised |
+| `E_CP_UNSTABLE` | (no display code) | 0x10 toggling B↔C | Start/stop cycling, unstable CP |
+| `E_RCD_TRIP_EXTERNAL` | (no display code) | – | The house RCD tripped, not the station |
+| `E_SLOW_CHARGE` | (no display code) | – | Charging slower than expected |
+| `E_PLUG_LOCKED` | (no display code) | – | Plug will not release from the socket |
+
+> ℹ️ "No display code" means the station does not raise a code of its own for that condition. The symbolic name is used so that these common complaints can still be searched and tracked.
+
+## 6.9 Overheating — `E_OVERHEAT_WARN`, `E_OVERHEAT_TRIP` and related issues
+
+This section is a focused, quick-reference version of the overheating guidance in Sections 6.7 and 17.11. Search terms: *overheating, thermal warning, station hot, slow in summer, derating, burning smell*.
+
+### 6.9.1 `E_OVERHEAT_WARN` (W-203) — thermal warning
+
+**What it means.** The internal temperature has passed **70 °C**. The station is protecting itself by reducing the charging current in steps. Charging continues, more slowly.
+
+**What you will see**
+
+- Warning **W-203** in NordLink, on the touchscreen and on the Hub
+- Charging power lower than the set current
+- Halo ring in the *Fault/Warning* scene (amber by default)
+- Event `0x32 OVERTEMP_WARN` in the log
+
+**Most likely causes (in order of how often they occur)**
+
+1. Direct sun on the station, especially in the afternoon
+2. Hot weather (above 35 °C) with charging at 32 A
+3. Station enclosed, covered, or mounted over a heat source
+4. Loose terminal or undersized cable adding heat inside the unit
+5. Faulty temperature sensor (reads too high)
+
+**What the user should do**
+
+1. Do not stop charging unless the unit is too hot to touch or smells of burning. Derating is the protection working.
+2. Lower **Maximum charging current** to 16–24 A (*Settings → General*).
+3. Move charging to the cool part of the day (Scheduled mode, for example 22:00–06:00).
+4. Shade the station and clear anything covering it.
+5. If W-203 appears again in mild weather or at low current, ask an electrician to inspect the terminals.
+
+**What the installer should do.** Check the log for `T_board`, `T_term` and `T_amb`. If `T_term` climbs much faster than `T_board`, treat it as `E_TERMINAL_HOT` (6.9.3). Otherwise follow Section 17.11.3.
+
+**Escalate** if W-203 is accompanied by discolouration, a burning smell or any deformation of the housing.
+
+### 6.9.2 `E_OVERHEAT_TRIP` (E-05) — over-temperature stop
+
+**What it means.** The board has reached **75 °C**, or the terminals **85 °C**. Charging has stopped to prevent damage. It restarts once the station cools below **65 °C**.
+
+**What you will see**
+
+- Error **E-05**, charging stopped, red flashing ring
+- Event `0x33 OVERTEMP_TRIP`
+- Usually preceded by W-203 in the log
+
+**What to do**
+
+1. Stop using the station for at least 30 minutes.
+2. Check that the housing is not covered and is not in direct sun.
+3. Reduce the maximum current and restart.
+4. If E-05 returns within a day at normal ambient temperature, **call an electrician**. A repeat trip means the cause is not the weather.
+
+**Never** bypass or disable thermal protection, and never cover the unit with a heat reflector that traps air against the housing.
+
+### 6.9.3 `E_TERMINAL_HOT` — hot mains terminals
+
+**What it means.** The terminals inside the unit are running much hotter than the electronics. The usual cause is a **loose or poorly crimped conductor**, which has higher electrical resistance and heats under load.
+
+**Signs**
+
+- `T_term` more than 15 °C above `T_board` at high current
+- Hot patch near the cable gland or the lower part of the housing
+- W-203 or E-05 on cool days
+- Discolouration of the housing near the gland (in severe cases)
+
+> ⚠️ This is a **fire risk**. Treat it as urgent. Stop charging, isolate the supply, and have a licensed electrician inspect, re-terminate with new ferrules, and re-torque to 2.0 Nm. See 17.11.4.
+
+### 6.9.4 `E_AMBIENT_SENSOR_FAULT` (E-06) — temperature sensor problem
+
+If the station shows a temperature that does not match reality (for example 70 °C in the cold morning), or E-06 appears, the sensor or its connector is faulty. Because thermal protection relies on this sensor, **do not leave the station in service** with a suspected sensor fault. See 15.6 and 17.11.6.
+
+### 6.9.5 Overheating decision table
+
+| Observation | Probable symbolic code | Quick action |
+|---|---|---|
+| Slow charging on a hot sunny afternoon, W-203 | `E_OVERHEAT_WARN` | Shade; lower current; night charging |
+| Charging stops on hot days, E-05, restarts later | `E_OVERHEAT_TRIP` | Same, plus check clearances |
+| Overheating at 16 A on a mild day | `E_TERMINAL_HOT` | Electrician: check terminals |
+| Wrong temperature reading, E-06 | `E_AMBIENT_SENSOR_FAULT` | Electrician: replace sensor/board |
+| Cable or plug hot, station normal | Cable problem | Replace cable; uncoil while charging |
+| Burning smell, melted plastic | Urgent fault | Switch off at breaker; call electrician |
+
+### 6.9.6 Seasonal guidance
+
+| Season / condition | Recommendation |
+|---|---|
+| Summer heatwave (> 35 °C) | Maximum 24 A; charge overnight; keep in shade |
+| Mild weather | Normal settings |
+| Winter (< 0 °C) | Overheating unlikely; check for ice in the socket instead |
+| Station facing south with no shade | Fit a shield or relocate before summer |
+
+## 6.10 Other common issues with the charging point
+
+Each entry gives the symbolic code, how it appears, the likely cause and the fix. Use the symbolic code as a search term.
+
+### 6.10.1 `E_NO_VEHICLE_DETECTED` (N-403) — vehicle not recognised
+
+**Symptoms.** The vehicle is plugged in but the station shows *Disconnected*; pressing Start gives N-403.
+
+**Causes.** Plug not fully seated; dirty or wet socket; damaged cable; wrong cable type; control-pilot (CP) signal drift.
+
+**Fix.** Push both plug ends in until they click. Try another cable. Dry and clean the socket with a dry brush. If the problem persists with a known-good cable, ask an installer to check CP (Sections 6.1, 17.2).
+
+### 6.10.2 `E_CP_UNSTABLE` — charging starts and stops repeatedly
+
+**Symptoms.** The ring and the vehicle alternate between *Charging* and *Charged* or *Connected*; the contactor clicks repeatedly.
+
+**Causes.** CP calibration drift; worn cable; the vehicle's own charge limit or schedule; in Solar mode, surplus power hovering near the minimum.
+
+**Fix.** Check the vehicle's limits first. In Solar mode enable *Allow battery/grid power* and *Smooth-start hold*. Otherwise run CP calibration (6.1) and try another cable. Section 17.6.
+
+### 6.10.3 `E_SLOW_CHARGE` — charging slower than expected
+
+**Symptoms.** The vehicle charges below the rated power (for example 7 kW on a 22 kW station).
+
+**Common causes (check in this order)**
+
+1. The **vehicle's on-board charger** is limited to 7.4 kW or 11 kW. This is normal.
+2. **Maximum current** set low in the station.
+3. **Thermal derating** (`E_OVERHEAT_WARN`).
+4. **Overload or Hub limit** (`E_OVERLOAD`, `E_LOAD_CONTROL_ACTIVE`).
+5. **Low supply voltage** under load.
+6. **Cold vehicle battery** in winter.
+7. **Single-phase supply** (7.4 kW maximum).
+8. **Cable limit** (13 A or 20 A cable on a 32 A station).
+
+See Section 17.5 for measurements.
+
+### 6.10.4 `E_RCD_TRIP_EXTERNAL` — the house RCD trips
+
+**Symptoms.** The breaker or RCD in the distribution board trips when charging or when the station is switched on. The station itself shows no code.
+
+**Causes.** Leakage in the vehicle or cable; moisture in the socket; a type A RCD blinded by DC leakage; the RCD shared with other equipment.
+
+**Fix.** Do not keep resetting it. Try another cable and vehicle. If the trip follows the station, switch off and call an electrician. Section 17.4.
+
+### 6.10.5 `E_PLUG_LOCKED` — plug will not come out
+
+**Symptoms.** The charging plug cannot be removed from the station socket after charging.
+
+**Causes.** The socket lock is still engaged because charging has not been stopped; the vehicle is locked; power was lost during a session; the lock motor is stiff in cold weather.
+
+**Fix, in order**
+
+1. Stop charging on the vehicle, the touchscreen or NordLink.
+2. Unlock the vehicle (key fob or app); many vehicles unlock the plug when the car is unlocked.
+3. In NordLink, open *Overview → ⋮ → Release plug*.
+4. Wait 10 seconds and try again; do not pull hard.
+5. If power has failed, restore power or use the **manual release** (installer only): isolate the supply, open the unit, and turn the lock release screw on the socket assembly a quarter turn.
+6. If the lock is repeatedly stuck, replace the socket assembly (20.4).
+
+> ⚠️ Never force the plug out of a locked socket; this can damage both the cable and the socket.
+
+### 6.10.6 `E_HUB_COMM_LOST` (W-204) — lost contact with the Hub
+
+**Symptoms.** Warning W-204; Solar mode unavailable; station missing from the Hub.
+
+**Causes.** Hub or router restarted and changed IP address; pairing lost; Wi-Fi weak; Hub on a different network; IP whitelist excluding the Hub.
+
+**Fix.** Section 16.3. Quick version: check both devices are on the same network, press **Discover**, then **Pair**.
+
+### 6.10.7 `E_WIFI_WEAK` (W-213) — weak Wi-Fi
+
+**Symptoms.** NordLink or the web interface drops out; Hub warnings; W-213.
+
+**Causes.** Station far from the router; metal garage doors or walls; 2.4 GHz interference.
+
+**Fix.** Aim for better than –70 dBm. Add an access point near the station, change the router channel to 1, 6 or 11, or fit the external antenna kit (NV-ANT-01). Section 16.7.
+
+### 6.10.8 `E_TIME_SYNC` (W-207) — schedules not running
+
+**Symptoms.** Scheduled mode will not start; wrong start times; W-207 or W-214.
+
+**Causes.** Clock lost after a power cut; wrong time zone; no internet or Hub for time sync.
+
+**Fix.** Set the correct region and time zone; check connectivity; allow UDP port 123 outbound. Section 16.5.
+
+### 6.10.9 `E_OVERLOAD` (W-205 / W-206) — power reduced because of overload
+
+**Symptoms.** Charging drops to the minimum or stops when the oven, heat pump or other large loads start.
+
+**Fix.** Lower the maximum charging current, or use Hub load management so other loads pause. Section 16.4.
+
+### 6.10.10 `E_VOLTAGE_RANGE` (E-08) and `E_PHASE_LOSS` (E-09) — supply problems
+
+**Symptoms.** Station stops with E-08 or E-09; other equipment in the building also misbehaves.
+
+**Fix.** These are supply faults, not station faults. Ask an electrician to measure voltages. A suspected lost neutral is dangerous: switch off the supply. Sections 15.8, 15.9.
+
+### 6.10.11 Display and light ring issues
+
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| Touchscreen does not respond | Display lock on; wet screen | Disable the lock; dry the glass |
+| Blank display, ring works | Display firmware updating (W-212); ribbon cable | Wait; call installer if it persists |
+| Ring dark | Brightness set to 0 | Raise brightness in Light Ring settings |
+| Wrong ring colours | Custom scenes | Import default scenes |
+
+### 6.10.12 Login and access issues
+
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| Cannot log in to the web interface | Wrong or forgotten password | Use the password on the internal label; or partial reset (5.8) |
+| NordLink asks for a pairing code | New phone or reset | Use 000000 or the code on the internal label |
+| Cannot find the station's IP | DHCP changed it | Check the router, or use NordLink *Network* page |
+
+### 6.10.13 Quick lookup — symptom to symbolic code
+
+| What the customer says | Look at |
+|---|---|
+| "It's slow when it's hot" | `E_OVERHEAT_WARN`, `E_SLOW_CHARGE` |
+| "It stopped in the middle of the day" | `E_OVERHEAT_TRIP`, `E_OVERLOAD` |
+| "It gets very hot to touch" | `E_TERMINAL_HOT` (urgent) |
+| "It won't start" | `E_NO_VEHICLE_DETECTED`, N-406, Autostart setting |
+| "It keeps starting and stopping" | `E_CP_UNSTABLE` |
+| "The house breaker keeps tripping" | `E_RCD_TRIP_EXTERNAL` |
+| "I can't get the plug out" | `E_PLUG_LOCKED` |
+| "The app lost the charger" | `E_HUB_COMM_LOST`, `E_WIFI_WEAK` |
+| "Schedule didn't run" | `E_TIME_SYNC` |
+
+---
+
 # 7. Technical Specification
 
 | **ArcPort Home 22** | |
@@ -1405,6 +1660,7 @@ The ArcPort Home 22 complies with the relevant requirements of the radio-equipme
 | 7 | October 2026 | Automatic CP calibration; expanded FAQ; added light ring reference and maintenance schedule |
 | 8 | October 2026 | Added Part II: Technical Service Manual (Sections 12–22) |
 | 9 | October 2026 | Added Section 6.6 (user errors), 6.7 (overheating) and 17.11 (overheating service diagnosis) |
+| 10 | October 2026 | Added symbolic code map (6.8), overheating quick reference (6.9) and common-issues catalogue (6.10) |
 
 ---
 

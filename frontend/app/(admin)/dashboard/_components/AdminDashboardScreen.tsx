@@ -31,6 +31,7 @@ import {
   formatTimestamp
 } from "./formatters";
 import ChatComponent from "./ChatComponent";
+import { IncidentReviewModal } from "./IncidentReviewModal";
 import { useState } from "react";
 
 type DashboardData = NonNullable<AdminDashboardQuery["adminDashboard"]>;
@@ -212,6 +213,7 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData | null }) {
 
   const [chatOpen, setChatOpen] = useState(false);
   const [chatVisible, setChatVisible] = useState(false);
+  const [reviewIncidentId, setReviewIncidentId] = useState<string | null>(null);
 
   const summaryCards = [
     {
@@ -680,6 +682,16 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData | null }) {
                         <p className="mt-0.5">{formatTimestamp(incident.createdAt)}</p>
                       </div>
                     </div>
+                    <button
+                      type="button"
+                      onClick={() => setReviewIncidentId(incident.id)}
+                      className="mt-3 inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1 text-[11px] font-semibold text-slate-600 transition-colors hover:bg-slate-50"
+                    >
+                      <span className="material-symbols-outlined" style={{ fontSize: 14 }}>
+                        summarize
+                      </span>
+                      Review
+                    </button>
                   </div>
                 ))
                 : Array.from({ length: 3 }).map((_, index) => (
@@ -710,6 +722,13 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData | null }) {
                   </div>
                 ))}
             </div>
+
+            {reviewIncidentId && (
+              <IncidentReviewModal
+                incidentId={reviewIncidentId}
+                onClose={() => setReviewIncidentId(null)}
+              />
+            )}
           </SectionCard>
         </section>
 

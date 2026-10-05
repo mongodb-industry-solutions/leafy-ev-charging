@@ -1,0 +1,3 @@
+query IncidentReview($incidentId: ID!) {
+  incidentReview(incidentId: $incidentId)
+}

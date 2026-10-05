@@ -8,6 +8,11 @@ env:
   NODE_ENV: production
   APP_ENV: staging
 
+# Secret env vars for the main container (frontend), pulled from the Kanopy ksec
+# secret. Renders as a secretKeyRef with key = the env var name.
+envSecrets:
+  NEXT_PUBLIC_CARTO_API_KEY: leafy-ev-charging
+
 # Main container (frontend) resources.
 resources:
   limits:

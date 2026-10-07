@@ -25,7 +25,7 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     -moz-osx-font-smoothing: grayscale;
-    overflow: hidden; /* Hide fallback text overflow */
+    overflow: visible; /* Let glyphs paint past the 1em box instead of clipping */
     width: 1em;
     height: 1em;
   }

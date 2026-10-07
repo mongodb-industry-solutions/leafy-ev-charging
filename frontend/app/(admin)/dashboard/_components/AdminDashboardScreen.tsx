@@ -213,6 +213,7 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData | null }) {
 
   const [chatOpen, setChatOpen] = useState(false);
   const [chatVisible, setChatVisible] = useState(false);
+  const [chatExpanded, setChatExpanded] = useState(false);
   const [reviewIncidentId, setReviewIncidentId] = useState<string | null>(null);
 
   const summaryCards = [
@@ -822,7 +823,7 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData | null }) {
             </table>
           </div>
         </SectionCard>
-        <div className="absolute bottom-6 right-4 z-[1000] flex items-center gap-2">
+        <div className="fixed bottom-6 right-4 z-[1000] flex items-center gap-2">
                 
         
                 <div className="relative">
@@ -834,27 +835,31 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData | null }) {
                         setChatVisible(false);
                       }
                     }}
-                    className={`${chatVisible ? (chatOpen ? "chat-panel-enter" : "chat-panel-exit") : "hidden"} absolute bottom-full right-0 mb-3 h-120 max-h-[100dvh] w-120 max-w-[calc(100vw_-_2rem)] overflow-auto rounded-lg border border-white/70 bg-white/85 p-4 shadow-lg backdrop-blur-xl`}
+                    className={`${chatVisible ? (chatOpen ? "chat-panel-enter" : "chat-panel-exit") : "hidden"} absolute bottom-full right-0 mb-3 max-h-[100dvh] max-w-[calc(100vw_-_2rem)] overflow-auto rounded-lg border border-white/70 bg-white/85 p-4 shadow-lg backdrop-blur-xl transition-[width,height] duration-300 ease-out ${chatExpanded ? "h-[85vh] w-[42rem]" : "h-120 w-120"}`}
                   >
-                    <ChatComponent />
+                    <ChatComponent
+                      expanded={chatExpanded}
+                      onToggleExpand={() => setChatExpanded((value) => !value)}
+                    />
                   </div>
         
                   <button
                     type="button"
                     onClick={() => {
+                      if (chatOpen) setChatExpanded(false);
                       if (!chatOpen) setChatVisible(true);
                       setChatOpen((open) => !open);
                     }}
                     aria-expanded={chatOpen}
                     aria-controls="agent-chat-panel"
                     aria-label={chatOpen ? "Collapse chat" : "Open chat"}
-                    title={chatOpen ? "Collapse chat" : "Open chat"}
+                    title={chatOpen ? "Collapse AI Ops Assistant" : "Open AI Ops Assistant"}
                     className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-white/70 bg-white/85 px-4 py-1.5 text-xs font-medium leading-none text-slate-600 shadow backdrop-blur-xl hover:bg-white/95"
                   >
                     <span style={{ fontSize: 20, lineHeight: 1 }} className="material-symbols-outlined text-base leading-none" aria-hidden="true">
                       {chatOpen ? "expand_more" : "chat_bubble"}
                     </span>
-                    <span>AI Driving Assistant</span>
+                    <span>AI Ops Assistant</span>
                   </button>
                 </div>
               </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation } from "@apollo/client/react";
 import { useUserContext } from "@/contexts/UserContext";
 import {
@@ -16,13 +16,30 @@ type Message = {
 };
 
 
-export default function ChatComponent() {
+type ChatComponentProps = {
+  expanded: boolean;
+  onToggleExpand: () => void;
+};
+
+export default function ChatComponent({
+  expanded,
+  onToggleExpand
+}: ChatComponentProps) {
   const { selectedUser } = useUserContext();
   const [messages, setMessages] = useState<Message[]>([]);
   const [draft, setDraft] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [sendChatMessage] = useMutation(SendChatMessageDocument);
+
+  useEffect(() => {
+    if (!expanded) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onToggleExpand();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [expanded, onToggleExpand]);
 
 
   async function send(content?: string) {
@@ -62,14 +79,25 @@ export default function ChatComponent() {
     }
   }
 
-  return (
-    <div className="flex h-full min-h-0 flex-col gap-3">
+  const content = (
+    <>
       <header className="flex shrink-0 items-center gap-2 border-b border-gray-200 pb-3">
         <span className="material-symbols-outlined text-slate-600">smart_toy</span>
-        <div>
+        <div className="min-w-0 flex-1">
           <h2 className="text-base font-semibold text-slate-800">Leafy Charge Assistant</h2>
           <p className="text-xs text-slate-500">Ask a question or pick a suggestion below</p>
         </div>
+        <button
+          type="button"
+          onClick={onToggleExpand}
+          aria-label={expanded ? "Collapse assistant" : "Expand assistant"}
+          title={expanded ? "Collapse" : "Expand"}
+          className="flex h-8 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-700"
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
+            {expanded ? "close_fullscreen" : "open_in_full"}
+          </span>
+        </button>
       </header>
       <div role="log" aria-live="polite" className="min-h-0 flex-1 overflow-y-auto">
         {messages.map((message, index) => {
@@ -130,6 +158,8 @@ export default function ChatComponent() {
           <span className="material-symbols-outlined">send</span>
         </button>
       </form>
-    </div>
+    </>
   );
+
+  return <div className="flex h-full min-h-0 flex-col gap-3">{content}</div>;
 }

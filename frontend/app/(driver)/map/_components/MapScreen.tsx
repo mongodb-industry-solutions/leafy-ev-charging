@@ -72,6 +72,7 @@ export function MapScreen() {
   const isExpanded = filterOpen || hoverExpanded;
 
   const [chatOpen, setChatOpen] = useState(false);
+  const [chatExpanded, setChatExpanded] = useState(false);
 
   useEffect(() => {
     if (suppressSuggestions) {
@@ -238,14 +239,18 @@ export function MapScreen() {
                 setChatVisible(false);
               }
             }}
-            className={`${chatVisible ? (chatOpen ? "chat-panel-enter" : "chat-panel-exit") : "hidden"} absolute bottom-full right-0 mb-3 h-120 max-h-[100dvh] w-120 max-w-[calc(100vw_-_2rem)] overflow-auto rounded-lg border border-white/70 bg-white/85 p-4 shadow-lg backdrop-blur-xl`}
+            className={`${chatVisible ? (chatOpen ? "chat-panel-enter" : "chat-panel-exit") : "hidden"} absolute bottom-full right-0 mb-3 max-h-[100dvh] max-w-[calc(100vw_-_2rem)] overflow-auto rounded-lg border border-white/70 bg-white/85 p-4 shadow-lg backdrop-blur-xl transition-[width,height] duration-300 ease-out ${chatExpanded ? "h-[85vh] w-[42rem]" : "h-120 w-120"}`}
           >
-            <ChatComponent />
+            <ChatComponent
+              expanded={chatExpanded}
+              onToggleExpand={() => setChatExpanded((value) => !value)}
+            />
           </div>
 
           <button
             type="button"
             onClick={() => {
+              if (chatOpen) setChatExpanded(false);
               if (!chatOpen) setChatVisible(true);
               setChatOpen((open) => !open);
             }}

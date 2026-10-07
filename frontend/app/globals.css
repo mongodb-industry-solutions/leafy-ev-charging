@@ -897,3 +897,14 @@
 .chat-panel-exit {
   animation: chat-panel-exit 140ms ease-in both;
 }
+
+/* Restore the app's original base typography.
+   @via-ds/components/index.css sets :root { font: 400 13px/1.5em 'Euclid Circular A' },
+   which shrinks every rem-based Tailwind size (13px root vs the 16px default) and
+   swaps the font. This override keeps the @via-ds components (e.g. the Incident Review
+   code block) working while restoring the original scale/font. */
+:root {
+  font-size: 16px !important;
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+}

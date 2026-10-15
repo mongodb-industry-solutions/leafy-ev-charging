@@ -19,7 +19,8 @@
     "postcss": "^8.5.10",
     "next": {
       "postcss": "^8.5.10"
-    }
+    },
+    "@graphql-tools/utils": "^12.0.1"
   },
   "devDependencies": {
     "turbo": "^2.8.11"

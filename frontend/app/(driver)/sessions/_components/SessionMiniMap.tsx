@@ -2,10 +2,8 @@
 
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { divIcon } from "leaflet";
+import { useCartoApiKey } from "@/hooks/useCartoApiKey";
 
-const TILE_URL = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
-const TILE_ATTRIBUTION = '&copy; OpenStreetMap contributors &copy; CARTO';
-const ZOOM = 17;
 
 const stationPinIcon = divIcon({
   className: "",
@@ -28,12 +26,14 @@ interface SessionMiniMapProps {
 }
 
 export function SessionMiniMap({ lat, lng, sessionId }: SessionMiniMapProps) {
+  const cartoApiKey = useCartoApiKey();
+
   return (
     <div className="group relative h-full w-full overflow-hidden rounded-xl">
       <MapContainer
         key={sessionId}
         center={[lat, lng]}
-        zoom={ZOOM}
+        zoom={17}
         zoomControl={false}
         dragging={false}
         scrollWheelZoom={false}
@@ -45,7 +45,7 @@ export function SessionMiniMap({ lat, lng, sessionId }: SessionMiniMapProps) {
       >
         <TileLayer
           attribution='&copy; OpenStreetMap contributors &copy; CARTO'
-          url={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY}`}
+          url={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${cartoApiKey}`}
           subdomains="abcd"
           maxZoom={19}
         />

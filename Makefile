@@ -69,7 +69,8 @@ GHPAGES_PAGES := frontend/app/layout.tsx \
 	frontend/app/\(home\)/page.tsx \
 	frontend/app/\(admin\)/dashboard/page.tsx \
 	frontend/app/\(driver\)/map/page.tsx \
-	frontend/app/\(driver\)/sessions/page.tsx
+	frontend/app/\(driver\)/sessions/page.tsx \
+	frontend/app/api
 
 preview-ghpages:
 	cp frontend/app/layout.ghpages.tsx frontend/app/layout.tsx

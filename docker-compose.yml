@@ -24,6 +24,8 @@ services:
     build:
       context: .
       dockerfile: frontend/Dockerfile
+      args:
+        NEXT_PUBLIC_CARTO_API_KEY: ${NEXT_PUBLIC_CARTO_API_KEY}
     container_name: ev-demo-frontend
     env_file:
       - .env
@@ -62,6 +64,7 @@ services:
       SESSION_TELEMETRY_INTERVAL_SECONDS: ${SESSION_TELEMETRY_INTERVAL_SECONDS:-2}
       CHANGE_STREAM_RETRY_SECONDS: ${CHANGE_STREAM_RETRY_SECONDS:-2}
       SIMULATOR_URL: ${SIMULATOR_URL:-http://localhost:8000}
+      
     network_mode: "service:frontend"
     depends_on:
       mongodb:

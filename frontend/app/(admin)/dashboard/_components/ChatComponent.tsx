@@ -1,0 +1,173 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { useMutation } from "@apollo/client/react";
+import { useUserContext } from "@/contexts/UserContext";
+import {
+  AgentAudience,
+  SendChatMessageDocument
+} from "@/graphql/generated/graphql";
+
+
+type Message = {
+  role: "user" | "assistant";
+  content: string;
+};
+
+
+type ChatComponentProps = {
+  expanded: boolean;
+  onToggleExpand: () => void;
+};
+
+export default function ChatComponent({
+  expanded,
+  onToggleExpand
+}: ChatComponentProps) {
+  const { selectedUser } = useUserContext();
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [draft, setDraft] = useState("");
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState("");
+  const [sendChatMessage] = useMutation(SendChatMessageDocument);
+  // The server keeps the conversation; the client only names the thread.
+  const threadId = useRef(crypto.randomUUID());
+  const threadUserId = useRef(selectedUser?.id);
+
+  useEffect(() => {
+    if (threadUserId.current === selectedUser?.id) return;
+    threadUserId.current = selectedUser?.id;
+    threadId.current = crypto.randomUUID();
+    setMessages([]);
+    setError("");
+  }, [selectedUser?.id]);
+
+  useEffect(() => {
+    if (!expanded) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onToggleExpand();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [expanded, onToggleExpand]);
+
+
+  async function send(content?: string) {
+    content = content ?? draft.trim();
+
+    if (!content || pending || !selectedUser) return;
+
+
+    const next: Message[] = [...messages, { role: "user", content }];
+    setMessages(next);
+    setDraft("");
+    setPending(true);
+    setError("");
+
+    try {
+      const { data } = await sendChatMessage({
+        variables: {
+          audience: AgentAudience.Operator,
+          userId: selectedUser.id,
+          threadId: threadId.current,
+          message: content
+        }
+      });
+
+      const reply = data?.sendChatMessage.reply;
+      if (!reply) throw new Error("Empty chat response");
+
+      setMessages([...next, { role: "assistant", content: reply }]);
+    } catch {
+      setMessages(messages);
+      setDraft(content);
+      setError("Message could not be sent. Please try again.");
+    } finally {
+      setPending(false);
+    }
+  }
+
+  const content = (
+    <>
+      <header className="flex shrink-0 items-center gap-2 border-b border-gray-200 pb-3">
+        <span className="material-symbols-outlined text-slate-600">smart_toy</span>
+        <div className="min-w-0 flex-1">
+          <h2 className="text-base font-semibold text-slate-800">Leafy Charge Assistant</h2>
+          <p className="text-xs text-slate-500">Ask a question or pick a suggestion below</p>
+        </div>
+        <button
+          type="button"
+          onClick={onToggleExpand}
+          aria-label={expanded ? "Collapse assistant" : "Expand assistant"}
+          title={expanded ? "Collapse" : "Expand"}
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 p-0 text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-700"
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
+            {expanded ? "close_fullscreen" : "open_in_full"}
+          </span>
+        </button>
+      </header>
+      <div role="log" aria-live="polite" className="min-h-0 flex-1 overflow-y-auto">
+        {messages.map((message, index) => {
+          const isUser = message.role === "user";
+
+          return (
+            <div
+              key={index}
+              className={`mb-3 flex ${isUser ? "justify-end" : "justify-start"}`}
+            >
+              <p
+                className={`max-w-[85%] whitespace-pre-wrap break-words rounded-xl border px-3 py-2 text-sm ${isUser
+                    ? "border-emerald-200 bg-emerald-50 text-emerald-950"
+                    : "border-slate-200 bg-slate-50 text-slate-800"
+                  }`}
+              >
+                <strong className="mb-1 block text-xs">
+                  {isUser ? "You" : "Assistant"}
+                </strong>
+                {message.content}
+              </p>
+            </div>
+          );
+        })}
+        {pending && (
+          <p role="status" className="text-sm italic text-slate-500">
+            Thinking...
+          </p>
+        )}
+      </div>
+      {error && <p role="alert" className="text-xs text-red-700">{error}</p>}
+      <div className="flex justify-center gap-2">
+        <button
+          type="button"
+          onClick={() => void send("Summarize the latest incidents")}
+          className="h-15 w-56 px-4 flex items-center justify-center bg-white rounded-xl border border-gray-200 shadow-md hover:bg-gray-50 active:scale-95 transition"
+        >
+          Summarize the latest incidents
+        </button>
+        <button
+          type="button"
+          onClick={() => void send("What's the most profitable station?")}
+          className="h-15 w-56 px-4 flex items-center justify-center bg-white rounded-xl border border-gray-200 shadow-md hover:bg-gray-50 active:scale-95 transition"
+        >
+          {"What's the most profitable station?"}
+        </button>
+      </div>
+      <hr />
+      <form onSubmit={(event) => { event.preventDefault(); void send(); }}
+        className="flex gap-2">
+
+        <input aria-label="Message" value={draft} disabled={pending}
+          onChange={(event) => setDraft(event.target.value)}
+          className="min-w-0 flex-1 rounded border p-2 text-sm" />
+        <button disabled={pending || !draft.trim() || !selectedUser}
+          aria-label="Send message" title="Send message"
+          className="flex h-10 w-15 shrink-0 items-center justify-center rounded border disabled:opacity-40">
+          <span className="material-symbols-outlined">send</span>
+        </button>
+      </form>
+    </>
+  );
+
+  return <div className="flex h-full min-h-0 flex-col gap-3">{content}</div>;
+}

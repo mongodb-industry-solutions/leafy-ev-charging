@@ -17,6 +17,9 @@ const nextConfig: NextConfig = {
   basePath: isGhPages ? "/s2dm-example-charging-session-app" : "",
   trailingSlash: isGhPages || isGhPagesPreview,
   reactStrictMode: false,
+  experimental: {
+    proxyTimeout: 300000
+  },
   // Skip type-checking files unrelated to the data-model page (e.g. pages
   // that import codegen output not available in the GH Pages build).
   typescript: { ignoreBuildErrors: isGhPages || isGhPagesPreview },

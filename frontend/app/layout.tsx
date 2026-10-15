@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { Navbar } from "@/ui/Navbar";
 
 import "./globals.css";
+import "@via-ds/tokens/tokens.css";
+import "@via-ds/components/index.css";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {

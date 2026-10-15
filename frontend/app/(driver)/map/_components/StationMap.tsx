@@ -14,6 +14,7 @@ import { LocationPin } from "./LocationPin";
 import { ReserveModal } from "./ReserveModal";
 import type { ChargingStationFiltersInput } from "@/graphql/generated/graphql";
 
+
 const MARIENPLATZ: [number, number] = [48.1374, 11.5755];
 const DEFAULT_ZOOM = 16;
 const MAP_MAX_ZOOM = 19;
@@ -100,7 +101,7 @@ function StationsLayer({
     const handler = (e: Event) => {
       const customEvent = e as CustomEvent<{ stationId: string; chargingPointId: string }>;
       if (customEvent.detail?.stationId === expandedStationId) {
-        setSelectedChargingPointId(prevId => 
+        setSelectedChargingPointId(prevId =>
           prevId === customEvent.detail.chargingPointId ? null : customEvent.detail.chargingPointId
         );
       }
@@ -183,43 +184,43 @@ function StationsLayer({
       )}
       {isServerClustered
         ? serverClusters.map((cluster) => (
-            <ClusterMarker
-              key={`cluster-${cluster.id}`}
-              lat={cluster.lat}
-              lng={cluster.lng}
-              count={cluster.count}
-            />
-          ))
+          <ClusterMarker
+            key={`cluster-${cluster.id}`}
+            lat={cluster.lat}
+            lng={cluster.lng}
+            count={cluster.count}
+          />
+        ))
         : clientClusters.map((cluster) => {
-            const [lng, lat] = cluster.geometry.coordinates;
-            const props = cluster.properties as {
-              cluster?: boolean;
-              point_count?: number;
-            } & MapStation;
+          const [lng, lat] = cluster.geometry.coordinates;
+          const props = cluster.properties as {
+            cluster?: boolean;
+            point_count?: number;
+          } & MapStation;
 
-            if (props.cluster && props.point_count !== undefined) {
-              return (
-                <ClusterMarker
-                  key={`cluster-${cluster.id}`}
-                  lat={lat}
-                  lng={lng}
-                  count={props.point_count}
-                />
-              );
-            }
-
-            const station = props as MapStation;
+          if (props.cluster && props.point_count !== undefined) {
             return (
-              <StationPin
-                key={station.id}
-                station={station}
-                isExpanded={expandedStationId === station.id}
-                onClick={() => onStationClick(station.id)}
-                hasActiveOrBookedSession={hasActiveOrBookedSession}
-                selectedChargingPointId={expandedStationId === station.id ? selectedChargingPointId : null}
+              <ClusterMarker
+                key={`cluster-${cluster.id}`}
+                lat={lat}
+                lng={lng}
+                count={props.point_count}
               />
             );
-          })}
+          }
+
+          const station = props as MapStation;
+          return (
+            <StationPin
+              key={station.id}
+              station={station}
+              isExpanded={expandedStationId === station.id}
+              onClick={() => onStationClick(station.id)}
+              hasActiveOrBookedSession={hasActiveOrBookedSession}
+              selectedChargingPointId={expandedStationId === station.id ? selectedChargingPointId : null}
+            />
+          );
+        })}
     </>
   );
 }
@@ -286,6 +287,7 @@ export function StationMap({
               subdomains="abcd"
               maxZoom={MAP_MAX_ZOOM}
             />
+
             <MapFocusController
               focusLocation={locationPin}
               focusRequestId={focusRequestId}

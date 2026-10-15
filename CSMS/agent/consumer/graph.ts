@@ -81,8 +81,7 @@ export async function runConsumer(
 
       for (const message of result.messages) {
         console.log("[Agent] Tool result", {
-          name: message.name,
-          content: message.content
+          name: message.name
         });
       }
 

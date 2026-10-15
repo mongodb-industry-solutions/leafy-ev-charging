@@ -148,6 +148,7 @@ async function handleOcppMessage(
       payload
     );
 
+    socket.send(JSON.stringify([3, messageId, {}]));
     return;
   }
 
@@ -299,6 +300,7 @@ async function handleOcppMessage(
       payload
     );
 
+    socket.send(JSON.stringify([3, messageId, {}]));
     return;
   }
 

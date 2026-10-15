@@ -140,10 +140,10 @@ export default function ChatComponent({
       <div className="flex justify-center gap-2">
         <button
           type="button"
-          onClick={() => void send("Summarize the lastest incidents ")}
+          onClick={() => void send("Summarize the latest incidents")}
           className="h-15 w-56 px-4 flex items-center justify-center bg-white rounded-xl border border-gray-200 shadow-md hover:bg-gray-50 active:scale-95 transition"
         >
-          Summarize the lastest incidents 
+          Summarize the latest incidents
         </button>
         <button
           type="button"

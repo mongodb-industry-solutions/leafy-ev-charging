@@ -15,7 +15,7 @@ import {
 import { tool } from "@langchain/core/tools";
 import type { BaseMessage } from "@langchain/core/messages";
 import type { Db } from "mongodb";
-import { chatModel } from "../config";
+import { getChatModel } from "../config";
 import { createOperatorTools } from "./toolNode";
 
 export type IncidentReviewInput = {
@@ -225,7 +225,7 @@ export async function runIncidentReview(
 ): Promise<IncidentReviewResult> {
   const tools = [...createOperatorTools(db), submitIncidentReview];
   const toolNode = new ToolNode(tools);
-  const model = chatModel.bindTools(tools);
+  const model = getChatModel().bindTools(tools);
   const system = new SystemMessage(buildReviewPrompt(input));
 
   const graph = new StateGraph(State)

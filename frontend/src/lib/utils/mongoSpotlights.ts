@@ -473,15 +473,15 @@ db.chargingSessions.aggregate(pipeline, {
 
   "ocpp-protocol": {
     title: "Speaking OCPP with chargers",
-    capability: "OCPP 2.0.1 · WebSocket",
+    capability: "OCPP 2.1 · WebSocket",
     summary:
-      "The chargers are running in a simulator, behaving as real chargers would, they dial the CSMS on a WebSocket at and speak OCPP 2.1. Every session event you see in the UI arrived as one of these frames and was persisted into the same MongoDB documents the app reads.",
+      "The chargers run in a simulator and behave as real chargers would: they dial the CSMS over a WebSocket and speak OCPP 2.1. Every session event you see in the UI arrives as one of these frames and is persisted into the same MongoDB documents the app reads.",
     snippets: [
       {
         label: "Frame anatomy",
         language: "json",
         caption:
-          "OCPP 2.0.1 has exactly three frame types. A Call carries an action + payload; the reply is a CallResult or a CallError.",
+          "A Call carries an action + payload; the reply is a CallResult or a CallError.",
         code: `// Call (type 2) — simulator -> CSMS, sent on connect:
 [2, _id, "BootNotification", {
   "chargingStation": { "model": "LeafyCharge Simulator", "vendorName": "LeafyCharge" },

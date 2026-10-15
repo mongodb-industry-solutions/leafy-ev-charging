@@ -2,7 +2,7 @@ import {
 	END, START, StateGraph, StateSchema, MessagesValue
 } from "@langchain/langgraph";
 import { AIMessage, SystemMessage } from "@langchain/core/messages";
-import { chatModel } from "../config";
+import { getChatModel } from "../config";
 import { getCheckpointer } from "../checkpointer";
 import {
   historyWindow,
@@ -25,7 +25,7 @@ export async function runOperator(
 ): Promise<string> {
   const tools = createOperatorTools(db);
   const toolNode = new ToolNode(tools);
-  const model = chatModel.bindTools(tools);
+  const model = getChatModel().bindTools(tools);
   const system = new SystemMessage(
     `${SYSTEM_PROMPT}\nCurrent server time (UTC): ${new Date().toISOString()}.`
   );

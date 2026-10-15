@@ -5,7 +5,7 @@ import { ToolNode } from "@langchain/langgraph/prebuilt";
 import { AIMessage, SystemMessage } from "@langchain/core/messages";
 import type { Db } from "mongodb";
 import { SYSTEM_PROMPT } from "./prompt";
-import { chatModel } from "../config";
+import { getChatModel } from "../config";
 import { getCheckpointer } from "../checkpointer";
 import {
   historyWindow,
@@ -29,7 +29,7 @@ export async function runConsumer(
 ): Promise<string> {
   const tools = createConsumerTools(context.db, context.authenticatedUserId);
   const toolNode = new ToolNode(tools);
-  const model = chatModel.bindTools(tools);
+  const model = getChatModel().bindTools(tools);
   const now = new Date();
   const recentFrom = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
   const locationContext = context.location

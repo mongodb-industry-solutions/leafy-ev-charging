@@ -46,9 +46,9 @@ COPY package.json package-lock.json* ./
 RUN npm install --omit=dev
 
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/schema ./schema
-COPY seed ./seed
+COPY --from=builder /app/schema ./dist/schema
+COPY seed ./dist/seed
 
 EXPOSE 4000
 
-CMD ["node", "dist/server/index.js"]
+CMD ["node", "dist/src/server/index.js"]

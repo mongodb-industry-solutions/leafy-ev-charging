@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation } from "@apollo/client/react";
 import { useUserContext } from "@/contexts/UserContext";
 import {
   AgentAudience,
-  ChatRole,
   SendChatMessageDocument
 } from "@/graphql/generated/graphql";
 
@@ -19,11 +18,13 @@ type Message = {
 type ChatComponentProps = {
   expanded: boolean;
   onToggleExpand: () => void;
+  location?: { latitude: number; longitude: number };
 };
 
 export default function ChatComponent({
   expanded,
-  onToggleExpand
+  onToggleExpand,
+  location
 }: ChatComponentProps) {
   const { selectedUser } = useUserContext();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -31,6 +32,17 @@ export default function ChatComponent({
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [sendChatMessage] = useMutation(SendChatMessageDocument);
+  // The server keeps the conversation; the client only names the thread.
+  const threadId = useRef(crypto.randomUUID());
+  const threadUserId = useRef(selectedUser?.id);
+
+  useEffect(() => {
+    if (threadUserId.current === selectedUser?.id) return;
+    threadUserId.current = selectedUser?.id;
+    threadId.current = crypto.randomUUID();
+    setMessages([]);
+    setError("");
+  }, [selectedUser?.id]);
 
   useEffect(() => {
     if (!expanded) return;
@@ -59,10 +71,9 @@ export default function ChatComponent({
         variables: {
           audience: AgentAudience.Driver,
           userId: selectedUser.id,
-          messages: next.map((message) => ({
-            role: message.role === "user" ? ChatRole.User : ChatRole.Assistant,
-            content: message.content
-          }))
+          location,
+          threadId: threadId.current,
+          message: content
         }
       });
 
@@ -85,7 +96,7 @@ export default function ChatComponent({
         <span className="material-symbols-outlined text-slate-600">smart_toy</span>
         <div className="min-w-0 flex-1">
           <h2 className="text-base font-semibold text-slate-800">Leafy Charge Assistant</h2>
-          <p className="text-xs text-slate-500">Ask a question or pick a suggestion below</p>
+          <p className="text-xs text-slate-500">Ask a question about charging stations in Germany or pick a suggestion below</p>
         </div>
         <button
           type="button"
@@ -129,7 +140,7 @@ export default function ChatComponent({
         )}
       </div>
       {error && <p role="alert" className="text-xs text-red-700">{error}</p>}
-      <div className="flex gap-2">
+      <div className="flex justify-center gap-2">
         <button
           type="button"
           onClick={() => void send("Where did I last charge my car?")}
@@ -139,10 +150,10 @@ export default function ChatComponent({
         </button>
         <button
           type="button"
-          onClick={() => void send("Find the most powerful charger in Munich")}
+          onClick={() => void send("Find the quickest charger in this area")}
           className="h-15 w-56 px-4 flex items-center justify-center bg-white rounded-xl border border-gray-200 shadow-md hover:bg-gray-50 active:scale-95 transition"
         >
-          Find the most powerful charger in Munich?
+          Find the quickest charger in this area?
         </button>
       </div>
       <hr />

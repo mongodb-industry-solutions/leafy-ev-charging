@@ -1,9 +1,15 @@
 import {
 	END, START, StateGraph, StateSchema, MessagesValue
 } from "@langchain/langgraph";
-import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages";
+import { AIMessage, SystemMessage } from "@langchain/core/messages";
 import { chatModel } from "../config";
-import type { ChatInput } from "../consumer/graph";
+import { getCheckpointer } from "../checkpointer";
+import {
+  historyWindow,
+  runTurn,
+  threadConfig,
+  type ChatTurn
+} from "../thread";
 import { SYSTEM_PROMPT } from "./prompt";
 
 import { ToolNode } from "@langchain/langgraph/prebuilt";
@@ -13,7 +19,8 @@ import { createOperatorTools } from "./toolNode";
 const State = new StateSchema({ messages: MessagesValue });
 
 export async function runOperator(
-  messages: ChatInput[],
+  turn: ChatTurn,
+  userId: string,
   db: Db
 ): Promise<string> {
   const tools = createOperatorTools(db);
@@ -25,7 +32,7 @@ export async function runOperator(
 
   const graph = new StateGraph(State)
     .addNode("respond", async (state) => ({
-      messages: [await model.invoke([system, ...state.messages])]
+      messages: [await model.invoke([system, ...(await historyWindow(state.messages))])]
     }))
     .addNode("tools", async (state) => toolNode.invoke(state))
     .addEdge(START, "respond")
@@ -36,19 +43,7 @@ export async function runOperator(
         : END;
     }, ["tools", END])
     .addEdge("tools", "respond")
-    .compile();
+    .compile({ checkpointer: await getCheckpointer(db) });
 
-  const result = await graph.invoke({
-    messages: messages.map((message) =>
-      message.role === "USER"
-        ? new HumanMessage(message.content)
-        : new AIMessage(message.content)
-    )
-  });
-
-	const last = result.messages.at(-1);
-	if (!last || !AIMessage.isInstance(last) || !last.text.trim()) {
-		throw new Error("Agent returned no text");
-	}
-	return last.text;
+  return runTurn(graph, threadConfig("OPERATOR", userId, turn.threadId), turn.message);
 }

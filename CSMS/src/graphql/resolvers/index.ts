@@ -330,21 +330,19 @@ export const resolvers = {
       args: {
         audience: "DRIVER" | "OPERATOR";
         userId: string;
-        messages: { role: "USER" | "ASSISTANT"; content: string }[];
+        threadId: string;
+        message: string;
+        location?: { latitude: number; longitude: number } | null;
       },
       context: GraphQLContext,
     ) => {
+      const message = args.message.trim();
       if (
-        args.messages.length === 0 ||
-        args.messages.length > 40 ||
-        args.messages.at(-1)?.role !== "USER" ||
-        args.messages.some((message) => !message.content.trim()) ||
-        args.messages.reduce(
-          (total, message) => total + message.content.length,
-          0,
-        ) > 40000
+        !message ||
+        message.length > 4000 ||
+        !/^[\w-]{8,64}$/.test(args.threadId)
       ) {
-        throw new GraphQLError("Invalid or oversized conversation", {
+        throw new GraphQLError("Invalid chat message or thread", {
           extensions: { code: "BAD_USER_INPUT" },
         });
       }
@@ -352,10 +350,11 @@ export const resolvers = {
       try {
         const reply = await activateAgent({
           audience: args.audience,
-          messages: args.messages,
+          turn: { threadId: args.threadId, message },
           context: {
             db: context.db,
             authenticatedUserId: args.userId,
+            location: args.location ?? undefined,
           },
         });
         return { reply };

@@ -244,6 +244,11 @@ export function MapScreen() {
             <ChatComponent
               expanded={chatExpanded}
               onToggleExpand={() => setChatExpanded((value) => !value)}
+              location={
+                mapCenter
+                  ? { latitude: mapCenter.lat, longitude: mapCenter.lng }
+                  : undefined
+              }
             />
           </div>
 

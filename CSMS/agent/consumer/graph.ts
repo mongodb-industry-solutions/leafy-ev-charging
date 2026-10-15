@@ -2,26 +2,29 @@ import {
   END, START, StateGraph, StateSchema, MessagesValue
 } from "@langchain/langgraph";
 import { ToolNode } from "@langchain/langgraph/prebuilt";
-import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages";
+import { AIMessage, SystemMessage } from "@langchain/core/messages";
 import type { Db } from "mongodb";
 import { SYSTEM_PROMPT } from "./prompt";
 import { chatModel } from "../config";
+import { getCheckpointer } from "../checkpointer";
+import {
+  historyWindow,
+  runTurn,
+  threadConfig,
+  type ChatTurn
+} from "../thread";
 import { createConsumerTools } from "./toolNode";
-
-export type ChatInput = {
-  role: "USER" | "ASSISTANT";
-  content: string;
-};
 
 export type ConsumerContext = {
   db: Db;
   authenticatedUserId: string;
+  location?: { latitude: number; longitude: number };
 };
 
 const State = new StateSchema({ messages: MessagesValue });
 
 export async function runConsumer(
-  messages: ChatInput[],
+  turn: ChatTurn,
   context: ConsumerContext
 ): Promise<string> {
   const tools = createConsumerTools(context.db, context.authenticatedUserId);
@@ -29,9 +32,15 @@ export async function runConsumer(
   const model = chatModel.bindTools(tools);
   const now = new Date();
   const recentFrom = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+  const locationContext = context.location
+    ? `The user's map is currently centered at latitude ${context.location.latitude}, longitude ${context.location.longitude}. ` +
+      `Treat these coordinates as internal context only: use them as the search center for proximity questions ` +
+      `("near me", "around here", "close by") when the user supplies no coordinates, and never state or quote them in your reply.\n`
+    : "";
   const system = new SystemMessage(
     `${SYSTEM_PROMPT}\n\n` +
     `Current server time (UTC): ${now.toISOString()}.\n` +
+    locationContext +
     `For recent charging history without an explicit date range, use ` +
     `from="${recentFrom.toISOString()}" and to="${now.toISOString()}". ` +
     `This is the default last-30-days window; tell the user the period searched. ` +
@@ -41,7 +50,7 @@ export async function runConsumer(
   );
 
   console.log("[Agent] Starting", {
-    messageCount: messages.length,
+    threadId: turn.threadId,
     tools: tools.map((tool) => tool.name)
   });
 
@@ -49,7 +58,8 @@ export async function runConsumer(
     .addNode("respond", async (state) => {
       console.log("[Agent] Calling model");
 
-      const response = await model.invoke([system, ...state.messages]);
+      const history = await historyWindow(state.messages);
+      const response = await model.invoke([system, ...history]);
 
       for (const call of response.tool_calls ?? []) {
         console.log("[Agent] Requested tool", {
@@ -85,22 +95,15 @@ export async function runConsumer(
         ? "tools" : END;
     }, ["tools", END])
     .addEdge("tools", "respond")
-    .compile();
+    .compile({ checkpointer: await getCheckpointer(context.db) });
 
   try {
-    const result = await graph.invoke({
-      messages: messages.map((message) =>
-        message.role === "USER"
-          ? new HumanMessage(message.content)
-          : new AIMessage(message.content)
-      )
-    }, { recursionLimit: 12 });
-
-    const last = result.messages.at(-1);
-    if (!last || !AIMessage.isInstance(last) || !last.text.trim()) {
-      throw new Error("Agent returned no text");
-    }
-    return last.text;
+    return await runTurn(
+      graph,
+      threadConfig("DRIVER", context.authenticatedUserId, turn.threadId),
+      turn.message,
+      12
+    );
   } catch (error) {
     console.error("[Agent] Execution failed", error);
     throw error;

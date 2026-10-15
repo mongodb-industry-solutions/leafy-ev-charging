@@ -54,23 +54,18 @@ type ReportSessionIncidentPayload {
   incidentId: ID!
 }
 
-enum ChatRole {
-  USER
-  ASSISTANT
-}
-
 enum AgentAudience {
   DRIVER
   OPERATOR
 }
 
-input ChatMessageInput {
-  role: ChatRole!
-  content: String!
-}
-
 type ChatReply {
   reply: String!
+}
+
+input GeoPointInput {
+  latitude: Float!
+  longitude: Float!
 }
 
 type Mutation {
@@ -93,8 +88,10 @@ type Mutation {
     input: ReportSessionIncidentInput!
   ): ReportSessionIncidentPayload!
   sendChatMessage(
-    messages: [ChatMessageInput!]!
+    threadId: ID!
+    message: String!
     audience: AgentAudience!
     userId: ID!
+    location: GeoPointInput
   ): ChatReply!
 }

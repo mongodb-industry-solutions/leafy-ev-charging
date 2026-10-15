@@ -21,6 +21,7 @@ import { createOperatorTools } from "./toolNode";
 export type IncidentReviewInput = {
   stationId: string;
   description: string;
+  incidentAt?: string;
 };
 
 export type IncidentReviewDisposition =
@@ -142,9 +143,17 @@ const submitIncidentReview = tool(
 );
 
 function buildReviewPrompt(input: IncidentReviewInput): string {
+  const now = new Date().toISOString();
+  const incidentTimeLine = input.incidentAt
+    ? `The incident was recorded at ${input.incidentAt}.`
+    : "Treat the current time as the incident time.";
+
   return [
     "You are the LeafyCharge incident review agent.",
     "You are given a charging station and a problem description. Investigate and produce one structured incident report.",
+    `Current server time (UTC): ${now}.`,
+    incidentTimeLine,
+    "When you call skimTelemetry, use a time window around the incident time (for example 30 minutes before to 30 minutes after it). Do not guess a year or an unrelated date; use the times given here.",
     "",
     "Use the tools to gather evidence before concluding:",
     "- getSelectedChargerDetails: the station, its charging points, connectors, and availability.",

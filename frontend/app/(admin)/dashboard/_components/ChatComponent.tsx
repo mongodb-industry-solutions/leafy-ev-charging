@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation } from "@apollo/client/react";
 import { useUserContext } from "@/contexts/UserContext";
 import {
   AgentAudience,
-  ChatRole,
   SendChatMessageDocument
 } from "@/graphql/generated/graphql";
 
@@ -31,6 +30,17 @@ export default function ChatComponent({
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [sendChatMessage] = useMutation(SendChatMessageDocument);
+  // The server keeps the conversation; the client only names the thread.
+  const threadId = useRef(crypto.randomUUID());
+  const threadUserId = useRef(selectedUser?.id);
+
+  useEffect(() => {
+    if (threadUserId.current === selectedUser?.id) return;
+    threadUserId.current = selectedUser?.id;
+    threadId.current = crypto.randomUUID();
+    setMessages([]);
+    setError("");
+  }, [selectedUser?.id]);
 
   useEffect(() => {
     if (!expanded) return;
@@ -59,10 +69,8 @@ export default function ChatComponent({
         variables: {
           audience: AgentAudience.Operator,
           userId: selectedUser.id,
-          messages: next.map((message) => ({
-            role: message.role === "user" ? ChatRole.User : ChatRole.Assistant,
-            content: message.content
-          }))
+          threadId: threadId.current,
+          message: content
         }
       });
 
@@ -129,7 +137,7 @@ export default function ChatComponent({
         )}
       </div>
       {error && <p role="alert" className="text-xs text-red-700">{error}</p>}
-      <div className="flex gap-2">
+      <div className="flex justify-center gap-2">
         <button
           type="button"
           onClick={() => void send("Summarize the lastest incidents ")}

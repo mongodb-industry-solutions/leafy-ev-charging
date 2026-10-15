@@ -75,7 +75,8 @@ export async function reviewIncident(db: Db, incidentId: string) {
 
   const review = await runIncidentReview(db, {
     stationId: incident.stationId.toHexString(),
-    description: incident.description
+    description: incident.description,
+    incidentAt: incident.createdAt.toISOString()
   });
 
   const doc: IncidentReviewDoc = {

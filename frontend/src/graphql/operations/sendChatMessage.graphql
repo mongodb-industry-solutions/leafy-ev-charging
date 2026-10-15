@@ -1,9 +1,17 @@
 mutation SendChatMessage(
-  $messages: [ChatMessageInput!]!
+  $threadId: ID!
+  $message: String!
   $audience: AgentAudience!
   $userId: ID!
+  $location: GeoPointInput
 ) {
-  sendChatMessage(messages: $messages, audience: $audience, userId: $userId) {
+  sendChatMessage(
+    threadId: $threadId
+    message: $message
+    audience: $audience
+    userId: $userId
+    location: $location
+  ) {
     reply
   }
 }

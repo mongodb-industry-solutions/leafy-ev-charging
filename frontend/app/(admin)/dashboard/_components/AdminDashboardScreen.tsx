@@ -30,6 +30,9 @@ import {
   formatTariffCentsPerKwh,
   formatTimestamp
 } from "./formatters";
+import ChatComponent from "./ChatComponent";
+import { IncidentReviewModal } from "./IncidentReviewModal";
+import { useState } from "react";
 
 type DashboardData = NonNullable<AdminDashboardQuery["adminDashboard"]>;
 
@@ -207,6 +210,12 @@ function ChartTooltipContent({ active, payload, label, formatter }: {
 }
 
 function DashboardShell({ dashboard }: { dashboard: DashboardData | null }) {
+
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatVisible, setChatVisible] = useState(false);
+  const [chatExpanded, setChatExpanded] = useState(false);
+  const [reviewIncidentId, setReviewIncidentId] = useState<string | null>(null);
+
   const summaryCards = [
     {
       title: "Network footprint",
@@ -400,31 +409,31 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData | null }) {
             />
             <div className="mt-5 h-72">
               {dashboard ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={sessionTrendData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
-                  <defs>
-                    <linearGradient id="gradSessions" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#06b6d4" stopOpacity={0.15} />
-                      <stop offset="100%" stopColor="#06b6d4" stopOpacity={0} />
-                    </linearGradient>
-                    <linearGradient id="gradCompleted" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#10b981" stopOpacity={0.15} />
-                      <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-                  <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#94a3b8" }} tickLine={false} axisLine={false} />
-                  <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} tickLine={false} axisLine={false} width={44} tickFormatter={(v: number) => formatCount(v)} />
-                  <Tooltip content={<ChartTooltipContent formatter={formatCount} />} />
-                  <Legend
-                    iconType="circle"
-                    iconSize={8}
-                    wrapperStyle={{ fontSize: 12, color: "#64748b", paddingTop: 8 }}
-                  />
-                  <Area type="monotone" dataKey="Sessions" stroke="#06b6d4" strokeWidth={2} fill="url(#gradSessions)" dot={false} activeDot={{ r: 4, strokeWidth: 2, fill: "#fff" }} />
-                  <Area type="monotone" dataKey="Completed" stroke="#10b981" strokeWidth={2} fill="url(#gradCompleted)" dot={false} activeDot={{ r: 4, strokeWidth: 2, fill: "#fff" }} />
-                </AreaChart>
-              </ResponsiveContainer>
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={sessionTrendData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
+                    <defs>
+                      <linearGradient id="gradSessions" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#06b6d4" stopOpacity={0.15} />
+                        <stop offset="100%" stopColor="#06b6d4" stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id="gradCompleted" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#10b981" stopOpacity={0.15} />
+                        <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                    <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#94a3b8" }} tickLine={false} axisLine={false} />
+                    <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} tickLine={false} axisLine={false} width={44} tickFormatter={(v: number) => formatCount(v)} />
+                    <Tooltip content={<ChartTooltipContent formatter={formatCount} />} />
+                    <Legend
+                      iconType="circle"
+                      iconSize={8}
+                      wrapperStyle={{ fontSize: 12, color: "#64748b", paddingTop: 8 }}
+                    />
+                    <Area type="monotone" dataKey="Sessions" stroke="#06b6d4" strokeWidth={2} fill="url(#gradSessions)" dot={false} activeDot={{ r: 4, strokeWidth: 2, fill: "#fff" }} />
+                    <Area type="monotone" dataKey="Completed" stroke="#10b981" strokeWidth={2} fill="url(#gradCompleted)" dot={false} activeDot={{ r: 4, strokeWidth: 2, fill: "#fff" }} />
+                  </AreaChart>
+                </ResponsiveContainer>
               ) : (
                 <Skeleton style={{ height: "100%" }} />
               )}
@@ -439,15 +448,15 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData | null }) {
             />
             <div className="mt-5 h-72">
               {dashboard ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={availabilityChartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-                  <XAxis dataKey="state" tick={{ fontSize: 11, fill: "#94a3b8" }} tickLine={false} axisLine={false} />
-                  <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} tickLine={false} axisLine={false} width={56} tickFormatter={(v: number) => formatCount(v)} />
-                  <Tooltip content={<ChartTooltipContent formatter={formatCount} />} />
-                  <Bar dataKey="Points" fill="#10b981" radius={[6, 6, 0, 0]} maxBarSize={48} />
-                </BarChart>
-              </ResponsiveContainer>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={availabilityChartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                    <XAxis dataKey="state" tick={{ fontSize: 11, fill: "#94a3b8" }} tickLine={false} axisLine={false} />
+                    <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} tickLine={false} axisLine={false} width={56} tickFormatter={(v: number) => formatCount(v)} />
+                    <Tooltip content={<ChartTooltipContent formatter={formatCount} />} />
+                    <Bar dataKey="Points" fill="#10b981" radius={[6, 6, 0, 0]} maxBarSize={48} />
+                  </BarChart>
+                </ResponsiveContainer>
               ) : (
                 <Skeleton style={{ height: "100%" }} />
               )}
@@ -468,11 +477,11 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData | null }) {
                   value={
                     dashboard
                       ? formatEnergyKwh(
-                          dashboard.recentTelemetryTrend.reduce(
-                            (sum, item) => sum + item.energyDeltaKwh,
-                            0
-                          )
+                        dashboard.recentTelemetryTrend.reduce(
+                          (sum, item) => sum + item.energyDeltaKwh,
+                          0
                         )
+                      )
                       : undefined
                   }
                 />
@@ -480,31 +489,31 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData | null }) {
             />
             <div className="mt-5 h-72">
               {dashboard ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={telemetryTrendData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
-                  <defs>
-                    <linearGradient id="gradAvgPower" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#6366f1" stopOpacity={0.15} />
-                      <stop offset="100%" stopColor="#6366f1" stopOpacity={0} />
-                    </linearGradient>
-                    <linearGradient id="gradPeakPower" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.15} />
-                      <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-                  <XAxis dataKey="hour" tick={{ fontSize: 11, fill: "#94a3b8" }} tickLine={false} axisLine={false} />
-                  <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} tickLine={false} axisLine={false} width={52} tickFormatter={(v: number) => formatPowerKw(v)} />
-                  <Tooltip content={<ChartTooltipContent formatter={formatPowerKw} />} />
-                  <Legend
-                    iconType="circle"
-                    iconSize={8}
-                    wrapperStyle={{ fontSize: 12, color: "#64748b", paddingTop: 8 }}
-                  />
-                  <Area type="monotone" dataKey="Average power" stroke="#6366f1" strokeWidth={2} fill="url(#gradAvgPower)" dot={false} activeDot={{ r: 4, strokeWidth: 2, fill: "#fff" }} />
-                  <Area type="monotone" dataKey="Peak power" stroke="#8b5cf6" strokeWidth={2} fill="url(#gradPeakPower)" dot={false} activeDot={{ r: 4, strokeWidth: 2, fill: "#fff" }} />
-                </AreaChart>
-              </ResponsiveContainer>
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={telemetryTrendData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
+                    <defs>
+                      <linearGradient id="gradAvgPower" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#6366f1" stopOpacity={0.15} />
+                        <stop offset="100%" stopColor="#6366f1" stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id="gradPeakPower" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.15} />
+                        <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                    <XAxis dataKey="hour" tick={{ fontSize: 11, fill: "#94a3b8" }} tickLine={false} axisLine={false} />
+                    <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} tickLine={false} axisLine={false} width={52} tickFormatter={(v: number) => formatPowerKw(v)} />
+                    <Tooltip content={<ChartTooltipContent formatter={formatPowerKw} />} />
+                    <Legend
+                      iconType="circle"
+                      iconSize={8}
+                      wrapperStyle={{ fontSize: 12, color: "#64748b", paddingTop: 8 }}
+                    />
+                    <Area type="monotone" dataKey="Average power" stroke="#6366f1" strokeWidth={2} fill="url(#gradAvgPower)" dot={false} activeDot={{ r: 4, strokeWidth: 2, fill: "#fff" }} />
+                    <Area type="monotone" dataKey="Peak power" stroke="#8b5cf6" strokeWidth={2} fill="url(#gradPeakPower)" dot={false} activeDot={{ r: 4, strokeWidth: 2, fill: "#fff" }} />
+                  </AreaChart>
+                </ResponsiveContainer>
               ) : (
                 <Skeleton style={{ height: "100%" }} />
               )}
@@ -519,15 +528,15 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData | null }) {
             />
             <div className="mt-5 h-72">
               {dashboard ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={sessionStatusChartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-                  <XAxis dataKey="status" tick={{ fontSize: 11, fill: "#94a3b8" }} tickLine={false} axisLine={false} />
-                  <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} tickLine={false} axisLine={false} width={56} tickFormatter={(v: number) => formatCount(v)} />
-                  <Tooltip content={<ChartTooltipContent formatter={formatCount} />} />
-                  <Bar dataKey="Sessions" fill="#0ea5e9" radius={[6, 6, 0, 0]} maxBarSize={48} />
-                </BarChart>
-              </ResponsiveContainer>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={sessionStatusChartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                    <XAxis dataKey="status" tick={{ fontSize: 11, fill: "#94a3b8" }} tickLine={false} axisLine={false} />
+                    <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} tickLine={false} axisLine={false} width={56} tickFormatter={(v: number) => formatCount(v)} />
+                    <Tooltip content={<ChartTooltipContent formatter={formatCount} />} />
+                    <Bar dataKey="Sessions" fill="#0ea5e9" radius={[6, 6, 0, 0]} maxBarSize={48} />
+                  </BarChart>
+                </ResponsiveContainer>
               ) : (
                 <Skeleton style={{ height: "100%" }} />
               )}
@@ -558,51 +567,51 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData | null }) {
                 <tbody>
                   {dashboard
                     ? dashboard.topOperators.map((operator) => (
-                    <tr key={operator.operator} className="border-b border-slate-100 last:border-0">
-                      <td className="max-w-[18rem] py-3 pr-4">
-                        <p className="text-sm font-medium text-slate-900">{operator.operator}</p>
-                        <p className="text-[11px] text-slate-500">
-                          Avg tariff {formatTariffCentsPerKwh(operator.avgPriceCentsPerKwh)} / kWh
-                        </p>
-                      </td>
-                      <td className="py-3 text-right text-slate-700">
-                        {formatCompactNumber(operator.stations)}
-                      </td>
-                      <td className="py-3 text-right text-slate-700">
-                        {formatCompactNumber(operator.chargingPoints)}
-                      </td>
-                      <td className="py-3 text-right text-slate-700">
-                        {formatCompactNumber(operator.availableNowPoints)}
-                      </td>
-                      <td className="py-3 text-right">
-                        <span className="inline-flex rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700">
-                          {formatPercent(operator.utilizationPercent)}
-                        </span>
-                      </td>
-                    </tr>
-                      ))
+                      <tr key={operator.operator} className="border-b border-slate-100 last:border-0">
+                        <td className="max-w-[18rem] py-3 pr-4">
+                          <p className="text-sm font-medium text-slate-900">{operator.operator}</p>
+                          <p className="text-[11px] text-slate-500">
+                            Avg tariff {formatTariffCentsPerKwh(operator.avgPriceCentsPerKwh)} / kWh
+                          </p>
+                        </td>
+                        <td className="py-3 text-right text-slate-700">
+                          {formatCompactNumber(operator.stations)}
+                        </td>
+                        <td className="py-3 text-right text-slate-700">
+                          {formatCompactNumber(operator.chargingPoints)}
+                        </td>
+                        <td className="py-3 text-right text-slate-700">
+                          {formatCompactNumber(operator.availableNowPoints)}
+                        </td>
+                        <td className="py-3 text-right">
+                          <span className="inline-flex rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700">
+                            {formatPercent(operator.utilizationPercent)}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
                     : Array.from({ length: 5 }).map((_, index) => (
-                        <tr key={index} className="border-b border-slate-100 last:border-0">
-                          <td className="max-w-[18rem] py-3 pr-4">
-                            <ValueSkeleton width={150} height={14} />
-                            <div className="mt-1.5">
-                              <ValueSkeleton width={110} height={10} />
-                            </div>
-                          </td>
-                          <td className="py-3 text-right">
-                            <ValueSkeleton width={36} />
-                          </td>
-                          <td className="py-3 text-right">
-                            <ValueSkeleton width={36} />
-                          </td>
-                          <td className="py-3 text-right">
-                            <ValueSkeleton width={36} />
-                          </td>
-                          <td className="py-3 text-right">
-                            <ValueSkeleton width={52} height={18} />
-                          </td>
-                        </tr>
-                      ))}
+                      <tr key={index} className="border-b border-slate-100 last:border-0">
+                        <td className="max-w-[18rem] py-3 pr-4">
+                          <ValueSkeleton width={150} height={14} />
+                          <div className="mt-1.5">
+                            <ValueSkeleton width={110} height={10} />
+                          </div>
+                        </td>
+                        <td className="py-3 text-right">
+                          <ValueSkeleton width={36} />
+                        </td>
+                        <td className="py-3 text-right">
+                          <ValueSkeleton width={36} />
+                        </td>
+                        <td className="py-3 text-right">
+                          <ValueSkeleton width={36} />
+                        </td>
+                        <td className="py-3 text-right">
+                          <ValueSkeleton width={52} height={18} />
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
@@ -618,92 +627,109 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData | null }) {
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               {dashboard
                 ? operationalChartData.map((item) => (
-                <div
-                  key={item.name}
-                  className="rounded-xl bg-slate-50 px-4 py-3"
-                >
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-                    {item.name}
-                  </p>
-                  <p className="mt-1.5 text-xl font-semibold text-slate-900">
-                    {formatCompactNumber(item.value)}
-                  </p>
-                </div>
-                  ))
+                  <div
+                    key={item.name}
+                    className="rounded-xl bg-slate-50 px-4 py-3"
+                  >
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                      {item.name}
+                    </p>
+                    <p className="mt-1.5 text-xl font-semibold text-slate-900">
+                      {formatCompactNumber(item.value)}
+                    </p>
+                  </div>
+                ))
                 : Array.from({ length: 4 }).map((_, index) => (
-                    <div key={index} className="rounded-xl bg-slate-50 px-4 py-3">
-                      <ValueSkeleton width={96} height={10} />
-                      <div className="mt-1.5">
-                        <ValueSkeleton width={48} height={20} />
-                      </div>
+                  <div key={index} className="rounded-xl bg-slate-50 px-4 py-3">
+                    <ValueSkeleton width={96} height={10} />
+                    <div className="mt-1.5">
+                      <ValueSkeleton width={48} height={20} />
                     </div>
-                  ))}
+                  </div>
+                ))}
             </div>
 
             <div className="mt-5 space-y-2.5">
               {dashboard
                 ? dashboard.recentIncidents.map((incident) => (
-                <div
-                  key={incident.id}
-                  className={`rounded-xl border-l-[3px] bg-white p-4 shadow-[0_1px_4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.03)] ${getIncidentBorderClass(incident.status)}`}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <div className="flex flex-wrap items-center gap-1.5">
-                        <span
-                          className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${getIncidentStatusClasses(incident.status)}`}
-                        >
-                          {formatLabel(incident.status)}
-                        </span>
-                        <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600 ring-1 ring-slate-200">
-                          {formatLabel(incident.type)}
-                        </span>
+                  <div
+                    key={incident.id}
+                    className={`rounded-xl border-l-[3px] bg-white p-4 shadow-[0_1px_4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.03)] ${getIncidentBorderClass(incident.status)}`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <span
+                            className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${getIncidentStatusClasses(incident.status)}`}
+                          >
+                            {formatLabel(incident.status)}
+                          </span>
+                          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600 ring-1 ring-slate-200">
+                            {formatLabel(incident.type)}
+                          </span>
+                        </div>
+                        <p className="mt-2 text-sm font-medium text-slate-900">
+                          {incident.stationName ?? "Unknown station"}
+                          {incident.chargingPointLabel
+                            ? ` · ${incident.chargingPointLabel}`
+                            : ""}
+                        </p>
+                        <p className="mt-0.5 text-xs text-slate-500">
+                          {incident.description}
+                        </p>
                       </div>
-                      <p className="mt-2 text-sm font-medium text-slate-900">
-                        {incident.stationName ?? "Unknown station"}
-                        {incident.chargingPointLabel
-                          ? ` · ${incident.chargingPointLabel}`
-                          : ""}
-                      </p>
-                      <p className="mt-0.5 text-xs text-slate-500">
-                        {incident.description}
-                      </p>
+                      <div className="shrink-0 text-right text-[11px] text-slate-400">
+                        <p>{formatLabel(incident.severity)}</p>
+                        <p className="mt-0.5">{formatTimestamp(incident.createdAt)}</p>
+                      </div>
                     </div>
-                    <div className="shrink-0 text-right text-[11px] text-slate-400">
-                      <p>{formatLabel(incident.severity)}</p>
-                      <p className="mt-0.5">{formatTimestamp(incident.createdAt)}</p>
+                    <button
+                      type="button"
+                      onClick={() => setReviewIncidentId(incident.id)}
+                      className="mt-3 inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1 text-[11px] font-semibold text-slate-600 transition-colors hover:bg-slate-50"
+                    >
+                      <span className="material-symbols-outlined" style={{ fontSize: 14 }}>
+                        summarize
+                      </span>
+                      Review
+                    </button>
+                  </div>
+                ))
+                : Array.from({ length: 3 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="rounded-xl border-l-[3px] border-l-slate-200 bg-white p-4 shadow-[0_1px_4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.03)]"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5">
+                          <ValueSkeleton width={64} height={16} />
+                          <ValueSkeleton width={84} height={16} />
+                        </div>
+                        <div className="mt-2">
+                          <ValueSkeleton width={200} height={14} />
+                        </div>
+                        <div className="mt-1">
+                          <ValueSkeleton width={260} height={10} />
+                        </div>
+                      </div>
+                      <div className="shrink-0 text-right">
+                        <ValueSkeleton width={48} height={10} />
+                        <div className="mt-1">
+                          <ValueSkeleton width={56} height={10} />
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-                  ))
-                : Array.from({ length: 3 }).map((_, index) => (
-                    <div
-                      key={index}
-                      className="rounded-xl border-l-[3px] border-l-slate-200 bg-white p-4 shadow-[0_1px_4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.03)]"
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-1.5">
-                            <ValueSkeleton width={64} height={16} />
-                            <ValueSkeleton width={84} height={16} />
-                          </div>
-                          <div className="mt-2">
-                            <ValueSkeleton width={200} height={14} />
-                          </div>
-                          <div className="mt-1">
-                            <ValueSkeleton width={260} height={10} />
-                          </div>
-                        </div>
-                        <div className="shrink-0 text-right">
-                          <ValueSkeleton width={48} height={10} />
-                          <div className="mt-1">
-                            <ValueSkeleton width={56} height={10} />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                ))}
             </div>
+
+            {reviewIncidentId && (
+              <IncidentReviewModal
+                incidentId={reviewIncidentId}
+                onClose={() => setReviewIncidentId(null)}
+              />
+            )}
           </SectionCard>
         </section>
 
@@ -740,63 +766,103 @@ function DashboardShell({ dashboard }: { dashboard: DashboardData | null }) {
               <tbody>
                 {dashboard
                   ? dashboard.recentSessions.map((session) => (
-                  <tr key={session.id} className="border-b border-slate-100 last:border-0">
-                    <td className="py-3 pr-4">
-                      <p className="text-sm font-medium text-slate-900">
-                        {session.stationName}
-                      </p>
-                      <p className="text-[11px] text-slate-500">
-                        {session.chargingPointLabel}
-                      </p>
-                    </td>
-                    <td className="py-3">
-                      <span
-                        className={`inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold ${getSessionStatusClasses(session.status)}`}
-                      >
-                        {formatLabel(session.status)}
-                      </span>
-                    </td>
-                    <td className="py-3 text-slate-700">{session.vehicleLabel}</td>
-                    <td className="py-3 text-right text-slate-700">
-                      {formatEnergyKwh(session.energyDeliveredKwh)}
-                    </td>
-                    <td className="py-3 text-right text-slate-700">
-                      {formatCurrencyCents(session.totalCents)}
-                    </td>
-                    <td className="py-3 text-right text-slate-500">
-                      {formatTimestamp(session.updatedAt)}
-                    </td>
-                  </tr>
-                    ))
+                    <tr key={session.id} className="border-b border-slate-100 last:border-0">
+                      <td className="py-3 pr-4">
+                        <p className="text-sm font-medium text-slate-900">
+                          {session.stationName}
+                        </p>
+                        <p className="text-[11px] text-slate-500">
+                          {session.chargingPointLabel}
+                        </p>
+                      </td>
+                      <td className="py-3">
+                        <span
+                          className={`inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold ${getSessionStatusClasses(session.status)}`}
+                        >
+                          {formatLabel(session.status)}
+                        </span>
+                      </td>
+                      <td className="py-3 text-slate-700">{session.vehicleLabel}</td>
+                      <td className="py-3 text-right text-slate-700">
+                        {formatEnergyKwh(session.energyDeliveredKwh)}
+                      </td>
+                      <td className="py-3 text-right text-slate-700">
+                        {formatCurrencyCents(session.totalCents)}
+                      </td>
+                      <td className="py-3 text-right text-slate-500">
+                        {formatTimestamp(session.updatedAt)}
+                      </td>
+                    </tr>
+                  ))
                   : Array.from({ length: 6 }).map((_, index) => (
-                      <tr key={index} className="border-b border-slate-100 last:border-0">
-                        <td className="py-3 pr-4">
-                          <ValueSkeleton width={150} height={14} />
-                          <div className="mt-1.5">
-                            <ValueSkeleton width={90} height={10} />
-                          </div>
-                        </td>
-                        <td className="py-3">
-                          <ValueSkeleton width={72} height={18} />
-                        </td>
-                        <td className="py-3">
-                          <ValueSkeleton width={90} height={14} />
-                        </td>
-                        <td className="py-3 text-right">
-                          <ValueSkeleton width={56} />
-                        </td>
-                        <td className="py-3 text-right">
-                          <ValueSkeleton width={56} />
-                        </td>
-                        <td className="py-3 text-right">
-                          <ValueSkeleton width={72} />
-                        </td>
-                      </tr>
-                    ))}
+                    <tr key={index} className="border-b border-slate-100 last:border-0">
+                      <td className="py-3 pr-4">
+                        <ValueSkeleton width={150} height={14} />
+                        <div className="mt-1.5">
+                          <ValueSkeleton width={90} height={10} />
+                        </div>
+                      </td>
+                      <td className="py-3">
+                        <ValueSkeleton width={72} height={18} />
+                      </td>
+                      <td className="py-3">
+                        <ValueSkeleton width={90} height={14} />
+                      </td>
+                      <td className="py-3 text-right">
+                        <ValueSkeleton width={56} />
+                      </td>
+                      <td className="py-3 text-right">
+                        <ValueSkeleton width={56} />
+                      </td>
+                      <td className="py-3 text-right">
+                        <ValueSkeleton width={72} />
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
         </SectionCard>
+        <div className="fixed bottom-6 right-4 z-[1000] flex items-center gap-2">
+                
+        
+                <div className="relative">
+                  <div
+                    id="agent-chat-panel"
+                    aria-hidden={!chatOpen}
+                    onAnimationEnd={(event) => {
+                      if (event.target === event.currentTarget && !chatOpen) {
+                        setChatVisible(false);
+                      }
+                    }}
+                    className={`${chatVisible ? (chatOpen ? "chat-panel-enter" : "chat-panel-exit") : "hidden"} absolute bottom-full right-0 mb-3 max-h-[100dvh] max-w-[calc(100vw_-_2rem)] overflow-auto rounded-lg border border-white/70 bg-white/85 p-4 shadow-lg backdrop-blur-xl transition-[width,height] duration-300 ease-out ${chatExpanded ? "h-[85vh] w-[42rem]" : "h-120 w-120"}`}
+                  >
+                    <ChatComponent
+                      expanded={chatExpanded}
+                      onToggleExpand={() => setChatExpanded((value) => !value)}
+                    />
+                  </div>
+        
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (chatOpen) setChatExpanded(false);
+                      if (!chatOpen) setChatVisible(true);
+                      setChatOpen((open) => !open);
+                    }}
+                    aria-expanded={chatOpen}
+                    aria-controls="agent-chat-panel"
+                    aria-label={chatOpen ? "Collapse chat" : "Open chat"}
+                    title={chatOpen ? "Collapse AI Ops Assistant" : "Open AI Ops Assistant"}
+                    className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-white/70 bg-white/85 px-4 py-1.5 text-xs font-medium leading-none text-slate-600 shadow backdrop-blur-xl hover:bg-white/95"
+                  >
+                    <span style={{ fontSize: 20, lineHeight: 1 }} className="material-symbols-outlined text-base leading-none" aria-hidden="true">
+                      {chatOpen ? "expand_more" : "chat_bubble"}
+                    </span>
+                    <span>AI Ops Assistant</span>
+                  </button>
+                </div>
+              </div>
       </div>
     </main>
   );
@@ -836,6 +902,8 @@ export function AdminDashboardScreen() {
       </main>
     );
   }
+
+
 
   if (!dashboard) {
     return (

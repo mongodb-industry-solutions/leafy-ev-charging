@@ -35,6 +35,31 @@ sidecarContainers:
         value: "http://localhost:4000"
       - name: BACKEND_CORS_ORIGIN
         value: "https://leafy-ev-charging.industrysolutions.staging.corp.mongodb.com"
+      # AI assistants (Bedrock). Credentials come from the "leafy-ev-charging" ksec
+      # secret; optional so a missing key disables the agents instead of the pod.
+      # AWS_PROFILE is deliberately unset: the pod has no ~/.aws profile file.
+      - name: AWS_REGION
+        value: "us-east-1"
+      - name: BEDROCK_MODEL_ID
+        value: "us.anthropic.claude-haiku-4-5-20251001-v1:0" #Replace with Haiku 5.5
+      - name: AWS_ACCESS_KEY_ID
+        valueFrom:
+          secretKeyRef:
+            name: leafy-ev-charging
+            key: AWS_ACCESS_KEY_ID
+            optional: true
+      - name: AWS_SECRET_ACCESS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: leafy-ev-charging
+            key: AWS_SECRET_ACCESS_KEY
+            optional: true
+      - name: AWS_SESSION_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: leafy-ev-charging
+            key: AWS_SESSION_TOKEN
+            optional: true
       - name: MONGODB_URI
         valueFrom:
           secretKeyRef:

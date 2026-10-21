@@ -63,3 +63,8 @@ env/
 
 
 package-lock.json
+
+# Compiled output must never sit beside the TypeScript sources
+CSMS/agent/**/*.js
+CSMS/agent/**/*.js.map
+CSMS/agent/**/*.d.ts

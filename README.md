@@ -154,7 +154,7 @@ The goal is not to present every screen. The goal is to show how a single operat
 ## Notes
 
 - **Schema-first GraphQL**: SDL files live under `backend/schema/governed` and `backend/schema/app`. If you modify them, run `npm run codegen` to update generated types.
-- **AI assistants (optional)**: set `AWS_REGION` and `BEDROCK_MODEL_ID` in `.env` to enable the driver and operator assistants on AWS Bedrock. `AWS_PROFILE` is optional; without it the AWS SDK default credential chain applies (environment keys or an IAM role). Without this configuration the rest of the app runs normally and the assistants report that they are not configured. In Docker, the container has no access to your local `~/.aws` SSO profile, so pass access-key variables or mount it.
+- **AI assistants (optional)**: set `AI_GATEWAY_API_KEY` in `.env` to enable the driver and operator assistants, which call the MongoDB AI gateway (OpenAI-compatible, default model `deepseek-v4-flash`; override with `AI_GATEWAY_MODEL` and `AI_GATEWAY_BASE_URL`). Without the key the rest of the app runs normally and the assistants report that they are not configured. In Kubernetes, store the key in the ksec secret and reference it with a `secretKeyRef`.
 - **MongoDB Compass**: the local container starts as a single-node replica set (`rs0`). To connect with Compass, use:
   `mongodb://localhost:27017/?replicaSet=rs0&directConnection=true`
 

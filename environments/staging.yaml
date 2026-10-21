@@ -13,16 +13,6 @@ env:
 envSecrets:
   NEXT_PUBLIC_CARTO_API_KEY: leafy-ev-charging
 
-# Service account with an AWS IAM role (IRSA). The chart injects AWS_ROLE_ARN and
-# AWS_WEB_IDENTITY_TOKEN_FILE into the pod, which the AWS SDK uses to get Bedrock
-# credentials for the backend sidecar. The role must allow bedrock:InvokeModel.
-serviceAccount:
-  enabled: true
-  name: sa
-  irsa:
-    accountId: "275662791714"
-    roleName: kanopy-staging-cicd-irsa
-
 # Main container (frontend) resources.
 resources:
   limits:
@@ -45,13 +35,17 @@ sidecarContainers:
         value: "http://localhost:4000"
       - name: BACKEND_CORS_ORIGIN
         value: "https://leafy-ev-charging.industrysolutions.staging.corp.mongodb.com"
-      # AI assistants (Bedrock). Credentials come from the pod's IAM role via the
-      # serviceAccount.irsa block above. AWS_PROFILE is deliberately unset: the pod
-      # has no ~/.aws profile file, so the SDK uses the web identity token.
-      - name: AWS_REGION
-        value: "us-east-1"
-      - name: BEDROCK_MODEL_ID
-        value: "us.anthropic.claude-haiku-4-5-20251001-v1:0"
+      # AI assistants (MongoDB AI gateway, OpenAI-compatible). The API key comes
+      # from the "leafy-ev-charging" ksec secret, key AI_GATEWAY_API_KEY; it is
+      # optional so a missing key disables the agents instead of the pod.
+      - name: AI_GATEWAY_MODEL
+        value: "deepseek-v4-flash"
+      - name: AI_GATEWAY_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: leafy-ev-charging
+            key: AI_GATEWAY_API_KEY
+            optional: true
       - name: MONGODB_URI
         valueFrom:
           secretKeyRef:

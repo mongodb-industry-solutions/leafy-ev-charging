@@ -35,16 +35,25 @@ sidecarContainers:
         value: "http://localhost:4000"
       - name: BACKEND_CORS_ORIGIN
         value: "https://leafy-ev-charging.industrysolutions.staging.corp.mongodb.com"
-      # AI assistants (MongoDB AI gateway, OpenAI-compatible). The API key comes
-      # from the "leafy-ev-charging" ksec secret, key AI_GATEWAY_API_KEY; it is
-      # optional so a missing key disables the agents instead of the pod.
+      # AI assistants (MongoDB AI gateway). The base URL and model are plain config;
+      # the keys come from the "leafy-ev-charging" ksec secret (AI_GATEWAY_API_KEY_PRIM
+      # and AI_GATEWAY_API_KEY_SEC). They are optional so a missing key disables the
+      # assistants instead of the pod. Change the model by editing AI_GATEWAY_MODEL.
+      - name: AI_GATEWAY_BASE_URL
+        value: "https://ai-gateway.corp.mongodb.com/anthropic"
       - name: AI_GATEWAY_MODEL
-        value: "deepseek-v4-flash"
-      - name: AI_GATEWAY_API_KEY
+        value: "claude-haiku-4-5"
+      - name: AI_GATEWAY_API_KEY_PRIM
         valueFrom:
           secretKeyRef:
             name: leafy-ev-charging
-            key: AI_GATEWAY_API_KEY
+            key: AI_GATEWAY_API_KEY_PRIM
+            optional: true
+      - name: AI_GATEWAY_API_KEY_SEC
+        valueFrom:
+          secretKeyRef:
+            name: leafy-ev-charging
+            key: AI_GATEWAY_API_KEY_SEC
             optional: true
       - name: MONGODB_URI
         valueFrom:

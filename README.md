@@ -154,7 +154,12 @@ The goal is not to present every screen. The goal is to show how a single operat
 ## Notes
 
 - **Schema-first GraphQL**: SDL files live under `backend/schema/governed` and `backend/schema/app`. If you modify them, run `npm run codegen` to update generated types.
-- **AI assistants (optional)**: set `AI_GATEWAY_API_KEY` in `.env` to enable the driver and operator assistants, which call the MongoDB AI gateway (OpenAI-compatible, default model `deepseek-v4-flash`; override with `AI_GATEWAY_MODEL` and `AI_GATEWAY_BASE_URL`). Without the key the rest of the app runs normally and the assistants report that they are not configured. In Kubernetes, store the key in the ksec secret and reference it with a `secretKeyRef`.
+- **AI assistants (optional, bring your own LLM provider)**: the driver and operator assistants need an LLM, and the demo does not include one. Configure your own provider in `.env` (see `.env.example`). Without it the rest of the app runs normally and the assistants report that they are not configured.
+  - `AI_GATEWAY_BASE_URL`, `AI_GATEWAY_MODEL` and `AI_GATEWAY_API_KEY_PRIM` are required. `AI_GATEWAY_API_KEY_SEC` is an optional fallback key, used if the first is rejected (401, 403 or 429).
+  - The provider must expose an **Anthropic Messages API** (`.../v1/messages`) or an **OpenAI-compatible Chat Completions API** (`.../v1/chat/completions`). The format is inferred from the base URL (a URL containing `/anthropic` is treated as Anthropic, anything else as OpenAI) and can be forced with `AI_GATEWAY_PROVIDER=anthropic|openai`.
+  - Base URL shape: for the Anthropic format leave out `/v1` (for example `https://ai-gateway.corp.mongodb.com/anthropic`); for the OpenAI format include it (for example `https://ai-gateway.corp.mongodb.com/openai/v1`).
+  - The model must support **tool calling**, because the assistants query the database through tools. Any model name your provider serves works. Some models reject non-default sampling values, so `temperature` is left unset unless you set `AI_GATEWAY_TEMPERATURE`.
+  - Kubernetes: `AI_GATEWAY_BASE_URL` and `AI_GATEWAY_MODEL` are plain values in `environments/*.yaml`; the keys come from the ksec secret (`AI_GATEWAY_API_KEY_PRIM`, `AI_GATEWAY_API_KEY_SEC`).
 - **MongoDB Compass**: the local container starts as a single-node replica set (`rs0`). To connect with Compass, use:
   `mongodb://localhost:27017/?replicaSet=rs0&directConnection=true`
 

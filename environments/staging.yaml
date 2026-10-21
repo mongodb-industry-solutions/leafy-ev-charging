@@ -41,25 +41,12 @@ sidecarContainers:
       - name: AWS_REGION
         value: "us-east-1"
       - name: BEDROCK_MODEL_ID
-        value: "us.anthropic.claude-haiku-4-5-20251001-v1:0" #Replace with Haiku 5.5
-      - name: AWS_ACCESS_KEY_ID
+        value: "us.anthropic.claude-haiku-4-5-20251001-v1:0" 
+      - name: AWS_PROFILE
         valueFrom:
           secretKeyRef:
             name: leafy-ev-charging
-            key: AWS_ACCESS_KEY_ID
-            optional: true
-      - name: AWS_SECRET_ACCESS_KEY
-        valueFrom:
-          secretKeyRef:
-            name: leafy-ev-charging
-            key: AWS_SECRET_ACCESS_KEY
-            optional: true
-      - name: AWS_SESSION_TOKEN
-        valueFrom:
-          secretKeyRef:
-            name: leafy-ev-charging
-            key: AWS_SESSION_TOKEN
-            optional: true
+            key: AWS_PROFILE
       - name: MONGODB_URI
         valueFrom:
           secretKeyRef:
@@ -85,11 +72,6 @@ sidecarContainers:
         value: "2"
       - name: CHANGE_STREAM_RETRY_SECONDS
         value: "2"
-      - name: MONGODB_URI
-        valueFrom:
-          secretKeyRef:
-            name: leafy-ev-charging
-            key: MONGODB_URI
     resources:
       limits:
         cpu: 500m

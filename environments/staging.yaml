@@ -35,30 +35,25 @@ sidecarContainers:
         value: "http://localhost:4000"
       - name: BACKEND_CORS_ORIGIN
         value: "https://leafy-ev-charging.industrysolutions.staging.corp.mongodb.com"
-      # AI assistants (Bedrock). Credentials come from the "leafy-ev-charging" ksec
-      # secret; optional so a missing key disables the agents instead of the pod.
-      # AWS_PROFILE is deliberately unset: the pod has no ~/.aws profile file.
-      - name: AWS_REGION
-        value: "us-east-1"
-      - name: BEDROCK_MODEL_ID
-        value: "us.anthropic.claude-haiku-4-5-20251001-v1:0" #Replace with Haiku 5.5
-      - name: AWS_ACCESS_KEY_ID
+      # AI assistants (MongoDB AI gateway). The base URL and model are plain config;
+      # the keys come from the "leafy-ev-charging" ksec secret (AI_GATEWAY_API_KEY_PRIM
+      # and AI_GATEWAY_API_KEY_SEC). They are optional so a missing key disables the
+      # assistants instead of the pod. Change the model by editing AI_GATEWAY_MODEL.
+      - name: AI_GATEWAY_BASE_URL
+        value: "https://ai-gateway.corp.mongodb.com/anthropic"
+      - name: AI_GATEWAY_MODEL
+        value: "claude-haiku-4-5"
+      - name: AI_GATEWAY_API_KEY_PRIM
         valueFrom:
           secretKeyRef:
             name: leafy-ev-charging
-            key: AWS_ACCESS_KEY_ID
+            key: AI_GATEWAY_API_KEY_PRIM
             optional: true
-      - name: AWS_SECRET_ACCESS_KEY
+      - name: AI_GATEWAY_API_KEY_SEC
         valueFrom:
           secretKeyRef:
             name: leafy-ev-charging
-            key: AWS_SECRET_ACCESS_KEY
-            optional: true
-      - name: AWS_SESSION_TOKEN
-        valueFrom:
-          secretKeyRef:
-            name: leafy-ev-charging
-            key: AWS_SESSION_TOKEN
+            key: AI_GATEWAY_API_KEY_SEC
             optional: true
       - name: MONGODB_URI
         valueFrom:
@@ -85,11 +80,6 @@ sidecarContainers:
         value: "2"
       - name: CHANGE_STREAM_RETRY_SECONDS
         value: "2"
-      - name: MONGODB_URI
-        valueFrom:
-          secretKeyRef:
-            name: leafy-ev-charging
-            key: MONGODB_URI
     resources:
       limits:
         cpu: 500m

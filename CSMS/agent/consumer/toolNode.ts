@@ -34,7 +34,7 @@ export function createConsumerTools(db: Db, authenticatedUserId: string) {
           "Find candidate station IDs by area. Provide either coordinates " +
           "(longitude, latitude, radiusMeters) or an address (city, and " +
           "optionally street, postalCode, country); coordinates win when " +
-          "both are given. Pass the returned IDs to findChargingStation.",
+          "both are given. Pass the returned IDs to findChargingStation. AGENT: Try not to use a high radius when consuming this tool.",
         schema: {
           type: "object",
           additionalProperties: false,

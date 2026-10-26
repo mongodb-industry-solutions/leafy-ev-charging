@@ -36,19 +36,31 @@ export function attachOcppServer(
   const webSocketServer = new WebSocketServer({ noServer: true });
 
   httpServer.on("upgrade", (request, socket, head) => {
-    const requestUrl = new URL(
-      request.url ?? "/",
-      `http://${request.headers.host ?? "localhost"}`
-    );
+    const rejectUpgrade = (status: string) => {
+      socket.end(`HTTP/1.1 ${status}\r\nConnection: close\r\n\r\n`);
+    };
 
-    const match = requestUrl.pathname.match(/^\/ocpp\/([^/]+)$/);
+    let chargePointId: string;
+    try {
+      const requestUrl = new URL(
+        request.url ?? "/",
+        `http://${request.headers.host ?? "localhost"}`
+      );
 
-    if (!match) {
-      socket.destroy();
+      const match = requestUrl.pathname.match(/^\/ocpp\/([^/]+)$/);
+
+      if (!match) {
+        rejectUpgrade("404 Not Found");
+        return;
+      }
+
+      chargePointId = decodeURIComponent(match[1]);
+    } catch {
+      // Malformed Host header or percent-encoding (e.g. /ocpp/%). An uncaught
+      // throw in this listener would take down the whole Node process.
+      rejectUpgrade("400 Bad Request");
       return;
     }
-
-    const chargePointId = decodeURIComponent(match[1]);
 
     webSocketServer.handleUpgrade(request, socket, head, (webSocket) => {
       webSocketServer.emit(
@@ -113,7 +125,11 @@ async function handleOcppMessage(
   }
 
   if (!Array.isArray(message) || message[0] !== 2) {
-    console.warn(`Unsupported OCPP frame from ${chargePointId}`, message);
+    // CallResult (3) and CallError (4) are replies to our own commands and are
+    // expected on every session start; only warn about anything else.
+    if (!Array.isArray(message) || (message[0] !== 3 && message[0] !== 4)) {
+      console.warn(`Unsupported OCPP frame from ${chargePointId}`, message);
+    }
     return;
   }
 
@@ -137,17 +153,10 @@ async function handleOcppMessage(
 
     socket.send(JSON.stringify(response));
 
-    console.log(`Boot accepted: ${chargePointId}`);
-
     return;
   }
 
   if (action === "StatusNotification") {
-    console.log(
-      `Status from ${chargePointId}:`,
-      payload
-    );
-
     socket.send(JSON.stringify([3, messageId, {}]));
     return;
   }
@@ -295,11 +304,6 @@ async function handleOcppMessage(
 }
 
   if (action === "MeterValues") {
-    console.log(
-      `Meter values from ${chargePointId}:`,
-      payload
-    );
-
     socket.send(JSON.stringify([3, messageId, {}]));
     return;
   }

@@ -341,6 +341,31 @@ export async function markSessionActive(
   return result;
 }
 
+/**
+ * Undo markSessionActive when the start command could not be delivered.
+ * Only reverts a session that is still ACTIVE with no meter reading, so it can
+ * never clobber a session the charger has actually started.
+ */
+export async function revertSessionToBooked(
+  database: Db,
+  sessionId: string
+): Promise<ChargingSessionDoc | null> {
+  return database
+    .collection<ChargingSessionDoc>("chargingSessions")
+    .findOneAndUpdate(
+      {
+        _id: new ObjectId(sessionId),
+        status: "ACTIVE",
+        "charging.meterStartKwh": null
+      },
+      {
+        $set: { status: "BOOKED", updatedAt: now() },
+        $unset: { "charging.startedAt": "", "charging.connectorUsed": "" }
+      },
+      { returnDocument: "after" }
+    );
+}
+
 export async function markSessionCanceled(
   database: Db,
   sessionId: string,
@@ -500,7 +525,6 @@ export async function applyTransactionEvent(
       ? 0
       : Math.max(event.meterRegisterKwh - previousRegisterKwh, 0);
 
-  console.log(`Applied transaction event for session ${sessionId.toHexString()}`);
   const updatedSession = await sessions.findOneAndUpdate(
     { _id: sessionId, status: "ACTIVE" },
     { $set: set },

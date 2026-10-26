@@ -142,7 +142,7 @@ The goal is not to present every screen. The goal is to show how a single operat
 
 ```text
 /
-├── backend/            # Node.js GraphQL API (schema-first)
+├── CSMS/               # Node.js GraphQL API + OCPP server (npm workspace "backend")
 ├── frontend/           # Next.js client
 ├── simulator/          # Python telemetry simulator
 ├── docs/               # Project documentation
@@ -153,7 +153,7 @@ The goal is not to present every screen. The goal is to show how a single operat
 
 ## Notes
 
-- **Schema-first GraphQL**: SDL files live under `backend/schema/governed` and `backend/schema/app`. If you modify them, run `npm run codegen` to update generated types.
+- **Schema-first GraphQL**: SDL files live under `CSMS/schema/governed` and `CSMS/schema/app`. If you modify them, run `npm run codegen` to update generated types.
 - **AI assistants (optional, bring your own LLM provider)**: the driver and operator assistants need an LLM, and the demo does not include one. Configure your own provider in `.env` (see `.env.example`). Without it the rest of the app runs normally and the assistants report that they are not configured.
   - `AI_GATEWAY_BASE_URL`, `AI_GATEWAY_MODEL` and `AI_GATEWAY_API_KEY_PRIM` are required. `AI_GATEWAY_API_KEY_SEC` is an optional fallback key, used if the first is rejected (401, 403 or 429).
   - The provider must expose an **Anthropic Messages API** (`.../v1/messages`) or an **OpenAI-compatible Chat Completions API** (`.../v1/chat/completions`). The format is inferred from the base URL (a URL containing `/anthropic` is treated as Anthropic, anything else as OpenAI) and can be forced with `AI_GATEWAY_PROVIDER=anthropic|openai`.

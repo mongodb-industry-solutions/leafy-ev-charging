@@ -11,12 +11,12 @@ WORKDIR /app
 # docker-compose.yml / Kanopy build config).
 COPY package.json package-lock.json ./
 COPY frontend/package.json ./frontend/package.json
-COPY backend/package.json ./backend/package.json
+COPY CSMS/package.json ./CSMS/package.json
 RUN npm ci
 
 # Build the frontend workspace against the hoisted node_modules.
 COPY frontend/ ./frontend/
-COPY backend/schema ./backend/schema
+COPY CSMS/schema ./CSMS/schema
 RUN npm run codegen -w frontend && npm run build -w frontend
 
 # Production stage

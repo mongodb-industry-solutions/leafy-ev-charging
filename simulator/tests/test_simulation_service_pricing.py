@@ -1,60 +1,45 @@
 from datetime import UTC, datetime, timedelta
 import unittest
+from unittest.mock import MagicMock
 
-from app.services.simulation_service import SessionSimulationState, SimulationService
+from app.services.simulation_service import (
+    SessionSimulationState,
+    SessionTelemetryContext,
+    SimulationService,
+)
 
 
-class SimulationServicePricingTests(unittest.TestCase):
+class FakeOcppClient:
+    def __init__(self) -> None:
+        self.frames: list[tuple[str, dict[str, object]]] = []
+        self.sequences: dict[str, int] = {}
+
+    def next_transaction_sequence(self, transaction_id: str) -> int:
+        sequence = self.sequences.get(transaction_id, 0)
+        self.sequences[transaction_id] = sequence + 1
+        return sequence
+
+    def clear_transaction_sequence(self, transaction_id: str) -> None:
+        self.sequences.pop(transaction_id, None)
+
+    async def send_call(self, action: str, payload: dict[str, object]) -> str:
+        self.frames.append((action, payload))
+        return "message-id"
+
+
+class SimulationServiceTests(unittest.IsolatedAsyncioTestCase):
     def setUp(self) -> None:
-        self.service = SimulationService()
+        self.service = SimulationService(MagicMock())
 
-    def test_active_state_rehydrates_booked_idle_on_restart(self) -> None:
-        started_at = datetime(2026, 3, 10, 8, 12, tzinfo=UTC)
-        session_doc = {
-            "_id": "session-1",
-            "booking": {
-                "bookedAt": datetime(2026, 3, 10, 8, 0, tzinfo=UTC),
-                "expiresAt": datetime(2026, 3, 10, 8, 30, tzinfo=UTC),
-            },
-            "charging": {
-                "startedAt": started_at,
-                "energyDeliveredKwh": 4.5,
-                "socStartPercent": 25.0,
-                "socStopPercent": 40.0,
-            },
-            "pricingSnapshot": {
-                "priceCentsPerKwh": 55,
-                "idleFee": {"priceCentsPerMinute": 20, "afterMinutes": 5},
-            },
-            "cost": {"idleCents": 0},
-            "updatedAt": started_at + timedelta(minutes=3),
-        }
+    def test_initial_state_is_deterministic_for_session(self) -> None:
+        first = self.service._build_initial_session_state({"sessionId": "session-1"})
+        second = self.service._build_initial_session_state({"sessionId": "session-1"})
 
-        state = self.service._build_initial_session_state(session_doc)
+        self.assertEqual(first.meter_start_kwh, second.meter_start_kwh)
+        self.assertEqual(first.soc_start_percent, second.soc_start_percent)
+        self.assertEqual(first.battery_capacity_kwh, second.battery_capacity_kwh)
 
-        self.assertEqual(state.booked_idle_cents, 140)
-
-    def test_booked_cost_update_caps_idle_at_booking_expiry(self) -> None:
-        session_doc = {
-            "booking": {
-                "bookedAt": datetime(2026, 3, 10, 8, 0, tzinfo=UTC),
-                "expiresAt": datetime(2026, 3, 10, 8, 30, tzinfo=UTC),
-            },
-            "pricingSnapshot": {
-                "idleFee": {"priceCentsPerMinute": 20, "afterMinutes": 5},
-            },
-        }
-
-        update = self.service._build_booked_session_cost_update(
-            session_doc,
-            datetime(2026, 3, 10, 10, 0, tzinfo=UTC),
-        )
-
-        self.assertEqual(update["cost.energyCents"], 0)
-        self.assertEqual(update["cost.idleCents"], 500)
-        self.assertEqual(update["cost.totalCents"], 500)
-
-    def test_active_updates_preserve_existing_booked_idle_cents(self) -> None:
+    def test_advance_session_increases_energy(self) -> None:
         timestamp = datetime(2026, 3, 10, 9, 0, tzinfo=UTC)
         state = SessionSimulationState(
             started_at=timestamp - timedelta(minutes=20),
@@ -63,17 +48,47 @@ class SimulationServicePricingTests(unittest.TestCase):
             cumulative_energy_kwh=12.0,
             soc_start_percent=20.0,
             soc_stop_percent=55.0,
-            price_cents_per_kwh=55.0,
             battery_capacity_kwh=60.0,
             vehicle_max_power_kw=50.0,
-            booked_idle_cents=180,
+        )
+        context = SessionTelemetryContext(evse_id=1, max_kw=50.0)
+
+        result = self.service._advance_session_state(
+            state=state,
+            context=context,
+            target_timestamp=timestamp + timedelta(minutes=1),
+            step_seconds=2.0,
         )
 
-        update = self.service._build_session_state_update(state, timestamp)
+        self.assertGreater(result.energy_delta_kwh, 0)
+        self.assertGreater(state.cumulative_energy_kwh, 12.0)
 
-        self.assertEqual(update["cost.energyCents"], 660)
-        self.assertEqual(update["cost.idleCents"], 180)
-        self.assertEqual(update["cost.totalCents"], 840)
+    async def test_stop_command_emits_remote_stop_event(self) -> None:
+        client = FakeOcppClient()
+        service = SimulationService(client, telemetry_interval_seconds=60)
+        await service.start()
+        await service.start_session_simulation(
+            {
+                "evseId": 1,
+                "customData": {
+                    "sessionId": "session-1",
+                    "connectorPowerKw": 22,
+                },
+            }
+        )
+
+        await service.stop_session_simulation({"transactionId": "session-1"})
+        task = service._session_tasks["session-1"]
+        await task
+
+        ended_events = [
+            payload
+            for action, payload in client.frames
+            if action == "TransactionEvent" and payload["eventType"] == "Ended"
+        ]
+        self.assertEqual(len(ended_events), 1)
+        self.assertEqual(ended_events[0]["triggerReason"], "RemoteStop")
+        await service.stop()
 
 
 if __name__ == "__main__":

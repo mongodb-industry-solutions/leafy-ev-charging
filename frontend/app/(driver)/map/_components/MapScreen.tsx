@@ -16,6 +16,7 @@ import {
 import { SearchBar } from "./SearchBar";
 import { ActiveSessionBubble } from "./ActiveSessionBubble";
 import { SessionSummaryModal } from "./SessionSummaryModal";
+import ChatComponent from "./ChatComponent";
 
 const StationMap = dynamic(
   () =>
@@ -47,6 +48,7 @@ export function MapScreen() {
   );
   const [sessionModalOpen, setSessionModalOpen] = useState(false);
   const [modalSession, setModalSession] = useState<typeof session>(null);
+  const [chatVisible, setChatVisible] = useState(false);
 
   const [locationPin, setLocationPin] = useState<{
     lat: number;
@@ -68,6 +70,9 @@ export function MapScreen() {
   const { search, geocodeFirst, loading, error } = useGeocode(mapCenter);
 
   const isExpanded = filterOpen || hoverExpanded;
+
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatExpanded, setChatExpanded] = useState(false);
 
   useEffect(() => {
     if (suppressSuggestions) {
@@ -207,12 +212,65 @@ export function MapScreen() {
         </div>
       </div>
 
-      <div className="absolute bottom-6 right-4 z-[1000]">
+
+      <div className="absolute bottom-6 right-4 z-[1000] flex items-center gap-2">
         <MongoSpotlight
           id="map-geo"
           label="Geospatial search"
-          className="cursor-pointer rounded-full border border-white/70 bg-white/85 px-4 py-2 text-xs font-medium leading-none text-slate-600 shadow backdrop-blur-xl transition-colors hover:bg-white/95 hover:text-slate-800"
+          className="cursor-pointer rounded-full border border-white/70
+      bg-white/85 px-4 py-2 text-xs font-medium leading-none
+      text-slate-600 shadow backdrop-blur-xl"
         />
+
+        <MongoSpotlight
+          id="ocpp-protocol"
+          label="OCPP protocol"
+          className="cursor-pointer rounded-full border border-white/70
+      bg-white/85 px-4 py-2 text-xs font-medium leading-none
+      text-slate-600 shadow backdrop-blur-xl"
+        />
+
+        <div className="relative">
+          <div
+            id="agent-chat-panel"
+            aria-hidden={!chatOpen}
+            onAnimationEnd={(event) => {
+              if (event.target === event.currentTarget && !chatOpen) {
+                setChatVisible(false);
+              }
+            }}
+            className={`${chatVisible ? (chatOpen ? "chat-panel-enter" : "chat-panel-exit") : "hidden"} absolute bottom-full right-0 mb-3 max-h-[100dvh] max-w-[calc(100vw_-_2rem)] overflow-auto rounded-lg border border-white/70 bg-white/85 p-4 shadow-lg backdrop-blur-xl transition-[width,height] duration-300 ease-out ${chatExpanded ? "h-[85vh] w-[42rem]" : "h-120 w-120"}`}
+          >
+            <ChatComponent
+              expanded={chatExpanded}
+              onToggleExpand={() => setChatExpanded((value) => !value)}
+              location={
+                mapCenter
+                  ? { latitude: mapCenter.lat, longitude: mapCenter.lng }
+                  : undefined
+              }
+            />
+          </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              if (chatOpen) setChatExpanded(false);
+              if (!chatOpen) setChatVisible(true);
+              setChatOpen((open) => !open);
+            }}
+            aria-expanded={chatOpen}
+            aria-controls="agent-chat-panel"
+            aria-label={chatOpen ? "Collapse chat" : "Open chat"}
+            title={chatOpen ? "Collapse chat" : "Open chat"}
+            className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-white/70 bg-white/85 px-4 py-1.5 text-xs font-medium leading-none text-slate-600 shadow backdrop-blur-xl hover:bg-white/95"
+          >
+            <span style={{ fontSize: 20, lineHeight: 1 }} className="material-symbols-outlined text-base leading-none" aria-hidden="true">
+              {chatOpen ? "expand_more" : "chat_bubble"}
+            </span>
+            <span>AI Driving Assistant</span>
+          </button>
+        </div>
       </div>
 
       <div
@@ -232,6 +290,7 @@ export function MapScreen() {
           error={error}
         />
       </div>
+
     </main>
   );
 }

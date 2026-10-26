@@ -1,0 +1,534 @@
+import type { Db } from "mongodb";
+import { ObjectId } from "mongodb";
+import type { ConnectorType } from "../../types/connectorType";
+import { insertTelemetrySample } from "./telemetry";
+
+type ConnectorUsedDoc = {
+  type?: ConnectorType | null;
+  power?: number | null;
+  tethered?: boolean | null;
+};
+
+type ChargingDoc = {
+  startedAt?: Date | null;
+  endedAt?: Date | null;
+  connectorUsed?: ConnectorUsedDoc | null;
+  meterStartKwh?: number | null;
+  meterStopKwh?: number | null;
+  energyDeliveredKwh?: number | null;
+  socStartPercent?: number | null;
+  socStopPercent?: number | null;
+};
+
+type BookingDoc = {
+  bookedAt: Date;
+  expiresAt: Date;
+  canceledAt?: Date | null;
+  cancelReason?: string | null;
+};
+
+type FeedbackDoc = {
+  rating: number;
+  comment?: string | null;
+  createdAt: Date;
+};
+
+export type SessionFeedbackInputDoc = {
+  rating: number;
+  comment?: string | null;
+};
+
+type PricingDoc = {
+  currency: string;
+  priceCentsPerKwh: number;
+  idleFee?: {
+    priceCentsPerMinute: number;
+    afterMinutes: number;
+  };
+};
+
+type CostDoc = {
+  totalCents?: number | null;
+  energyCents?: number | null;
+  idleCents?: number | null;
+};
+
+type LocationDoc = {
+  type: "Point";
+  coordinates: [number, number];
+};
+
+type StationSnapshotDoc = {
+  name: string;
+  location: LocationDoc;
+  addressShort: string;
+  chargingPointLabel: string;
+};
+
+type VehicleSnapshotDoc = {
+  vinLast6: string;
+  make: string;
+  model: string;
+};
+
+export type ChargingSessionDoc = {
+  _id: ObjectId;
+  userId: ObjectId;
+  vehicleId: ObjectId;
+  stationId: ObjectId;
+  chargingPointId: ObjectId;
+  stationSnapshot: StationSnapshotDoc;
+  vehicleSnapshot: VehicleSnapshotDoc;
+  status: "BOOKED" | "ACTIVE" | "COMPLETED" | "CANCELED" | "NO_SHOW" | "FAILED";
+  booking: BookingDoc;
+  charging: ChargingDoc;
+  feedback?: FeedbackDoc | null;
+  pricingSnapshot: PricingDoc;
+  cost: CostDoc;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type ChargingSessionsConnection = {
+  docs: ChargingSessionDoc[];
+  hasNextPage: boolean;
+  endCursor: string | null;
+};
+
+type SessionsQueryInput = {
+  userId: string;
+  fromDate?: string;
+  limit?: number;
+  cursor?: string;
+};
+
+type CursorPayload = {
+  createdAt: string;
+  id: string;
+};
+
+export type ApplyTransactionEventInput = {
+  transactionId: string;
+  eventType: "Started" | "Updated" | "Ended";
+  timestamp: Date;
+  meterRegisterKwh: number;
+  raw?: unknown;
+};
+
+const ALWAYS_VISIBLE_SESSION_STATUSES: ChargingSessionDoc["status"][] = [
+  "ACTIVE",
+  "BOOKED",
+  "COMPLETED"
+];
+
+function encodeCursor(payload: CursorPayload): string {
+  return Buffer.from(JSON.stringify(payload)).toString("base64");
+}
+
+function decodeCursor(cursor: string): CursorPayload | null {
+  try {
+    const parsed = JSON.parse(Buffer.from(cursor, "base64").toString("utf8")) as CursorPayload;
+    if (!parsed.createdAt || !parsed.id) {
+      return null;
+    }
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function clampLimit(limit?: number): number {
+  if (limit == null) return 50;
+  if (limit < 1) return 1;
+  if (limit > 100) return 100;
+  return limit;
+}
+
+const SHARED_HISTORY_USER_ID = "65c8f2e2d2f4c3a9b3b9a111";
+
+function buildVisibleSessionsClause(): Record<string, unknown> {
+  return {
+    $or: [
+      { status: { $in: ALWAYS_VISIBLE_SESSION_STATUSES } },
+      {
+        status: { $nin: ALWAYS_VISIBLE_SESSION_STATUSES },
+        "cost.totalCents": { $gt: 0 }
+      }
+    ]
+  };
+}
+
+// Return sessions for the current user OR completed/canceled sessions for the shared history user
+export function buildSharedHistoryMatch(userId: string): Record<string, unknown> {
+  const userObjectId = new ObjectId(userId);
+  const sharedObjectId = new ObjectId(SHARED_HISTORY_USER_ID);
+
+  return userId === SHARED_HISTORY_USER_ID
+    ? { userId: userObjectId }
+    : {
+        $or: [
+          { userId: userObjectId },
+          {
+            userId: sharedObjectId,
+            status: { $in: ["COMPLETED", "CANCELED"] }
+          }
+        ]
+      };
+}
+
+function buildFilter(input: SessionsQueryInput): Record<string, unknown> {
+  const baseClause = buildSharedHistoryMatch(input.userId);
+
+  const clauses: Record<string, unknown>[] = [
+    baseClause,
+    buildVisibleSessionsClause()
+  ];
+
+  if (input.fromDate) {
+    const fromDate = new Date(input.fromDate);
+    if (!Number.isNaN(fromDate.getTime())) {
+      clauses.push({ createdAt: { $gte: fromDate } });
+    }
+  }
+
+  if (input.cursor) {
+    const decoded = decodeCursor(input.cursor);
+    if (decoded) {
+      const createdAt = new Date(decoded.createdAt);
+      if (!Number.isNaN(createdAt.getTime())) {
+        clauses.push({
+          $or: [
+            { createdAt: { $lt: createdAt } },
+            {
+              createdAt,
+              _id: { $lt: new ObjectId(decoded.id) }
+            }
+          ]
+        });
+      }
+    }
+  }
+
+  return clauses.length === 1 ? clauses[0] : { $and: clauses };
+}
+
+export async function findChargingSessionsByUser(
+  database: Db,
+  input: SessionsQueryInput
+): Promise<ChargingSessionsConnection> {
+  const limit = clampLimit(input.limit);
+  const filter = buildFilter(input);
+
+  const docs = await database
+    .collection<ChargingSessionDoc>("chargingSessions")
+    .find(filter)
+    .sort({ createdAt: -1, _id: -1 })
+    .limit(limit + 1)
+    .toArray();
+
+  const hasNextPage = docs.length > limit;
+  const slicedDocs = hasNextPage ? docs.slice(0, limit) : docs;
+  const last = slicedDocs.at(-1);
+  const endCursor = last
+    ? encodeCursor({ createdAt: last.createdAt.toISOString(), id: String(last._id) })
+    : null;
+
+  return {
+    docs: slicedDocs,
+    hasNextPage,
+    endCursor
+  };
+}
+
+const now = () => new Date();
+
+export async function countActiveOrBookedSessionsByUser(
+  database: Db,
+  userId: string
+): Promise<number> {
+  const userObjectId = new ObjectId(userId);
+  const sessions = database.collection<ChargingSessionDoc>("chargingSessions");
+  const count = await sessions.countDocuments({
+    userId: userObjectId,
+    $or: [
+      { status: "ACTIVE" },
+      {
+        status: "BOOKED",
+        "booking.canceledAt": null,
+        "booking.expiresAt": { $gt: now() }
+      }
+    ]
+  });
+  return count;
+}
+
+export async function hasConflictOnChargingPoint(
+  database: Db,
+  chargingPointId: string
+): Promise<boolean> {
+  const pointObjectId = new ObjectId(chargingPointId);
+  const sessions = database.collection<ChargingSessionDoc>("chargingSessions");
+  const count = await sessions.countDocuments({
+    chargingPointId: pointObjectId,
+    $or: [
+      { status: "ACTIVE" },
+      {
+        status: "BOOKED",
+        "booking.canceledAt": null,
+        "booking.expiresAt": { $gt: now() }
+      }
+    ]
+  });
+  return count > 0;
+}
+
+export type ChargingSessionInsertDoc = Omit<ChargingSessionDoc, "_id">;
+
+export async function insertChargingSession(
+  database: Db,
+  doc: ChargingSessionInsertDoc
+): Promise<ChargingSessionDoc> {
+  const sessions = database.collection<ChargingSessionDoc>("chargingSessions");
+  const result = await sessions.insertOne(doc as ChargingSessionDoc);
+  return {
+    ...doc,
+    _id: result.insertedId
+  } as ChargingSessionDoc;
+}
+
+export async function findChargingSessionById(
+  database: Db,
+  sessionId: string
+): Promise<ChargingSessionDoc | null> {
+  return database.collection<ChargingSessionDoc>("chargingSessions").findOne({
+    _id: new ObjectId(sessionId)
+  });
+}
+
+export async function markSessionActive(
+  database: Db,
+  sessionId: string,
+  connectorUsed?: { type?: ConnectorType | null; power?: number | null; tethered?: boolean | null } | null
+): Promise<ChargingSessionDoc | null> {
+  const nowDate = now();
+  const setPayload: Record<string, unknown> = {
+    status: "ACTIVE",
+    "charging.startedAt": nowDate,
+    updatedAt: nowDate
+  };
+
+  if (connectorUsed) {
+    setPayload["charging.connectorUsed"] = {
+      type: connectorUsed.type ?? null,
+      power: connectorUsed.power ?? null,
+      tethered: connectorUsed.tethered ?? null
+    };
+  }
+
+  const result = await database
+    .collection<ChargingSessionDoc>("chargingSessions")
+    .findOneAndUpdate(
+      {
+        _id: new ObjectId(sessionId),
+        status: "BOOKED",
+        "booking.canceledAt": null
+      },
+      {
+        $set: setPayload
+      },
+      { returnDocument: "after" }
+    );
+  return result;
+}
+
+export async function markSessionCanceled(
+  database: Db,
+  sessionId: string,
+  reason?: string | null
+): Promise<ChargingSessionDoc | null> {
+  const nowDate = now();
+  const result = await database
+    .collection<ChargingSessionDoc>("chargingSessions")
+    .findOneAndUpdate(
+      {
+        _id: new ObjectId(sessionId),
+        status: "BOOKED",
+        "booking.canceledAt": null
+      },
+      {
+        $set: {
+          status: "CANCELED",
+          "booking.canceledAt": nowDate,
+          "booking.cancelReason": reason ?? null,
+          updatedAt: nowDate
+        }
+      },
+      { returnDocument: "after" }
+    );
+  return result;
+}
+
+export async function markSessionCompleted(
+  database: Db,
+  sessionId: string
+): Promise<ChargingSessionDoc | null> {
+  const nowDate = now();
+  const result = await database
+    .collection<ChargingSessionDoc>("chargingSessions")
+    .findOneAndUpdate(
+      {
+        _id: new ObjectId(sessionId),
+        status: "ACTIVE"
+      },
+      {
+        $set: {
+          status: "COMPLETED",
+          "charging.endedAt": nowDate,
+          updatedAt: nowDate
+        }
+      },
+      { returnDocument: "after" }
+    );
+  return result;
+}
+
+export async function addSessionFeedback(
+  database: Db,
+  sessionId: string,
+  feedback: SessionFeedbackInputDoc
+): Promise<ChargingSessionDoc | null> {
+  const nowDate = now();
+
+  const result = await database
+    .collection<ChargingSessionDoc>("chargingSessions")
+    .findOneAndUpdate(
+      {
+        _id: new ObjectId(sessionId),
+        status: "COMPLETED",
+        feedback: null
+      },
+      {
+        $set: {
+          feedback: {
+            rating: feedback.rating,
+            comment: feedback.comment ?? null,
+            createdAt: nowDate
+          },
+          updatedAt: nowDate
+        }
+      },
+      { returnDocument: "after" }
+    );
+
+  return result;
+}
+
+export async function getVehicleSnapshotFromSession(
+  database: Db,
+  vehicleId: string
+): Promise<{ vinLast6: string; make: string; model: string } | null> {
+  const doc = await database
+    .collection<ChargingSessionDoc>("chargingSessions")
+    .findOne(
+      { vehicleId: new ObjectId(vehicleId) },
+      { projection: { vehicleSnapshot: 1 } }
+    );
+  return doc?.vehicleSnapshot ?? null;
+}
+
+
+export async function applyTransactionEvent(
+  database: Db,
+  event: ApplyTransactionEventInput
+): Promise<ChargingSessionDoc | null> {
+  if (!ObjectId.isValid(event.transactionId)) {
+    return null;
+  }
+
+  const sessions = database.collection<ChargingSessionDoc>("chargingSessions");
+  const sessionId = new ObjectId(event.transactionId);
+  const session = await sessions.findOne({
+    _id: sessionId,
+    status: "ACTIVE"
+  });
+
+  if (!session) {
+    return null;
+  }
+
+  const meterStartKwh =
+    event.eventType === "Started"
+      ? event.meterRegisterKwh
+      : session.charging.meterStartKwh;
+
+  if (meterStartKwh == null) {
+    throw new Error(
+      `Cannot apply ${event.eventType} event before the session meter has started`
+    );
+  }
+
+  const energyDeliveredKwh = Math.max(
+    event.meterRegisterKwh - meterStartKwh,
+    0
+  );
+  const energyCents = Math.round(
+    energyDeliveredKwh * session.pricingSnapshot.priceCentsPerKwh
+  );
+  const idleCents = session.cost.idleCents ?? 0;
+
+  const set: Record<string, unknown> = {
+    "charging.meterStopKwh": event.meterRegisterKwh,
+    "charging.energyDeliveredKwh": energyDeliveredKwh,
+    "cost.energyCents": energyCents,
+    "cost.totalCents": energyCents + idleCents,
+    updatedAt: event.timestamp
+  };
+
+  if (event.eventType === "Started") {
+    set["charging.startedAt"] = event.timestamp;
+    set["charging.meterStartKwh"] = event.meterRegisterKwh;
+  }
+
+  if (event.eventType === "Ended") {
+    set.status = "COMPLETED";
+    set["charging.endedAt"] = event.timestamp;
+  }
+  const previousRegisterKwh =
+    session.charging.meterStopKwh ?? session.charging.meterStartKwh ?? null;
+  const energyKwhDelta =
+    previousRegisterKwh == null
+      ? 0
+      : Math.max(event.meterRegisterKwh - previousRegisterKwh, 0);
+
+  console.log(`Applied transaction event for session ${sessionId.toHexString()}`);
+  const updatedSession = await sessions.findOneAndUpdate(
+    { _id: sessionId, status: "ACTIVE" },
+    { $set: set },
+    { returnDocument: "after" }
+  );
+
+  if (updatedSession) {
+    try {
+      await insertTelemetrySample(database, {
+        timestamp: event.timestamp,
+        meta: {
+          chargingPointId: updatedSession.chargingPointId,
+          stationId: updatedSession.stationId,
+          sessionId: updatedSession._id,
+          transactionId: event.transactionId
+        },
+        eventType: event.eventType,
+        energyKwh: event.meterRegisterKwh,
+        energyKwhDelta,
+        raw: event.raw
+      });
+    } catch (error) {
+      console.error(
+        `Failed to persist telemetry for session ${sessionId.toHexString()}`,
+        error
+      );
+    }
+  }
+
+  return updatedSession;
+}

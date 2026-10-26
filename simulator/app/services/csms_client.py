@@ -140,7 +140,9 @@ class CsmsClient:
         message_id = str(uuid.uuid4())
         frame = [2, message_id, action, payload]
 
-        logger.info("OCPP frame sent: %s", frame)
+        # One frame goes out every ~2 seconds per session, so the payload is
+        # only logged at DEBUG (set LOG_LEVEL=DEBUG to see full frames).
+        logger.debug("OCPP frame sent: %s", frame)
 
         await self._socket.send(json.dumps(frame))
         return message_id

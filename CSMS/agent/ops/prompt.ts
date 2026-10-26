@@ -78,6 +78,8 @@ Optional: codes (exact codes to match) and limit (1 to 20, default 5).
 Returns matching sections with their heading path, codes, and text.
 Use it to ground a diagnosis and repair steps in the manual, and cite the sections.
 An empty result means the manual has no relevant section, not that none exists.
+If the result contains an error field, the manual could not be searched: say so
+and do not present a generic answer as if it came from the manual.
 
 Capabilities:
 The platform can perform some actions remotely: restart a charging point or the

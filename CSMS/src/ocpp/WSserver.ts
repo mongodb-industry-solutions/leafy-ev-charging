@@ -378,13 +378,14 @@ function parseTransactionEvent(value: unknown): ParsedTransactionEvent {
       // Optional vehicle state of charge. Ignored rather than rejected when
       // malformed, since the energy register is what billing depends on.
       if (sample.measurand === "SoC") {
-        const soc = Number(sample.value);
-        if (
-          sample.value !== "" &&
-          Number.isFinite(soc) &&
-          soc >= 0 &&
-          soc <= 100
-        ) {
+        const rawSoc = sample.value;
+        const soc =
+          typeof rawSoc === "number"
+            ? rawSoc
+            : typeof rawSoc === "string" && rawSoc.trim() !== ""
+              ? Number(rawSoc)
+              : Number.NaN;
+        if (Number.isFinite(soc) && soc >= 0 && soc <= 100) {
           socPercent = soc;
         }
         continue;

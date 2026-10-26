@@ -82,10 +82,6 @@ async function runIncidentSummary(
     .aggregate<IncidentFacetResult>(pipeline)
     .toArray();
 
-    console.log(
-        result
-    )
-
   return {
     total: result?.summary[0]?.total ?? 0,
     byType: result?.byType ?? [],
@@ -301,8 +297,6 @@ export async function rankChargingActivity(
         }))
     );
 
-  console.log("Generated rankings:", rankings);
-
   return {
     from: from.toISOString(),
     to: to.toISOString(),
@@ -363,7 +357,7 @@ async function embedManualQuery(
 export async function searchManuals(
   db: Db,
   input: SearchManualsInput
-): Promise<{ results: ManualChunkResult[] }> {
+): Promise<{ results: ManualChunkResult[]; error?: string }> {
   const query = input.query.trim();
   if (!query) throw new Error("query is required");
 
@@ -416,8 +410,9 @@ export async function searchManuals(
         ])
         .toArray();
       if (results.length > 0) return { results };
-    } catch {
+    } catch (error) {
       // Atlas Vector Search unavailable; fall back to lexical search.
+      console.error("[Agent] Manual vector search failed", error);
     }
   }
 
@@ -428,13 +423,23 @@ export async function searchManuals(
           $search: {
             index: MANUAL_LEXICAL_INDEX,
             compound: {
-              should: [
-                { text: { query, path: ["text", "heading"] } },
-                ...(input.codes ?? []).map((code) => ({
-                  equals: { path: "codes", value: code }
-                }))
-              ],
-              minimumShouldMatch: 1
+              must: [{ text: { query, path: ["text", "heading"] } }],
+              // Requested codes are a hard constraint (any one of them), the
+              // same as the $in filter on the vector path.
+              ...(input.codes && input.codes.length > 0
+                ? {
+                    filter: [
+                      {
+                        compound: {
+                          should: input.codes.map((code) => ({
+                            equals: { path: "codes", value: code }
+                          })),
+                          minimumShouldMatch: 1
+                        }
+                      }
+                    ]
+                  }
+                : {})
             }
           }
         },
@@ -452,7 +457,10 @@ export async function searchManuals(
       ])
       .toArray();
     return { results };
-  } catch {
-    return { results: [] };
+  } catch (error) {
+    // Report the outage instead of an empty list, which the agent would read
+    // as "the manual has nothing on this" and answer generically.
+    console.error("[Agent] Manual lexical search failed", error);
+    return { results: [], error: "Manual search is currently unavailable" };
   }
 }

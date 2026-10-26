@@ -49,44 +49,14 @@ export async function runConsumer(
     `not that the user has never charged.`
   );
 
-  console.log("[Agent] Starting", {
-    threadId: turn.threadId,
-    tools: tools.map((tool) => tool.name)
-  });
-
   const graph = new StateGraph(State)
     .addNode("respond", async (state) => {
-      console.log("[Agent] Calling model");
-
       const history = await historyWindow(state.messages);
       const response = await model.invoke([system, ...history]);
 
-      for (const call of response.tool_calls ?? []) {
-        console.log("[Agent] Requested tool", {
-          id: call.id,
-          name: call.name,
-          arguments: call.args
-        });
-      }
-
-      if (!response.tool_calls?.length) {
-        console.log("[Agent] Final answer:", response.text);
-      }
-
       return { messages: [response] };
     })
-    .addNode("tools", async (state) => {
-      console.log("[Agent] Executing tools");
-      const result = await toolNode.invoke(state);
-
-      for (const message of result.messages) {
-        console.log("[Agent] Tool result", {
-          name: message.name
-        });
-      }
-
-      return result;
-    })
+    .addNode("tools", async (state) => toolNode.invoke(state))
     .addEdge(START, "respond")
     .addConditionalEdges("respond", (state) => {
       const last = state.messages.at(-1);

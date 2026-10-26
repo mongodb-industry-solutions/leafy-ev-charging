@@ -11,6 +11,7 @@ import {
   getVehicleSnapshotFromSession,
   findChargingSessionById,
   markSessionActive,
+  revertSessionToBooked,
   markSessionCanceled,
   markSessionCompleted,
   addSessionFeedback as addSessionFeedbackToSession,
@@ -395,6 +396,19 @@ export async function startChargingSession(
     return connector.power > best.power ? connector : best;
   }, null);
 
+  // Mark the session ACTIVE before the charger is told to start. The simulator
+  // answers with its TransactionEvent "Started" frame within milliseconds, and
+  // applyTransactionEvent only accepts events for ACTIVE sessions, so sending
+  // first races the database write and can drop the frame that starts the meter.
+  const updated = await markSessionActive(db, input.sessionId, {
+    type: preferredConnector?.type ?? null,
+    power: preferredConnector?.power ?? null,
+    tethered: preferredConnector?.tethered ?? null,
+  });
+  if (!updated) {
+    throw new InvalidSessionTransitionError();
+  }
+
   const sent = connections.send("simulation", [
     2,
     randomUUID(),
@@ -418,17 +432,11 @@ export async function startChargingSession(
   ]);
 
   if (!sent) {
+    // The command never reached the charger; put the booking back.
+    await revertSessionToBooked(db, input.sessionId);
     throw new Error("Simulator is not connected");
   }
 
-  const updated = await markSessionActive(db, input.sessionId, {
-    type: preferredConnector?.type ?? null,
-    power: preferredConnector?.power ?? null,
-    tethered: preferredConnector?.tethered ?? null,
-  });
-  if (!updated) {
-    throw new InvalidSessionTransitionError();
-  }
   return updated;
 }
 

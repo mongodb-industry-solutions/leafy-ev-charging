@@ -26,6 +26,7 @@ type ParsedTransactionEvent = {
   eventType: "Started" | "Updated" | "Ended";
   timestamp: Date;
   meterRegisterKwh: number;
+  socPercent?: number;
 };
 
 export function attachOcppServer(
@@ -362,6 +363,7 @@ function parseTransactionEvent(value: unknown): ParsedTransactionEvent {
   }
 
   let meterRegisterKwh: number | undefined;
+  let socPercent: number | undefined;
 
   for (const meterValue of value.meterValue) {
     if (!isRecord(meterValue) || !Array.isArray(meterValue.sampledValue)) {
@@ -369,10 +371,27 @@ function parseTransactionEvent(value: unknown): ParsedTransactionEvent {
     }
 
     for (const sample of meterValue.sampledValue) {
-      if (
-        !isRecord(sample) ||
-        sample.measurand !== "Energy.Active.Import.Register"
-      ) {
+      if (!isRecord(sample)) {
+        continue;
+      }
+
+      // Optional vehicle state of charge. Ignored rather than rejected when
+      // malformed, since the energy register is what billing depends on.
+      if (sample.measurand === "SoC") {
+        const rawSoc = sample.value;
+        const soc =
+          typeof rawSoc === "number"
+            ? rawSoc
+            : typeof rawSoc === "string" && rawSoc.trim() !== ""
+              ? Number(rawSoc)
+              : Number.NaN;
+        if (Number.isFinite(soc) && soc >= 0 && soc <= 100) {
+          socPercent = soc;
+        }
+        continue;
+      }
+
+      if (sample.measurand !== "Energy.Active.Import.Register") {
         continue;
       }
 
@@ -397,5 +416,5 @@ function parseTransactionEvent(value: unknown): ParsedTransactionEvent {
     throw new Error("TransactionEvent is missing its energy register");
   }
 
-  return { transactionId, eventType, timestamp, meterRegisterKwh };
+  return { transactionId, eventType, timestamp, meterRegisterKwh, socPercent };
 }

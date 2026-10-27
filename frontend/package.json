@@ -37,7 +37,7 @@
     "supercluster": "^8.0.1",
     "tailwindcss": "^4.1.18",
     "use-supercluster": "^1.2.0",
-    "zod": "^4.6.5"
+    "zod": "^4.6.7"
   },
   "optionalDependencies": {
     "@tailwindcss/oxide-linux-arm64-gnu": "*",

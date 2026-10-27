@@ -112,6 +112,7 @@ export type ApplyTransactionEventInput = {
   eventType: "Started" | "Updated" | "Ended";
   timestamp: Date;
   meterRegisterKwh: number;
+  socPercent?: number;
   raw?: unknown;
 };
 
@@ -314,6 +315,10 @@ export async function markSessionActive(
   const setPayload: Record<string, unknown> = {
     status: "ACTIVE",
     "charging.startedAt": nowDate,
+    // Cost so far starts at zero; TransactionEvents from the charger update it.
+    "cost.totalCents": 0,
+    "cost.energyCents": 0,
+    "cost.idleCents": 0,
     updatedAt: nowDate
   };
 
@@ -359,7 +364,13 @@ export async function revertSessionToBooked(
         "charging.meterStartKwh": null
       },
       {
-        $set: { status: "BOOKED", updatedAt: now() },
+        $set: {
+          status: "BOOKED",
+          "cost.totalCents": null,
+          "cost.energyCents": null,
+          "cost.idleCents": null,
+          updatedAt: now()
+        },
         $unset: { "charging.startedAt": "", "charging.connectorUsed": "" }
       },
       { returnDocument: "after" }
@@ -512,6 +523,13 @@ export async function applyTransactionEvent(
   if (event.eventType === "Started") {
     set["charging.startedAt"] = event.timestamp;
     set["charging.meterStartKwh"] = event.meterRegisterKwh;
+  }
+
+  if (event.socPercent !== undefined) {
+    set["charging.socStopPercent"] = event.socPercent;
+    if (event.eventType === "Started" || session.charging.socStartPercent == null) {
+      set["charging.socStartPercent"] = event.socPercent;
+    }
   }
 
   if (event.eventType === "Ended") {

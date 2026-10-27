@@ -65,6 +65,7 @@ def _build_telemetry_doc(
     power_kw: float,
     voltage_v: int,
     current_a: int,
+    soc_percent: float | None = None,
     event_type: str = "Updated",
     trigger_reason: str = "MeterValuePeriodic",
     charging_state: str = "Charging",
@@ -110,6 +111,15 @@ def _build_telemetry_doc(
             "unitOfMeasure": {"unit": "A"},
         },
     ]
+    # Vehicle state of charge; the CSMS stores it on the session for the UI.
+    if soc_percent is not None:
+        sampled_values.append(
+            {
+                "value": round(soc_percent, 1),
+                "measurand": "SoC",
+                "unitOfMeasure": {"unit": "Percent"},
+            }
+        )
 
     return [
         2,  # Call Message Type
@@ -426,6 +436,7 @@ class SimulationService:
             power_kw=0.0,
             voltage_v=0,
             current_a=0,
+            soc_percent=state.soc_start_percent,
             event_type="Started",
             trigger_reason="Authorized",
             charging_state="Charging",
@@ -492,6 +503,9 @@ class SimulationService:
                         power_kw=advance.power_kw,
                         voltage_v=voltage,
                         current_a=current_a,
+                        soc_percent=max(
+                            state.soc_stop_percent, state.soc_start_percent
+                        ),
                     )
                     await self._csms_client.send_call(
                         action=frame[2],
@@ -566,6 +580,7 @@ class SimulationService:
             power_kw=0.0,
             voltage_v=0,
             current_a=0,
+            soc_percent=max(state.soc_stop_percent, state.soc_start_percent),
             event_type="Ended",
             trigger_reason=trigger_reason,
             charging_state="Idle",

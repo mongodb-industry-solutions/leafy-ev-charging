@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation } from "@apollo/client/react";
 import { useUserContext } from "@/contexts/UserContext";
+import { newThreadId } from "@/lib/utils/threadId";
 import {
   AgentAudience,
   SendChatMessageDocument
@@ -33,13 +34,13 @@ export default function ChatComponent({
   const [error, setError] = useState("");
   const [sendChatMessage] = useMutation(SendChatMessageDocument);
   // The server keeps the conversation; the client only names the thread.
-  const threadId = useRef(crypto.randomUUID());
+  const threadId = useRef(newThreadId());
   const threadUserId = useRef(selectedUser?.id);
 
   useEffect(() => {
     if (threadUserId.current === selectedUser?.id) return;
     threadUserId.current = selectedUser?.id;
-    threadId.current = crypto.randomUUID();
+    threadId.current = newThreadId();
     setMessages([]);
     setError("");
   }, [selectedUser?.id]);

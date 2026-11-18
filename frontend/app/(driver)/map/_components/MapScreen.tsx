@@ -43,11 +43,11 @@ function filtersToApiInput(filters: FilterState): ChargingStationFiltersInput {
 
 export function MapScreen() {
   const { selectedUser, isReady, isAllowed } = useRoleRouteGuard(UserRole.User);
-  const { session, hasActiveOrBookedSession, refetch } = useActiveOrBookedSession(
+  const { session, sessions, hasActiveOrBookedSession, refetch } = useActiveOrBookedSession(
     selectedUser?.id ?? null
   );
   const [sessionModalOpen, setSessionModalOpen] = useState(false);
-  const [modalSession, setModalSession] = useState<typeof session>(null);
+  const [modalSessionId, setModalSessionId] = useState<string | null>(null);
   const [chatVisible, setChatVisible] = useState(false);
 
   const [locationPin, setLocationPin] = useState<{
@@ -124,7 +124,16 @@ export function MapScreen() {
 
   const apiFilters = filtersToApiInput(filters);
   const filterWidth = isExpanded ? FILTER_WIDTH_EXPANDED : FILTER_WIDTH_COLLAPSED;
-  const displayedModalSession = sessionModalOpen ? session ?? modalSession : null;
+  // Pin the modal to the session it opened with, so a session that ends while
+  // the modal is open (e.g. time limit) shows its final state instead of a stale one.
+  if (sessionModalOpen && session && modalSessionId === null) {
+    setModalSessionId(session.id);
+  }
+  const displayedModalSession = !sessionModalOpen
+    ? null
+    : modalSessionId
+      ? sessions.find((s) => s.id === modalSessionId) ?? null
+      : session;
 
   if (!isReady || !isAllowed) {
     return (
@@ -157,7 +166,7 @@ export function MapScreen() {
         <ActiveSessionBubble
           session={session}
           onClick={() => {
-            setModalSession(session);
+            setModalSessionId(session.id);
             setSessionModalOpen(true);
           }}
         />
@@ -169,7 +178,7 @@ export function MapScreen() {
           onSessionChanged={refetch}
           onClose={() => {
             setSessionModalOpen(false);
-            setModalSession(null);
+            setModalSessionId(null);
           }}
         />
       )}

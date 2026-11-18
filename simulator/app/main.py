@@ -15,6 +15,7 @@ csms_client = CsmsClient(settings.csms_ocpp_url)
 simulation_service = SimulationService(
     csms_client,
     settings.session_telemetry_interval_seconds,
+    settings.session_max_duration_minutes * 60,
 )
 
 csms_client.set_command_handler(

@@ -14,6 +14,8 @@ import {
   revertSessionToBooked,
   markSessionCanceled,
   markSessionCompleted,
+  findOverdueActiveSessions,
+  hasActiveChargingSession,
   addSessionFeedback as addSessionFeedbackToSession,
   type ChargingSessionDoc,
 } from "../../db/repositories/chargingSessions";
@@ -408,6 +410,7 @@ export async function startChargingSession(
   if (!updated) {
     throw new InvalidSessionTransitionError();
   }
+  ensureSessionTimeLimitSweeper(db);
 
   const sent = connections.send("simulation", [
     2,
@@ -518,6 +521,107 @@ export async function completeChargingSession(
     updated.chargingPointId,
   );
   return updated;
+}
+
+const DEFAULT_SESSION_MAX_DURATION_MINUTES = 45;
+// Lets the simulator send its own TimeLimitReached event (with final meter
+// values) before the CSMS force-completes the session.
+const SESSION_TIME_LIMIT_GRACE_MS = 2 * 60 * 1000;
+const SESSION_TIME_LIMIT_SWEEP_INTERVAL_MS = 10 * 60 * 1000;
+
+export function getSessionMaxDurationMs(): number {
+  const minutes = Number(process.env.SESSION_MAX_DURATION_MINUTES);
+  return (
+    (Number.isFinite(minutes) && minutes > 0
+      ? minutes
+      : DEFAULT_SESSION_MAX_DURATION_MINUTES) * 60 * 1000
+  );
+}
+
+/**
+ * Completes ACTIVE sessions that outlived the time limit, e.g. because the
+ * simulator restarted or disconnected and will never send an Ended event.
+ */
+export async function completeOverdueChargingSessions(
+  db: Db,
+  maxDurationMs: number = getSessionMaxDurationMs(),
+  nowMs: number = Date.now(),
+): Promise<number> {
+  const startedBefore = new Date(
+    nowMs - maxDurationMs - SESSION_TIME_LIMIT_GRACE_MS,
+  );
+  const overdue = await findOverdueActiveSessions(db, startedBefore);
+
+  let completed = 0;
+  for (const { _id } of overdue) {
+    const updated = await markSessionCompleted(db, _id.toHexString());
+    if (!updated) {
+      continue;
+    }
+
+    await markChargingPointAvailable(
+      db,
+      updated.stationId,
+      updated.chargingPointId,
+    );
+    completed += 1;
+    console.warn(
+      `Charging session ${_id.toHexString()} exceeded the time limit; marked COMPLETED`,
+    );
+  }
+  return completed;
+}
+
+// The sweep only runs while at least one session is ACTIVE: starting a session
+// arms the timer, and a sweep that finds no ACTIVE sessions disarms it.
+let sweepTimer: NodeJS.Timeout | null = null;
+let sweepRunning = false;
+// Bumped on every arm request so a sweep never disarms the timer for a session
+// that started while that sweep was checking for ACTIVE sessions.
+let sweepArmGeneration = 0;
+
+async function runSessionTimeLimitSweep(db: Db): Promise<void> {
+  if (sweepRunning) return;
+  sweepRunning = true;
+  const generation = sweepArmGeneration;
+  try {
+    await completeOverdueChargingSessions(db);
+    const stillActive = await hasActiveChargingSession(db);
+    if (!stillActive && generation === sweepArmGeneration) {
+      stopSessionTimeLimitSweeper();
+    }
+  } catch (error) {
+    console.error("Failed to complete overdue charging sessions", error);
+  } finally {
+    sweepRunning = false;
+  }
+}
+
+export function ensureSessionTimeLimitSweeper(db: Db): void {
+  sweepArmGeneration += 1;
+  if (sweepTimer) return;
+  sweepTimer = setInterval(
+    () => void runSessionTimeLimitSweep(db),
+    SESSION_TIME_LIMIT_SWEEP_INTERVAL_MS,
+  );
+  sweepTimer.unref();
+}
+
+export function stopSessionTimeLimitSweeper(): void {
+  if (sweepTimer) {
+    clearInterval(sweepTimer);
+    sweepTimer = null;
+  }
+}
+
+/**
+ * Called once at server startup: sweeps immediately to catch sessions left
+ * ACTIVE by a previous run, then keeps sweeping only if any are still ACTIVE.
+ */
+export function startSessionTimeLimitSweeper(db: Db): () => void {
+  ensureSessionTimeLimitSweeper(db);
+  void runSessionTimeLimitSweep(db);
+  return stopSessionTimeLimitSweeper;
 }
 
 type AddSessionFeedbackInput = {

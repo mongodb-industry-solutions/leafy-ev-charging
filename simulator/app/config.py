@@ -13,6 +13,7 @@ class Settings:
     simulator_url: str
     bind_port: int
     session_telemetry_interval_seconds: float
+    session_max_duration_minutes: float
     csms_ocpp_url: str
 
 
@@ -34,6 +35,9 @@ def get_settings() -> Settings:
                 "SESSION_TELEMETRY_INTERVAL_SECONDS",
                 os.getenv("SIMULATION_INTERVAL_SECONDS", "2"),
             )
+        ),
+        session_max_duration_minutes=float(
+            os.getenv("SESSION_MAX_DURATION_MINUTES", "45")
         ),
         csms_ocpp_url=os.getenv(
             "CSMS_OCPP_URL",

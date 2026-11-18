@@ -35,7 +35,9 @@ On startup, it:
 The CSMS's 30-minute booking expiry applies before charging starts, not to an
 active session. As a safety net, the CSMS also completes any session still
 `ACTIVE` two minutes past the time limit (for example, after a simulator restart)
-and releases its charging point. The driver UI picks up the change via polling.
+and releases its charging point. It checks every 10 minutes, and only while at
+least one session is `ACTIVE`, so a stuck session is closed within 57 minutes of
+starting with the default limit. The driver UI picks up the change via polling.
 
 ## Prerequisites
 

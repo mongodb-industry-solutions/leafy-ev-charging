@@ -441,6 +441,13 @@ export async function findOverdueActiveSessions(
     .toArray();
 }
 
+export async function hasActiveChargingSession(database: Db): Promise<boolean> {
+  const session = await database
+    .collection<ChargingSessionDoc>("chargingSessions")
+    .findOne({ status: "ACTIVE" }, { projection: { _id: 1 } });
+  return session !== null;
+}
+
 export async function addSessionFeedback(
   database: Db,
   sessionId: string,

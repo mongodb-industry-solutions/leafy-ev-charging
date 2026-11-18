@@ -428,6 +428,19 @@ export async function markSessionCompleted(
   return result;
 }
 
+export async function findOverdueActiveSessions(
+  database: Db,
+  startedBefore: Date
+): Promise<ChargingSessionDoc[]> {
+  return database
+    .collection<ChargingSessionDoc>("chargingSessions")
+    .find(
+      { status: "ACTIVE", "charging.startedAt": { $lte: startedBefore } },
+      { projection: { _id: 1 } }
+    )
+    .toArray();
+}
+
 export async function addSessionFeedback(
   database: Db,
   sessionId: string,

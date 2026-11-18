@@ -22,6 +22,7 @@ import { createServer } from "node:http";
 import { OcppConnectionManager } from "../ocpp/connectionManager";
 import { attachOcppServer } from "../ocpp/WSserver";
 import { ocppConnections } from "../ocpp/connectionManager";
+import { startSessionTimeLimitSweeper } from "../modules/chargingSessions/service";
 
 const { runtimeSchemaDirectories } = require("../../schema/schema-sources.cjs") as {
   runtimeSchemaDirectories: string[];
@@ -109,6 +110,7 @@ const startServer = async (): Promise<void> => {
   const httpServer = createServer(app);
 
   attachOcppServer(db, httpServer, ocppConnections);
+  startSessionTimeLimitSweeper(db);
 
   httpServer.listen(port, () => {
     console.log(`Backend GraphQL and OCPP server listening on port ${port}`);

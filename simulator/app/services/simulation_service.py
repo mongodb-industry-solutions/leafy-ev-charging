@@ -1,15 +1,21 @@
 import asyncio
 import hashlib
 import logging
-import random
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from typing import Any, Awaitable, Protocol
 
 MESSAGE_TYPE_SESSION_SAMPLE = "SESSION_SAMPLE"
-MESSAGE_TYPE_FAULT = "FAULT"
-FAULT_PROBABILITY = 0.005
+SESSION_STOP_SOC_PERCENT = 99.9
+DEFAULT_MAX_SESSION_DURATION_SECONDS = 45 * 60
 logger = logging.getLogger(__name__)
+
+
+class SessionCommandRejected(Exception):
+    def __init__(self, reason_code: str, detail: str) -> None:
+        super().__init__(detail)
+        self.reason_code = reason_code
+        self.detail = detail
 
 
 class OcppClient(Protocol):
@@ -150,68 +156,6 @@ def _build_telemetry_doc(
     ]
     
     
-def _build_fault_frame(
-    *,
-    timestamp: datetime,
-    event_id: int,
-    seq_no: int,
-    component_name: str,
-    variable_name: str,
-    actual_value: str,
-    evse_id: int | None = None,
-    connector_id: int | None = None,
-    tech_code: str | None = None,
-    tech_info: str | None = None,
-    severity: int | None = None,
-    cause: int | None = None,
-    cleared: bool = False,
-    transaction_id: str | None = None,
-) -> list[Any]:
-    if timestamp.tzinfo is None:
-        raise ValueError("OCPP timestamps must be timezone-aware")
-    moment = timestamp.isoformat().replace("+00:00", "Z")
-
-    component: dict[str, Any] = {"name": component_name}
-    if evse_id is not None:
-        component["evse"] = {"id": evse_id}
-        if connector_id is not None:
-            component["evse"]["connectorId"] = connector_id
-
-    event: dict[str, Any] = {
-        "eventId": event_id,
-        "timestamp": moment,
-        "trigger": "Alerting",
-        "actualValue": actual_value[:2500],
-        "eventNotificationType": "HardWiredNotification",
-        "component": component,
-        "variable": {"name": variable_name},
-    }
-    optional = (
-        ("techCode", tech_code[:50] if tech_code else None),
-        ("techInfo", tech_info[:500] if tech_info else None),
-        ("severity", severity),
-        ("cause", cause),
-        ("transactionId", transaction_id),
-    )
-    for key, value in optional:
-        if value is not None:
-            event[key] = value
-    if cleared:
-        event["cleared"] = True
-
-    return [
-        2,
-        str(uuid4()),
-        "NotifyEvent",
-        {
-            "generatedAt": moment,
-            "tbc": False,
-            "seqNo": seq_no,
-            "eventData": [event],
-        },
-    ]
-
-
 def _extract_max_kw(point_doc: dict[str, Any]) -> float:
     point_power = point_doc.get("power")
     if isinstance(point_power, dict):
@@ -243,9 +187,13 @@ class SimulationService:
         self,
         csms_client: OcppClient,
         telemetry_interval_seconds: float = 2.0,
+        max_session_duration_seconds: float = DEFAULT_MAX_SESSION_DURATION_SECONDS,
     ) -> None:
         self._csms_client = csms_client
         self._telemetry_interval_seconds = max(telemetry_interval_seconds, 0.5)
+        self._max_session_duration = timedelta(
+            seconds=max(max_session_duration_seconds, 1.0)
+        )
         self._running = False
         self._session_tasks: dict[str, asyncio.Task[None]] = {}
         self._stop_events: dict[str, asyncio.Event] = {}
@@ -292,17 +240,29 @@ class SimulationService:
             action: str,
             payload: dict[str, Any],
         ) -> dict[str, Any] | None:
-            if action == "RequestStartTransaction":
-                transaction_id = await self.start_session_simulation(payload)
+            try:
+                if action == "RequestStartTransaction":
+                    transaction_id = await self.start_session_simulation(payload)
+                    return {
+                        "status": "Accepted",
+                        "transactionId": transaction_id,
+                    }
+                if action == "RequestStopTransaction":
+                    transaction_id = await self.stop_session_simulation(payload)
+                    return {
+                        "status": "Accepted",
+                        "transactionId": transaction_id,
+                    }
+            except SessionCommandRejected as rejection:
+                # A well-formed request the simulator can't act on gets the
+                # command's normal response with status "Rejected", not a CallError.
+                logger.warning("%s rejected: %s", action, rejection.detail)
                 return {
-                    "status": "Accepted",
-                    "transactionId": transaction_id,
-                }
-            if action == "RequestStopTransaction":
-                transaction_id = await self.stop_session_simulation(payload)
-                return {
-                    "status": "Accepted",
-                    "transactionId": transaction_id,
+                    "status": "Rejected",
+                    "statusInfo": {
+                        "reasonCode": rejection.reason_code,
+                        "additionalInfo": rejection.detail,
+                    },
                 }
 
             logger.warning("unsupported CSMS action: %s", action)
@@ -319,10 +279,16 @@ class SimulationService:
                 else command.get("sessionId")
             )
             if not isinstance(session_id, str):
-                raise ValueError("RequestStartTransaction requires sessionId")
+                raise SessionCommandRejected(
+                    "MissingSessionId",
+                    "RequestStartTransaction requires customData.sessionId",
+                )
 
             if not isinstance(custom_data, dict):
-                raise ValueError("RequestStartTransaction requires customData")
+                raise SessionCommandRejected(
+                    "MissingCustomData",
+                    "RequestStartTransaction requires customData",
+                )
 
             connector_power_kw = custom_data.get("connectorPowerKw")
             max_kw = (
@@ -386,7 +352,10 @@ class SimulationService:
 
         stop_event = self._stop_events.get(transaction_id)
         if stop_event is None:
-            raise ValueError(f"transaction is not running: {transaction_id}")
+            raise SessionCommandRejected(
+                "UnknownTransaction",
+                f"transaction is not running: {transaction_id}",
+            )
 
         logger.info("stop requested for session %s", transaction_id)
         stop_event.set()
@@ -423,6 +392,7 @@ class SimulationService:
         interval = self._telemetry_interval_seconds
         transaction_id = session_id
         stop_event = self._stop_events[transaction_id]
+        deadline = state.started_at + self._max_session_duration
 
         started_seq_no = self._csms_client.next_transaction_sequence(transaction_id)
         started_frame = _build_telemetry_doc(
@@ -464,7 +434,7 @@ class SimulationService:
                 advance = self._advance_session_state(
                     state=state,
                     context=context,
-                    target_timestamp=datetime.now(UTC),
+                    target_timestamp=min(datetime.now(UTC), deadline),
                     step_seconds=interval,
                 )
 
@@ -479,6 +449,23 @@ class SimulationService:
                         stopped_reason="EnergyLimitReached",
                     )
 
+                    self._csms_client.clear_transaction_sequence(transaction_id)
+                    return
+
+                if state.last_simulated_at >= deadline:
+                    logger.info(
+                        "session %s reached the %s time limit",
+                        session_id,
+                        self._max_session_duration,
+                    )
+                    await self._send_ended_event(
+                        timestamp=deadline,
+                        context=context,
+                        state=state,
+                        transaction_id=transaction_id,
+                        trigger_reason="TimeLimitReached",
+                        stopped_reason="TimeLimitReached",
+                    )
                     self._csms_client.clear_transaction_sequence(transaction_id)
                     return
 
@@ -511,39 +498,6 @@ class SimulationService:
                         action=frame[2],
                         payload=frame[3],
                     )
-                    
-
-                    if random.random() < FAULT_PROBABILITY:
-                    
-                        
-                        # Fault which stops the simulation, as if the charging point turned off as a safety mechanism
-                        
-                        fault_seq_no = self._csms_client.next_transaction_sequence(transaction_id)
-
-                        fault_frame = _build_fault_frame(
-                            timestamp=advance.simulated_until,
-                            event_id=1,
-                            seq_no=fault_seq_no,
-                            component_name="EVSE",
-                            variable_name="Temperature",
-                            actual_value="E_OVERHEAT_WARN",
-                            evse_id=context.evse_id,
-                            connector_id=1,
-                            tech_code="E_OVERHEAT_WARN",
-                            tech_info="Temperature threshold exceeded",
-                            severity=3,
-                            transaction_id=transaction_id,
-                        )
-
-                        await self._csms_client.send_call(
-                            action=fault_frame[2],
-                            payload=fault_frame[3],
-                        )
-                        
-                        logger.info(
-                            "overheating warning sent; continuing session %s",
-                            session_id,
-                            )
             except asyncio.CancelledError:
                 raise
             except Exception:
@@ -633,7 +587,10 @@ class SimulationService:
         )
 
     def _is_state_full(self, state: SessionSimulationState) -> bool:
-        return max(state.soc_stop_percent, state.soc_start_percent) >= 100.0
+        return (
+            max(state.soc_stop_percent, state.soc_start_percent)
+            >= SESSION_STOP_SOC_PERCENT
+        )
 
     def _seconds_until_next_tick(
         self, state: SessionSimulationState, interval_seconds: float
@@ -685,8 +642,8 @@ class SimulationService:
                 min(max(state.soc_stop_percent, state.soc_start_percent), 100.0),
                 0.0,
             )
-            if current_soc >= 100.0:
-                state.soc_stop_percent = 100.0
+            if current_soc >= SESSION_STOP_SOC_PERCENT:
+                state.soc_stop_percent = current_soc
                 completed_at = state.last_simulated_at
                 break
 
@@ -699,10 +656,10 @@ class SimulationService:
                 0.0,
             )
             power_kw = self._calculate_power_kw(context, state, current_soc)
-            max_energy_to_full = (
-                max(100.0 - current_soc, 0.0) / 100.0
+            max_energy_to_stop = (
+                max(SESSION_STOP_SOC_PERCENT - current_soc, 0.0) / 100.0
             ) * max(state.battery_capacity_kwh, 1.0)
-            energy_delta = min(power_kw * elapsed_hours, max_energy_to_full)
+            energy_delta = min(power_kw * elapsed_hours, max_energy_to_stop)
 
             if energy_delta > 0:
                 total_energy_delta += energy_delta
@@ -712,13 +669,13 @@ class SimulationService:
                 )
                 soc_gain = (energy_delta / max(state.battery_capacity_kwh, 1.0)) * 100.0
                 state.soc_stop_percent = min(
-                    100.0,
+                    SESSION_STOP_SOC_PERCENT,
                     max(state.soc_stop_percent, state.soc_start_percent) + soc_gain,
                 )
 
             state.last_simulated_at = chunk_end
-            if max_energy_to_full <= energy_delta + 1e-9:
-                state.soc_stop_percent = 100.0
+            if max_energy_to_stop <= energy_delta + 1e-9:
+                state.soc_stop_percent = SESSION_STOP_SOC_PERCENT
                 completed_at = chunk_end
                 break
 

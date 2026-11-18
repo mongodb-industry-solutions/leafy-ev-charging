@@ -34,14 +34,19 @@ export function useActiveOrBookedSession(userId: string | null) {
     }
   );
 
-  const session = useMemo(() => {
+  const sessions = useMemo(() => {
     const connection = data?.chargingSessions ?? previousData?.chargingSessions;
-    const sessions = connection?.edges ?? [];
-    return sessions.find(
-      (s): s is SessionItem =>
-        s.status === "BOOKED" || s.status === "ACTIVE"
-    ) ?? null;
+    return connection?.edges ?? [];
   }, [data?.chargingSessions, previousData?.chargingSessions]);
+
+  const session = useMemo(
+    () =>
+      sessions.find(
+        (s): s is SessionItem =>
+          s.status === "BOOKED" || s.status === "ACTIVE"
+      ) ?? null,
+    [sessions]
+  );
 
   useEffect(() => {
     if (!session || !userId) return;
@@ -51,6 +56,7 @@ export function useActiveOrBookedSession(userId: string | null) {
 
   return {
     session,
+    sessions,
     hasActiveOrBookedSession: session !== null,
     loading,
     refetch

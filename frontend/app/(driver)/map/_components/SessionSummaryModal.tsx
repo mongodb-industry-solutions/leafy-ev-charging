@@ -96,6 +96,25 @@ function useElapsedTime(startedAtIso: string | null, enabled: boolean): string {
   return display;
 }
 
+function formatDuration(
+  startedAtIso: string | null | undefined,
+  endedAtIso: string | null | undefined
+): string | null {
+  if (!startedAtIso || !endedAtIso) return null;
+  const diffSeconds = Math.max(
+    0,
+    Math.floor((new Date(endedAtIso).getTime() - new Date(startedAtIso).getTime()) / 1000)
+  );
+  if (!Number.isFinite(diffSeconds)) return null;
+  const hours = Math.floor(diffSeconds / 3600);
+  const minutes = Math.floor((diffSeconds % 3600) / 60);
+  const seconds = diffSeconds % 60;
+  const mmss = `${minutes.toString().padStart(hours > 0 ? 2 : 1, "0")}:${seconds
+    .toString()
+    .padStart(2, "0")}`;
+  return hours > 0 ? `${hours}:${mmss}` : mmss;
+}
+
 function InfoRow({
   label,
   value,
@@ -135,6 +154,7 @@ export function SessionSummaryModal({
   const currentSession = completedSession ?? session;
   const isBooked = currentSession.status === "BOOKED";
   const isActive = currentSession.status === "ACTIVE";
+  const isEnded = !isBooked && !isActive;
 
   const {
     startCharging,
@@ -161,6 +181,12 @@ export function SessionSummaryModal({
     currentSession.charging.startedAt ?? null,
     isActive
   );
+  const durationDisplay = isEnded
+    ? formatDuration(
+        currentSession.charging.startedAt,
+        currentSession.charging.endedAt
+      ) ?? chargingTime
+    : chargingTime;
 
   const energyKwh =
     currentSession.charging.energyDeliveredKwh ??
@@ -291,13 +317,15 @@ export function SessionSummaryModal({
                   isBooked ? "text-emerald-500" : "text-amber-500"
                 }`}
               >
-                {isBooked ? "event_available" : "bolt"}
+                {isBooked ? "event_available" : isEnded ? "check_circle" : "bolt"}
               </span>
             </div>
             <p className="mt-3 text-center text-[15px] font-semibold text-slate-800">
               {isBooked
                 ? "Your charging point is reserved"
-                : "Your session is active"}
+                : isEnded
+                  ? "Your charging session has ended"
+                  : "Your session is active"}
             </p>
             {vehicleLabel && (
               <div className="mt-1.5 flex items-center gap-1.5 text-[13px] text-slate-400">
@@ -316,9 +344,9 @@ export function SessionSummaryModal({
               <InfoRow label="Time remaining" value={countdown} valueClassName="text-emerald-600" />
             ) : (
               <>
-                <InfoRow label="Duration" value={chargingTime} />
+                <InfoRow label="Duration" value={durationDisplay} />
                 <InfoRow label="Energy consumed" value={energyDisplay} />
-                <InfoRow label="Cost so far" value={price} />
+                <InfoRow label={isEnded ? "Total cost" : "Cost so far"} value={price} />
                 <div className="flex items-center justify-between py-2.5">
                   <span className="text-[13px] text-slate-500">Battery</span>
                   <div className="flex items-center gap-2">
@@ -356,6 +384,21 @@ export function SessionSummaryModal({
                     {isUpdatingSession ? "Updating..." : "Cancel Reservation"}
                   </button>
                 </>
+              ) : isEnded ? (
+                currentSession.status === "COMPLETED" && !currentSession.feedback && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      clearFeedbackError();
+                      setView("feedback");
+                    }}
+                    className="flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-800 py-3.5 font-semibold text-white shadow-sm transition-colors hover:bg-slate-700"
+                    style={{ margin: 0 }}
+                  >
+                    <span className="material-symbols-outlined text-xl">star</span>
+                    Rate This Charge
+                  </button>
+                )
               ) : (
                 <button
                   type="button"

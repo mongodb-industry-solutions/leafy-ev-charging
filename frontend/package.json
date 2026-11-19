@@ -27,7 +27,7 @@
     "@via-ds/components": "^0.10.0",
     "graphql": "^16.11.0",
     "leaflet": "^1.9.4",
-    "next": "^16.4.3",
+    "next": "^16.4.5",
     "postcss": "^8.4.31",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
@@ -37,7 +37,7 @@
     "supercluster": "^8.0.1",
     "tailwindcss": "^4.1.18",
     "use-supercluster": "^1.2.0",
-    "zod": "^4.6.5"
+    "zod": "^4.6.7"
   },
   "optionalDependencies": {
     "@tailwindcss/oxide-linux-arm64-gnu": "*",
